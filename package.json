@@ -1,0 +1,24 @@
+{
+  "private": true,
+  "workspaces": [
+    "example_project",
+    "node"
+  ],
+  "scripts": {
+    "lint": "eslint --ext .js,.ts,.html --ignore-path .gitignore --max-warnings 0 .",
+    "lint:fix": "yarn lint --fix"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.12",
+    "@typescript-eslint/eslint-plugin": "^5.46.0",
+    "@typescript-eslint/parser": "^5.46.0",
+    "eslint": "^8.29.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.8.1",
+    "rimraf": "^3.0.2",
+    "ts-node": "^10.9.1",
+    "tslib": "^2.4.1",
+    "typescript": "^4.9.4"
+  }
+}
