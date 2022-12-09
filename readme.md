@@ -18,3 +18,14 @@ Make sure you have Node.js 16 or newer and Yarn installed.
 yarn install
 yarn --cwd node build:watch
 ```
+
+Open a new terminal tab and run:
+
+```bash
+# Run example tests in local browsers
+yarn --cwd example_project test:local
+
+# Or run example tests on BrowserStack
+# For Linux, macOS and WSL (Linux on Windows)
+BROWSERSTACK_USERNAME=your-username BROWSERSTACK_ACCESS_KEY=your-key yarn --cwd example_project test:browserstack
+```
