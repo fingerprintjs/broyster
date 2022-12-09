@@ -54,7 +54,7 @@ export class WebDriverFactory {
         // auto retries and hides the exception
         return builder.withCapabilities(browserStack).build()
       } catch (err) {
-        log.error(err)
+        log.error((err as Error) ?? String(err))
         setTimeout(() => {
           log.debug('failed to create session, waiting for new attempt')
         }, 5000)

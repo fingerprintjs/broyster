@@ -67,8 +67,8 @@ export function BrowserStackLauncher(
       const sessionId = (await browser.getSession()).getId()
       log.debug(this.id + ' has webdriver SessionId: ' + sessionId)
       heartbeat()
-    } catch (error) {
-      log.error(error)
+    } catch (err) {
+      log.error((err as Error) ?? String(err))
       this._done('failure')
       return
     }
@@ -87,9 +87,9 @@ export function BrowserStackLauncher(
       } else {
         log.debug('browser not found, cannot kill')
       }
-    } catch (e) {
+    } catch (err) {
       log.error('Could not quit the BrowserStack Selenium connection. Failure message:')
-      log.error(e)
+      log.error((err as Error) ?? String(err))
     }
 
     browserMap.delete(this.id)
