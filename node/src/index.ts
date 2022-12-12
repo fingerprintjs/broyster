@@ -10,5 +10,5 @@ module.exports = {
   'launcher:BrowserStackSelenium': ['type', BrowserStackLauncher],
   browserStackSessionFactory: ['type', BrowserStackSessionFactory],
   browserStackLocalManager: ['value', new BrowserStackLocalManager()],
-  browserMap: ['value', new Map<string, ThenableWebDriver>() as BrowserMap],
+  browserMap: ['value', new Map<string, { browser: ThenableWebDriver; session: string }>() as BrowserMap],
 }

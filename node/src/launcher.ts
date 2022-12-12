@@ -56,7 +56,8 @@ export function BrowserStackLauncher(
       browserStackLocalManager.run(log)
       log.debug('creating browser with attributes: ' + JSON.stringify(args))
       browser = browserStackSessionFactory.createBrowser(args, log)
-      browserMap.set(this.id, browser)
+      const session = pageUrl.split('/').slice(-1)[0]
+      browserMap.set(this.id, { browser, session })
       const httpsUrl = 'https://localhost:2138'
       const httpUrl = 'http://localhost:2137'
       const regexpForLocalhost = /https:\/\/localhost:\d*/
@@ -80,7 +81,7 @@ export function BrowserStackLauncher(
     }
     try {
       log.debug('killing browser ' + this.id)
-      const browser = browserMap.get(this.id)
+      const browser = browserMap.get(this.id)?.browser
       if (browser) {
         await browser.quit()
         log.debug('killed')

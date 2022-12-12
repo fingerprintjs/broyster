@@ -4,13 +4,12 @@ import { Logger } from './karma_logger'
 
 export class BrowserStackLocalManager {
   isRunning = false
-  bsLocal: browserStack.Local
+  bsLocal: browserStack.Local = new browserStack.Local()
   run(logger: Logger) {
     const deferred = Q.defer()
 
     if (!this.isRunning) {
       const bsAccesskey = process.env.BROWSERSTACK_ACCESS_KEY || process.env.BROWSER_STACK_ACCESS_KEY
-      this.bsLocal = new browserStack.Local()
       const bsLocalArgs = {
         key: bsAccesskey,
         localIdentifier: undefined,
