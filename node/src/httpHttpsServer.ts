@@ -1,3 +1,3 @@
-const server = 'server mock'
+import { createServer } from './custom_servers'
 
-export default server
+export { createServer }

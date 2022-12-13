@@ -49,4 +49,8 @@ export class BrowserStackSessionFactory {
     }
     return WebDriverFactory.createFromOptions(opts, caps, log, browser.firefoxCapabilities)
   }
+
+  static makeBrowserStackSessionFactory(config: KarmaConfig) {
+    return new BrowserStackSessionFactory(config)
+  }
 }

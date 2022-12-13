@@ -1,6 +1,6 @@
 import { Config, CustomLauncher } from 'karma'
 import { KarmaTypescriptConfig } from 'karma-typescript/dist/api/configuration'
-import { DesiredBrowser } from '@fpjs-incubator/broyster'
+import { karmaPlugin } from '@fpjs-incubator/broyster'
 import fs = require('fs')
 
 declare module 'karma' {
@@ -19,36 +19,10 @@ declare module 'karma' {
   }
 }
 
-interface CustomLauncherExt extends CustomLauncher, DesiredBrowser {
+interface CustomLauncherExt extends CustomLauncher {
   name: string
 }
 
-/* eslint-disable max-len */
-// prettier-ignore
-/*
-const browserstackBrowsers = {
-  IE11: { os: 'Windows', os_version: '7', browser: 'IE', browser_version: '11.0' },
-  Windows11_EdgeLatest: { os: 'Windows', os_version: '11', browser: 'Edge', browser_version: 'latest-beta' },
-  Windows10_Chrome49: { os: 'Windows', os_version: '10', browser: 'Chrome', browser_version: '49.0' },
-  Windows11_ChromeLatest: { os: 'Windows', os_version: '11', browser: 'Chrome', browser_version: 'latest-beta' },
-  Windows10_Firefox52: { os: 'Windows', os_version: '10', browser: 'Firefox', browser_version: '52.0' },
-  Windows11_FirefoxLatest: { os: 'Windows', os_version: '11', browser: 'Firefox', browser_version: 'latest-beta' },
-  OSXMojave_Safari12: { os: 'OS X', os_version: 'Mojave', browser: 'Safari', browser_version: '12.1' },
-  OSXMonterey_Safari15: { os: 'OS X', os_version: 'Monterey', browser: 'Safari', browser_version: '15.0' },
-  OSXVentura_Safari16: { os: 'OS X', os_version: 'Ventura', browser: 'Safari', browser_version: '16.0' },
-  OSXMonterey_ChromeLatest: { os: 'OS X', os_version: 'Monterey', browser: 'Chrome', browser_version: 'latest-beta' },
-  OSXMonterey_FirefoxLatest: { os: 'OS X', os_version: 'Monterey', browser: 'Firefox', browser_version: 'latest-beta' },
-  OSXMonterey_EdgeLatest: { os: 'OS X', os_version: 'Monterey', browser: 'Edge', browser_version: 'latest-beta' },
-  Android11_ChromeLatest: { device: 'Google Pixel 4', os: 'Android', os_version: '11.0', browser: 'Chrome', browser_version: 'latest-beta' },
-  iOS10_Safari: { device: 'iPhone 7', os: 'iOS', os_version: '10', browser: 'Safari' },
-  iOS11_Safari: { device: 'iPhone 8 Plus', os: 'iOS', os_version: '11', browser: 'Safari' },
-  iOS12_Safari: { device: 'iPhone XS', os: 'iOS', os_version: '12', browser: 'Safari' },
-  iOS13_Safari: { device: 'iPhone 11 Pro', os: 'iOS', os_version: '13', browser: 'Safari' },
-  iOS14_Safari: { device: 'iPhone 11', os: 'iOS', os_version: '14', browser: 'Safari' },
-  iOS15_Safari: { device: 'iPhone 13', os: 'iOS', os_version: '15', browser: 'Safari' },
-  iOS16_Safari: { device: 'iPhone 14', os: 'iOS', os_version: '16', browser: 'Safari' },
-}
-*/
 const browserstackBrowsers = {
  
   OSXMonterey_Safari15: {
@@ -58,6 +32,7 @@ const browserstackBrowsers = {
     browserVersion: '15.0',
     useHttps: false,
   },
+
   IE11: { os: 'Windows', osVersion: '7', browserName: 'IE', browserVersion: '11.0', useHttps: true },
 
   Windows11_EdgeLatest: {
@@ -178,39 +153,33 @@ function setupLocal(config: Config) {
     },
 
     protocol: 'https',
-
     httpsServerOptions: {
       key: fs.readFileSync('key_exp.key', 'utf8'),
       cert: fs.readFileSync('crt_exp.crt', 'utf8'),
       requestCert: false,
       rejectUnauthorized: false,
     },
-    httpModule: require('@fpjs-incubator/broyster/CustomServers.ts'),
+    httpModule: require('@fpjs-incubator/broyster'),
   })
 }
 
 function setupBrowserstack(config: Config) {
   setupLocal(config)
-
-  // todo: Implement BrowserStack support
-  //  throw new Error('BrowserStack not implemented')
-
-  makeBuildNumber()
   const customLaunchers: { [key: string]: CustomLauncherExt } = {}
   for (const [key, data] of Object.entries(browserstackBrowsers)) {
     customLaunchers[key] = {
-      base: 'BrowserStack',
+      base: 'BrowserStackSelenium',
       name: key.replace(/_/g, ' '),
       ...data,
     }
   }
 
   config.set({
-    reporters: [...config.reporters, 'BrowserStack'],
+    reporters: [...config.reporters], //'BrowserStack'], // todo: Turn on when reporter is done
     browsers: Object.keys(customLaunchers),
     customLaunchers,
     concurrency: 5,
-    plugins: [require('@fpjs-incubator/broyster'), 'karma-*'],
+    plugins: [karmaPlugin, 'karma-*'],
 
     browserStack: {
       project: 'FingerprintJS', // todo: Turn to "Broyster" when the repository is open-sourced
