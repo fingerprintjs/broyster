@@ -24,7 +24,6 @@ interface CustomLauncherExt extends CustomLauncher {
 }
 
 const browserstackBrowsers = {
- 
   OSXMonterey_Safari15: {
     os: 'OS X',
     osVersion: 'Monterey',
@@ -43,7 +42,8 @@ const browserstackBrowsers = {
     useHttps: true,
   },
   Windows10_Chrome49: { os: 'Windows', osVersion: '10', browserName: 'Chrome', browserVersion: '49.0', useHttps: true },
-  // Windows10_Chrome49_Incognito: { os: 'Windows', osVersion: '10', browserName: 'Chrome', browserVersion: '49.0', ...chromeIncognitoCapabilities },
+  // Windows10_Chrome49_Incognito: { os: 'Windows', osVersion: '10',
+  //browserName: 'Chrome', browserVersion: '49.0', ...chromeIncognitoCapabilities },
   Windows11_ChromeLatest: {
     os: 'Windows',
     osVersion: '11',
@@ -51,7 +51,8 @@ const browserstackBrowsers = {
     browserVersion: 'latest-beta',
     useHttps: true,
   },
-  // Windows11_ChromeLatest_Incognito: { os: 'Windows', osVersion: '11', browserName: 'Chrome', browserVersion: 'latest-beta, ...chromeIncognitoCapabilities },
+  // Windows11_ChromeLatest_Incognito: { os: 'Windows', osVersion: '11', browserName: 'Chrome',
+  //browserVersion: 'latest-beta, ...chromeIncognitoCapabilities },
   Windows10_Firefox52: {
     os: 'Windows',
     osVersion: '10',
@@ -59,7 +60,8 @@ const browserstackBrowsers = {
     browserVersion: '52.0',
     useHttps: true,
   },
-  // Windows10_Firefox52_Incognito: { os: 'Windows', osVersion: '10', browserName: 'Firefox', browserVersion: '52.0', ...firefoxIncognitoCapabilities },
+  // Windows10_Firefox52_Incognito: { os: 'Windows', osVersion: '10', browserName: 'Firefox',
+  //browserVersion: '52.0', ...firefoxIncognitoCapabilities },
   Windows11_FirefoxLatest: {
     os: 'Windows',
     osVersion: '11',
@@ -67,7 +69,8 @@ const browserstackBrowsers = {
     browserVersion: 'latest-beta',
     useHttps: true,
   },
-  // Windows11_FirefoxLatest_Incognito: { os: 'Windows', osVersion: '11', browserName: 'Firefox', browserVersion: 'latest-beta, ...firefoxIncognitoCapabilities },
+  // Windows11_FirefoxLatest_Incognito: { os: 'Windows', osVersion: '11', browserName: 'Firefox',
+  //browserVersion: 'latest-beta, ...firefoxIncognitoCapabilities },
   OSXMojave_Safari12: {
     os: 'OS X',
     osVersion: 'Mojave',
@@ -83,7 +86,8 @@ const browserstackBrowsers = {
     browserVersion: 'latest-beta',
     useHttps: true,
   },
-  // OSXMonterey_ChromeLatest_Incognito: { os: 'OS X', osVersion: 'Monterey', browserName: 'Chrome', browserVersion: 'latest-beta, ...chromeIncognitoCapabilities },
+  // OSXMonterey_ChromeLatest_Incognito: { os: 'OS X', osVersion: 'Monterey', browserName: 'Chrome',
+  //browserVersion: 'latest-beta, ...chromeIncognitoCapabilities },
   OSXMonterey_FirefoxLatest: {
     os: 'OS X',
     osVersion: 'Monterey',
@@ -91,7 +95,8 @@ const browserstackBrowsers = {
     browserVersion: 'latest-beta',
     useHttps: true,
   },
-  // OSXMonterey_FirefoxLatest_Incognito: { os: 'OS X', osVersion: 'Monterey', browserName: 'Firefox', browserVersion: 'latest-beta, ...firefoxIncognitoCapabilities },
+  // OSXMonterey_FirefoxLatest_Incognito: { os: 'OS X', osVersion: 'Monterey', browserName: 'Firefox',
+  //browserVersion: 'latest-beta, ...firefoxIncognitoCapabilities },
   OSXMonterey_EdgeLatest: {
     os: 'OS X',
     osVersion: 'Monterey',
