@@ -1,9 +1,14 @@
 import { ThenableWebDriver } from 'selenium-webdriver'
 import { BrowserMap } from './browser_map'
 import { BrowserStackLocalManager } from './browserstack_local_manager'
-import { makeBrowserStackSessionFactory } from './browserstack_session_factory'
+import { BrowserStackSessionFactory } from './browserstack_session_factory'
 import { BrowserStackLauncher } from './launcher'
 import { InlinePluginDef } from 'karma'
+import { KarmaConfig } from './karma_config'
+
+function makeBrowserStackSessionFactory(config: KarmaConfig) {
+  return new BrowserStackSessionFactory(config)
+}
 
 const karmaPlugin: InlinePluginDef = {
   'launcher:BrowserStackSelenium': ['type', BrowserStackLauncher],
