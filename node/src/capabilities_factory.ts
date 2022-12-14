@@ -30,6 +30,7 @@ export class CapabilitiesFactory {
         local: true,
         userName: this._username,
         accessKey: this._accessKey,
+        idleTimeout: process.env.idleTimeout || '10',
       },
       browserName: browserName.toLowerCase(),
       browserVersion: browserVersion || 'latest',
