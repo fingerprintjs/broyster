@@ -1,4 +1,4 @@
-export interface SessionMap {
+export interface BrowserSession {
   credentials: BrowserstackCredentials
   lastResult: Result
   launchId: string
