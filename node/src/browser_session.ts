@@ -1,4 +1,6 @@
 export interface BrowserSession {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any
   credentials: BrowserstackCredentials
   lastResult: Result
   launchId: string

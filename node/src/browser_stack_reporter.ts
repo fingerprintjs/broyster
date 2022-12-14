@@ -3,13 +3,9 @@ import { createAutomateClient } from 'browserstack'
 import { BrowserSession } from './browser_session'
 import { BrowserMap } from './browser_map'
 
-declare module 'browserstack' {
-  export type AutomateClient = {
-    updateSession(id: string, options: object, fn: () => void): void
-  }
-}
-
 export function BrowserStackReporter(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  this: any,
   logger: LoggerFactory,
   browserMap: BrowserMap,
   /* BrowserStack:sessionMapping */ sessionMapping: BrowserSession,
@@ -48,7 +44,7 @@ export function BrowserStackReporter(
         {
           status: apiStatus,
         },
-        function (err: string) {
+        (err: string) => {
           if (err) {
             log.error('Could not update BrowserStack status')
             log.debug(err)
