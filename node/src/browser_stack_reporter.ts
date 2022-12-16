@@ -1,6 +1,6 @@
 import { LoggerFactory } from './karma_logger'
 import { createAutomateClient } from 'browserstack'
-import { BrowserSession, Result } from './browser_sessions'
+import { BrowserSession, Result } from './browser_session'
 import { BrowserMap } from './browser_map'
 
 export function BrowserStackReporter(
