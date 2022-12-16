@@ -1,6 +1,6 @@
 import { LoggerFactory } from './karma_logger'
 import { createAutomateClient } from 'browserstack'
-import { BrowserSession } from './browser_session'
+import { BrowserSession, Result } from './browser_sessions'
 import { BrowserMap } from './browser_map'
 
 export function BrowserStackReporter(
@@ -8,7 +8,6 @@ export function BrowserStackReporter(
   this: any,
   logger: LoggerFactory,
   browserMap: BrowserMap,
-  /* BrowserStack:sessionMapping */ sessionMapping: BrowserSession,
 ) {
   const log = logger.create('Browserstack Selenium Reporter')
 
@@ -21,26 +20,39 @@ export function BrowserStackReporter(
       callWhenFinished()
     }
   }
+  const browserstackClient = createAutomateClient({
+    username:
+      process.env.BROWSERSTACK_USERNAME ||
+      process.env.BROWSER_STACK_USERNAME ||
+      (() => {
+        throw new Error('BrowserStack username is empty')
+      })(),
+    password:
+      process.env.BROWSERSTACK_ACCESS_KEY ||
+      process.env.BROWSER_STACK_ACCESS_KEY ||
+      (() => {
+        throw new Error('BrowserStack access key is empty')
+      })(),
+  })
 
   this.onBrowserComplete = function (browser: BrowserSession) {
-    const result = browser.lastResult
+    const result: Result = browser.lastResult
 
     if (result.disconnected) {
-      log.error('Test Disconnected')
+      log.error('Test disconnected')
     }
 
     if (result.error) {
-      log.error('Test Errored')
+      log.error('Test errored')
     }
 
     const browserId = browser.launchId || browser.id
-    if (browserId in sessionMapping) {
+    if (browserMap.has(browserId)) {
       pendingUpdates++
-      const browserstackClient = createAutomateClient(sessionMapping.credentials)
       const apiStatus = !(result.failed || result.error || result.disconnected) ? 'passed' : 'error'
       browserMap.get(browserId)
       browserstackClient.updateSession(
-        sessionMapping[browserId],
+        browserMap.get(browserId)?.session ?? '',
         {
           status: apiStatus,
         },

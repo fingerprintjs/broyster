@@ -11,7 +11,7 @@ const karmaPlugin: InlinePluginDef = {
   browserStackSessionFactory: ['type', makeBrowserStackSessionFactory],
   browserStackLocalManager: ['value', new BrowserStackLocalManager()],
   browserMap: ['value', new Map<string, { browser: ThenableWebDriver; session: string }>() as BrowserMap],
-  webDriverBrowserstackReporter: ['type', BrowserStackReporter],
+  'reporter:BrowserStackSelenium': ['type', BrowserStackReporter],
 }
 
 export default karmaPlugin
