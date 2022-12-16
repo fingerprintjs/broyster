@@ -48,7 +48,7 @@ export function BrowserStackLauncher(
         clearTimeout(pendingHeartBeat)
       }
       return
-    }, 60000)
+    }, 2000)
   }
 
   this.on('start', async (pageUrl: string) => {
