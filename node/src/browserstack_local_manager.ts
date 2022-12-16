@@ -17,11 +17,13 @@ export class BrowserStackLocalManager {
         force: true,
       }
       logger.debug('Starting BrowserStackLocal')
-      this.bsLocal.start(bsLocalArgs, function () {
-        logger.debug('Started BrowserStackLocal')
-        //todo: investigate why the log does not print anything, maybe the callback is not called?
-        //console.log('started')
-        deferred.resolve()
+      this.bsLocal.start(bsLocalArgs, function (err: Error | undefined) {
+        if (err) {
+          logger.error(err.toString())
+        } else {
+          logger.debug('Started BrowserStackLocal')
+          deferred.resolve()
+        }
       })
 
       this.isRunning = true

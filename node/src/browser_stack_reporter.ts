@@ -12,8 +12,8 @@ export function BrowserStackReporter(
   const log = logger.create('Browserstack Selenium Reporter')
 
   let pendingUpdates = 0
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  let callWhenFinished: () => {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  let callWhenFinished = () => {}
 
   const exitIfAllFinished = function () {
     if (pendingUpdates === 0) {
@@ -50,16 +50,15 @@ export function BrowserStackReporter(
     if (browserMap.has(browserId)) {
       pendingUpdates++
       const apiStatus = !(result.failed || result.error || result.disconnected) ? 'passed' : 'error'
-      browserMap.get(browserId)
       browserstackClient.updateSession(
-        browserMap.get(browserId)?.session ?? '',
+        browserMap.get(browserId)?.sessionId ?? '',
         {
           status: apiStatus,
         },
         (err: string) => {
           if (err) {
-            log.error('Could not update BrowserStack status')
-            log.debug(err)
+            log.error('Could not update BrowserStack status:')
+            log.error(err)
           }
           pendingUpdates--
           exitIfAllFinished()
