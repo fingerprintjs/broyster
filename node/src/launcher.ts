@@ -22,8 +22,8 @@ export function BrowserStackLauncher(
   retryLauncherDecorator(this)
 
   const log = logger.create('Selenium Browserstack')
+  browserStackLocalManager.run(log)
 
-  // Setup Browser name that will be printed out by Karma.
   this.name =
     args.browserName +
     ' ' +
@@ -56,8 +56,6 @@ export function BrowserStackLauncher(
       browserStackLocalManager.run(log)
       log.debug('creating browser with attributes: ' + JSON.stringify(args))
       browser = browserStackSessionFactory.createBrowser(args, log)
-      const session = pageUrl.split('/').slice(-1)[0]
-      browserMap.set(this.id, { browser, session })
       const httpsUrl = 'https://localhost:2138'
       const httpUrl = 'http://localhost:2137'
       const regexpForLocalhost = /https:\/\/localhost:\d*/
@@ -66,6 +64,7 @@ export function BrowserStackLauncher(
         : pageUrl.replace(regexpForLocalhost, httpUrl)
       await browser.get(pageUrl)
       const sessionId = (await browser.getSession()).getId()
+      browserMap.set(this.id, { browser, sessionId })
       log.debug(this.id + ' has webdriver SessionId: ' + sessionId)
       heartbeat()
     } catch (err) {
