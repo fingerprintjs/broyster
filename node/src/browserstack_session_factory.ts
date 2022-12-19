@@ -1,5 +1,5 @@
 import { CapabilitiesFactory } from './capabilities_factory'
-import { DesiredBrowser } from './desired_browser'
+import { BrowserToCreate, DesiredBrowser } from './desired_browser'
 import { KarmaConfig } from './karma_config'
 import { Logger } from './karma_logger'
 import { OptionsBuilder } from './options_builder'
@@ -30,7 +30,39 @@ export class BrowserStackSessionFactory {
     this._capsFactory = new CapabilitiesFactory(this._username, this._accessKey)
   }
 
-  createBrowser(browser: DesiredBrowser, log: Logger) {
+  tryCreateBrowser(browsers: DesiredBrowser, log: Logger) {
+    let devices = browsers.os ?? browsers.deviceName
+    if (devices) {
+      devices = devices.concat(devices)
+      for (const device of devices) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const configuration: any = {}
+        Object.keys(browsers).forEach((key) => {
+          if (!(key === 'os' || key === 'deviceName')) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            configuration[key] = (browsers as any)[key]
+          } else {
+            configuration[key] = device
+          }
+        })
+        try {
+          log.debug(
+            'creating session for ' +
+              browsers.browserName +
+              ' on ' +
+              (configuration['os'] ?? configuration['deviceName']),
+          )
+          return this.createBrowser(configuration, log)
+        } catch (err) {
+          log.error('could not create session, trying next configuration')
+          log.error((err as Error) ?? String(err))
+        }
+      }
+    }
+    throw new Error('Could not create browser for configuration: ' + JSON.stringify(browsers))
+  }
+
+  private createBrowser(browser: BrowserToCreate, log: Logger) {
     const caps = this._capsFactory.create(
       browser.browserName,
       this._build,

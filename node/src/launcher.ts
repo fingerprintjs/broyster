@@ -55,7 +55,7 @@ export function BrowserStackLauncher(
     try {
       browserStackLocalManager.run(log)
       log.debug('creating browser with attributes: ' + JSON.stringify(args))
-      browser = browserStackSessionFactory.createBrowser(args, log)
+      browser = browserStackSessionFactory.tryCreateBrowser(args, log)
       const session = pageUrl.split('/').slice(-1)[0]
       browserMap.set(this.id, { browser, session })
       const httpsUrl = 'https://localhost:2138'
@@ -66,7 +66,7 @@ export function BrowserStackLauncher(
         : pageUrl.replace(regexpForLocalhost, httpUrl)
       await browser.get(pageUrl)
       const sessionId = (await browser.getSession()).getId()
-      log.debug(this.id + ' has webdriver SessionId: ' + sessionId)
+      log.debug(this.id + ' has WebDriver SessionId: ' + sessionId)
       heartbeat()
     } catch (err) {
       log.error((err as Error) ?? String(err))
@@ -89,7 +89,7 @@ export function BrowserStackLauncher(
         log.debug('browser not found, cannot kill')
       }
     } catch (err) {
-      log.error('Could not quit the BrowserStack Selenium connection. Failure message:')
+      log.error('could not quit the BrowserStack Selenium connection. Failure message:')
       log.error((err as Error) ?? String(err))
     }
 

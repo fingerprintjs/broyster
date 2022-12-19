@@ -1,7 +1,15 @@
-export interface DesiredBrowser {
+export interface DesiredBrowser extends BrowserBase {
+  os: string[] | undefined
+  deviceName: string[] | undefined
+}
+
+export interface BrowserToCreate extends BrowserBase {
   os: string | undefined
-  osVersion: string
   deviceName: string | undefined
+}
+
+export interface BrowserBase {
+  osVersion: string
   browserName: string
   browserVersion: string | null | undefined
   flags: string[]
