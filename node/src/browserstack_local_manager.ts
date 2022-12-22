@@ -1,4 +1,3 @@
-import * as Q from 'q'
 import * as browserStack from 'browserstack-local'
 import { Logger } from './karma_logger'
 
@@ -8,7 +7,6 @@ export class BrowserStackLocalManager {
 
   run(logger: Logger) {
     if (!this.isRunning) {
-      const deferred = Q.defer()
       const bsAccesskey = process.env.BROWSERSTACK_ACCESS_KEY || process.env.BROWSER_STACK_ACCESS_KEY
       const bsLocalArgs = {
         key: bsAccesskey,
@@ -21,7 +19,7 @@ export class BrowserStackLocalManager {
         logger.debug('Started BrowserStackLocal')
         //todo: investigate why the log does not print anything, maybe the callback is not called?
         //console.log('started')
-        deferred.resolve()
+        Promise.resolve(100)
       })
 
       this.isRunning = true
@@ -30,11 +28,10 @@ export class BrowserStackLocalManager {
 
   kill(logger: Logger) {
     if (this.isRunning) {
-      const deferred = Q.defer()
       logger.debug('Stopping BrowserStackLocal')
       this.bsLocal.stop(function () {
         logger.debug('Stopped BrowserStackLocal')
-        deferred.resolve()
+        Promise.resolve(100)
       })
       this.isRunning = false
     }
