@@ -22,6 +22,7 @@ export function BroysterBrowserStackLauncher(
   retryLauncherDecorator(this)
 
   const log = logger.create('Broyster Browserstack')
+  browserStackLocalManager.run(log)
 
   // Setup Browser name that will be printed out by Karma.
   this.name =
@@ -53,7 +54,6 @@ export function BroysterBrowserStackLauncher(
 
   this.on('start', async (pageUrl: string) => {
     try {
-      browserStackLocalManager.run(log)
       log.debug('creating browser with attributes: ' + JSON.stringify(args))
       browser = browserStackSessionFactory.createBrowser(args, log)
       const session = pageUrl.split('/').slice(-1)[0]
