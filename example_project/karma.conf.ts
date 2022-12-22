@@ -1,4 +1,4 @@
-import { Config } from 'karma'
+import { Config, CustomLauncher } from 'karma'
 import { karmaPlugin, sslCert, httpHttpsServer } from '@fpjs-incubator/broyster'
 
 const broysterBrowsers = {
@@ -149,7 +149,7 @@ function setupLocal(config: Config) {
 
 function setupBroysterBrowserStack(config: Config) {
   setupLocal(config)
-  const customLaunchers: { [key: string]: BrowserStackSeleniumLauncher } = {}
+  const customLaunchers: { [key: string]: CustomLauncher } = {}
   for (const [key, data] of Object.entries(broysterBrowsers)) {
     customLaunchers[key] = {
       base: 'BrowserStack',

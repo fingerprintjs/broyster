@@ -15,7 +15,7 @@ declare module 'karma' {
     reporters: string[]
   }
 
-  export interface BrowserStackSeleniumLauncher extends CustomLauncher {
+  export interface CustomLauncher {
     name: string
   }
 }
