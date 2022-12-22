@@ -31,7 +31,7 @@ export class BrowserStackSessionFactory {
   }
 
   tryCreateBrowser(browsers: DesiredBrowser, log: Logger) {
-    let devices = browsers.os ?? browsers.deviceName
+    let devices = browsers.deviceName ?? browsers.os
     if (devices) {
       devices = devices.concat(devices)
       for (const device of devices) {
