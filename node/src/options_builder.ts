@@ -3,7 +3,6 @@ import { Arguments } from './arguments'
 import * as chrome from 'selenium-webdriver/chrome'
 import * as safari from 'selenium-webdriver/safari'
 import * as firefox from 'selenium-webdriver/firefox'
-import * as ie from 'selenium-webdriver/ie'
 
 export class OptionsBuilder {
   static create(browserName: string, rawArgs: string[]) {
@@ -12,22 +11,24 @@ export class OptionsBuilder {
       case 'chrome': {
         const opts = new chrome.Options()
         opts.setAcceptInsecureCerts(true)
-        for (const arg of args.filter((arg) => arg !== Arguments.Headless)) {
-          opts.addArguments(arg)
-        }
-        if (args.some((arg) => arg === Arguments.Headless)) {
-          opts.headless()
+        for (const arg of args) {
+          if (arg === Arguments.Headless) {
+            opts.headless()
+          } else {
+            opts.addArguments(arg)
+          }
         }
         return opts
       }
       case 'firefox': {
         const opts = new firefox.Options()
         opts.setAcceptInsecureCerts(true)
-        for (const arg of args.filter((arg) => arg !== Arguments.Headless)) {
-          opts.addArguments(arg)
-        }
-        if (args.some((arg) => arg === Arguments.Headless)) {
-          opts.headless()
+        for (const arg of args) {
+          if (arg === Arguments.Headless) {
+            opts.headless()
+          } else {
+            opts.addArguments(arg)
+          }
         }
         return opts
       }
@@ -40,24 +41,17 @@ export class OptionsBuilder {
       case 'edge': {
         const opts = new edge.Options()
         opts.setAcceptInsecureCerts(true)
-        for (const arg of args.filter((arg) => arg !== Arguments.Headless)) {
-          opts.addArguments(arg)
-        }
-        if (args.some((arg) => arg === Arguments.Headless)) {
-          opts.headless()
-        }
-        return opts
-      }
-      case 'ie': {
-        const opts = new ie.Options()
-        opts.setAcceptInsecureCerts(true)
-        for (const arg of args.filter((arg) => arg !== Arguments.Headless)) {
-          opts.addArguments(arg)
+        for (const arg of args) {
+          if (arg === Arguments.Headless) {
+            opts.headless()
+          } else {
+            opts.addArguments(arg)
+          }
         }
         return opts
       }
     }
-    throw new Error(`Unknown browser: ${browserName}`)
+    throw new Error(`Unknown or unsupported browser: ${browserName}`)
   }
 
   private static mapArguments(browserName: string, args: string[]) {
