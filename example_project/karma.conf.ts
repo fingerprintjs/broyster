@@ -1,6 +1,5 @@
 import { Config } from 'karma'
-import { karmaPlugin, sslCert, createServer } from '@fpjs-incubator/broyster'
-import fs = require('fs')
+import { karmaPlugin, sslCert, httpHttpsServer } from '@fpjs-incubator/broyster'
 
 const broysterBrowsers = {
   OSXMonterey_Safari15: {
@@ -138,12 +137,13 @@ function setupLocal(config: Config) {
 
     protocol: 'https',
     httpsServerOptions: {
-      key: fs.readFileSync('key_exp.key', 'utf8'),
-      cert: fs.readFileSync('crt_exp.crt', 'utf8'),
+      key: sslCert.key,
+      cert: sslCert.cert,
       requestCert: false,
       rejectUnauthorized: false,
     },
-    httpModule: require('@fpjs-incubator/broyster'),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    httpModule: httpHttpsServer as any,
   })
 }
 
