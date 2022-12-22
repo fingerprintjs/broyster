@@ -1,5 +1,5 @@
 import * as edge from 'selenium-webdriver/edge'
-import Arguments from './arguments'
+import { Arguments } from './arguments'
 import * as chrome from 'selenium-webdriver/chrome'
 import * as safari from 'selenium-webdriver/safari'
 import * as firefox from 'selenium-webdriver/firefox'
