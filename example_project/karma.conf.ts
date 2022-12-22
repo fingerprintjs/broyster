@@ -164,7 +164,7 @@ function setupBroysterBrowserStack(config: Config) {
   const customLaunchers: { [key: string]: CustomLauncher } = {}
   for (const [key, data] of Object.entries(broysterBrowsers)) {
     customLaunchers[key] = {
-      base: 'BrowserStack',
+      base: 'BroysterBrowserStack',
       name: key.replace(/_/g, ' '),
       ...data,
     }
