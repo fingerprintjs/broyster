@@ -1,27 +1,6 @@
-import { Config, CustomLauncher } from 'karma'
-import { KarmaTypescriptConfig } from 'karma-typescript/dist/api/configuration'
+import { Config } from 'karma'
 import { karmaPlugin } from '@fpjs-incubator/broyster'
 import fs = require('fs')
-
-declare module 'karma' {
-  interface ConfigOptions {
-    karmaTypescriptConfig?: KarmaTypescriptConfig | undefined
-    browserStack?: {
-      project: string
-      build: string | number
-      timeout: number
-    }
-  }
-
-  interface Config {
-    preset?: string
-    reporters: string[]
-  }
-}
-
-interface BrowserStackSeleniumLauncher extends CustomLauncher {
-  name: string
-}
 
 const BrowserStackSeleniumBrowsers = {
   OSXMonterey_Safari15: {
