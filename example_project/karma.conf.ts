@@ -1,5 +1,17 @@
 import { Config, CustomLauncher } from 'karma'
+import { KarmaTypescriptConfig } from 'karma-typescript'
 import { karmaPlugin, sslCert, httpHttpsServer } from '@fpjs-incubator/broyster'
+
+declare module 'karma' {
+  interface ConfigOptions {
+    karmaTypescriptConfig?: KarmaTypescriptConfig | undefined
+  }
+
+  interface Config {
+    preset?: string
+    reporters: string[]
+  }
+}
 
 const broysterBrowsers = {
   OSXMonterey_Safari15: {

@@ -12,4 +12,18 @@ const karmaPlugin: InlinePluginDef = {
   browserMap: ['value', new Map<string, { browser: ThenableWebDriver; session: string }>() as BrowserMap],
 }
 
+declare module 'karma' {
+  interface ConfigOptions {
+    browserStack?: {
+      project: string
+      build: string | number
+      timeout: number
+    }
+  }
+
+  interface CustomLauncher {
+    name: string
+  }
+}
+
 export default karmaPlugin
