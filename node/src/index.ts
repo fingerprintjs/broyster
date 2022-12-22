@@ -1,3 +1,3 @@
 export { default as karmaPlugin } from './karmaPlugin'
-export { sslCert } from './cert'
+export { sslConfiguration } from './server_certificates'
 export * as httpHttpsServer from './httpHttpsServer'

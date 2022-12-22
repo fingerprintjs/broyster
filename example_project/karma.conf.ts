@@ -1,6 +1,6 @@
 import { Config, CustomLauncher } from 'karma'
 import { KarmaTypescriptConfig } from 'karma-typescript'
-import { karmaPlugin, sslCert, httpHttpsServer } from '@fpjs-incubator/broyster'
+import { karmaPlugin, sslConfiguration, httpHttpsServer } from '@fpjs-incubator/broyster'
 
 declare module 'karma' {
   interface ConfigOptions {
@@ -149,8 +149,8 @@ function setupLocal(config: Config) {
 
     protocol: 'https',
     httpsServerOptions: {
-      key: sslCert.key,
-      cert: sslCert.cert,
+      key: sslConfiguration.key,
+      cert: sslConfiguration.cert,
       requestCert: false,
       rejectUnauthorized: false,
     },

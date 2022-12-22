@@ -21,7 +21,7 @@ export function BroysterBrowserStackLauncher(
   captureTimeoutLauncherDecorator(this)
   retryLauncherDecorator(this)
 
-  const log = logger.create('Selenium Browserstack')
+  const log = logger.create('Broyster Browserstack')
 
   // Setup Browser name that will be printed out by Karma.
   this.name =

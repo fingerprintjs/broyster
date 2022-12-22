@@ -1,4 +1,4 @@
-export const sslCert = {
+export const sslConfiguration = {
   cert: `-----BEGIN CERTIFICATE-----
 MIICqDCCAZACCQCNm7mP91of9DANBgkqhkiG9w0BAQsFADAWMRQwEgYDVQQKDAtm
 aW5nZXJwcmludDAeFw0yMjExMjgxNjEzNTBaFw0yMjExMjkxNjEzNTBaMBYxFDAS
