@@ -4,7 +4,6 @@ import { BrowserStackLocalManager } from './browserstack_local_manager'
 import { makeBrowserStackSessionFactory } from './browserstack_session_factory'
 import { BroysterBrowserStackLauncher } from './launcher'
 import { InlinePluginDef } from 'karma'
-import { sslCert } from './cert'
 
 const karmaPlugin: InlinePluginDef = {
   'launcher:BroysterBrowserStack': ['type', BroysterBrowserStackLauncher],
@@ -14,5 +13,3 @@ const karmaPlugin: InlinePluginDef = {
 }
 
 export default karmaPlugin
-export { sslCert }
-export * as httpHttpsServer from './httpHttpsServer'
