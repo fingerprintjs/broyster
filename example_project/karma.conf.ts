@@ -1,8 +1,8 @@
 import { Config } from 'karma'
-import { karmaPlugin } from '@fpjs-incubator/broyster'
+import { karmaPlugin, sslCert, createServer } from '@fpjs-incubator/broyster'
 import fs = require('fs')
 
-const BrowserStackSeleniumBrowsers = {
+const broysterBrowsers = {
   OSXMonterey_Safari15: {
     os: 'OS X',
     osVersion: 'Monterey',
@@ -147,12 +147,12 @@ function setupLocal(config: Config) {
   })
 }
 
-function setupBrowserstackSelenium(config: Config) {
+function setupBroysterBrowserStack(config: Config) {
   setupLocal(config)
   const customLaunchers: { [key: string]: BrowserStackSeleniumLauncher } = {}
-  for (const [key, data] of Object.entries(BrowserStackSeleniumBrowsers)) {
+  for (const [key, data] of Object.entries(broysterBrowsers)) {
     customLaunchers[key] = {
-      base: 'BrowserStackSelenium',
+      base: 'BrowserStack',
       name: key.replace(/_/g, ' '),
       ...data,
     }

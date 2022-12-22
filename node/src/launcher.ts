@@ -5,7 +5,7 @@ import { BrowserStackSessionFactory } from './browserstack_session_factory'
 import { DesiredBrowser } from './desired_browser'
 import { LoggerFactory } from './karma_logger'
 
-export function BrowserStackLauncher(
+export function BroysterBrowserStackLauncher(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   this: any,
   args: DesiredBrowser,
