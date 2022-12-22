@@ -19,7 +19,6 @@ export class BrowserStackLocalManager {
         logger.debug('Started BrowserStackLocal')
         //todo: investigate why the log does not print anything, maybe the callback is not called?
         //console.log('started')
-        Promise.resolve(100)
       })
 
       this.isRunning = true
@@ -31,7 +30,6 @@ export class BrowserStackLocalManager {
       logger.debug('Stopping BrowserStackLocal')
       this.bsLocal.stop(function () {
         logger.debug('Stopped BrowserStackLocal')
-        Promise.resolve(100)
       })
       this.isRunning = false
     }
