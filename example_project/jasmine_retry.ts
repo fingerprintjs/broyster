@@ -7,10 +7,7 @@ export function retryFailedTests(retries: number, millisecondsBetweenRetries: nu
     const spec = new originalSpecConstructor(attrs)
     const originalTestFn = spec.queueableFn.fn
 
-    // Handles both styles of async testing (Promises and done()) and returns a
-    // Promise.  Wraps synchronous tests in a Promise, too.
     const runOriginalTest = () => {
-      console.log('Running original test')
       if (originalTestFn.length == 0) {
         return originalTestFn()
       } else {
