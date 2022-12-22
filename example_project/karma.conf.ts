@@ -19,7 +19,7 @@ declare module 'karma' {
   }
 }
 
-interface CustomLauncherExt extends CustomLauncher {
+interface BrowserStackSeleniumLauncher extends CustomLauncher {
   name: string
 }
 
@@ -170,7 +170,7 @@ function setupLocal(config: Config) {
 
 function setupBrowserstackSelenium(config: Config) {
   setupLocal(config)
-  const customLaunchers: { [key: string]: CustomLauncherExt } = {}
+  const customLaunchers: { [key: string]: BrowserStackSeleniumLauncher } = {}
   for (const [key, data] of Object.entries(BrowserStackSeleniumBrowsers)) {
     customLaunchers[key] = {
       base: 'BrowserStackSelenium',
