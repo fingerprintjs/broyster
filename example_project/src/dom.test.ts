@@ -1,6 +1,9 @@
+import { retryFailedTests } from '../jasmineretry'
 import { createButton } from './dom'
 
 describe('DOM', () => {
+  beforeAll(() => retryFailedTests(3, 100))
+
   describe('createButton', () => {
     it('creates a button', () => {
       const button = createButton('Click me!')
