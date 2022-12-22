@@ -23,7 +23,7 @@ interface CustomLauncherExt extends CustomLauncher {
   name: string
 }
 
-const browserstackBrowsers = {
+const BrowserStackSeleniumBrowsers = {
   OSXMonterey_Safari15: {
     os: 'OS X',
     osVersion: 'Monterey',
@@ -168,10 +168,10 @@ function setupLocal(config: Config) {
   })
 }
 
-function setupBrowserstack(config: Config) {
+function setupBrowserstackSelenium(config: Config) {
   setupLocal(config)
   const customLaunchers: { [key: string]: CustomLauncherExt } = {}
-  for (const [key, data] of Object.entries(browserstackBrowsers)) {
+  for (const [key, data] of Object.entries(BrowserStackSeleniumBrowsers)) {
     customLaunchers[key] = {
       base: 'BrowserStackSelenium',
       name: key.replace(/_/g, ' '),
@@ -206,7 +206,7 @@ module.exports = (config: Config) => {
     case 'local':
       return setupLocal(config)
     case 'browserstack':
-      return setupBrowserstack(config)
+      return setupBrowserstackSelenium(config)
     default:
       throw new Error('No --preset option is set or an unknown value is set')
   }
