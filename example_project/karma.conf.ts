@@ -185,7 +185,7 @@ module.exports = (config: Config) => {
     case 'local':
       return setupLocal(config)
     case 'browserstack':
-      return setupBrowserstackSelenium(config)
+      return setupBroysterBrowserStack(config)
     default:
       throw new Error('No --preset option is set or an unknown value is set')
   }
