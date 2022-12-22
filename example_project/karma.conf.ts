@@ -22,7 +22,7 @@ const broysterBrowsers = {
     useHttps: false,
   },
 
-  IE11: { os: 'Windows', osVersion: '7', browserName: 'IE', browserVersion: '11.0', useHttps: true },
+  //IE11: { os: 'Windows', osVersion: '7', browserName: 'IE', browserVersion: '11.0', useHttps: true },
 
   Windows11_EdgeLatest: {
     os: 'Windows',
