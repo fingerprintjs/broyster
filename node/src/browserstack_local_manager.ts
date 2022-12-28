@@ -30,11 +30,11 @@ export class BrowserStackLocalManager {
   kill(logger: Logger): Promise<void> {
     if (this.isRunning) {
       logger.debug('Stopping BrowserStackLocal')
+      this.isRunning = false
       this.switchPromise = promisify(this.bsLocal.stop)
         .bind(this.bsLocal)()
         .then(() => {
           logger.debug('Stopped BrowserStackLocal')
-          this.isRunning = false
         })
     }
     return this.switchPromise
