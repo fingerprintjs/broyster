@@ -17,7 +17,7 @@ export function createServer(...args: RequestListener<typeof IncomingMessage, ty
       port = 2137
       Promise.all([
         promisify(httpServer.listen.bind(httpServer, port))(),
-        promisify(httpsServer.listen.bind(httpsServer, port + 1))(),
+        promisify(httpsServer.listen.bind(httpsServer, calculateHttpsPort(port)))(),
       ]).then(() => callback?.(), callback)
     },
 
@@ -37,4 +37,8 @@ export function createServer(...args: RequestListener<typeof IncomingMessage, ty
       ]).then(() => callback?.(), callback)
     },
   }
+}
+
+export function calculateHttpsPort(port: number): number {
+  return port + 1
 }

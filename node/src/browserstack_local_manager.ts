@@ -26,34 +26,17 @@ export class BrowserStackLocalManager {
     }
     return this.switchPromise
   }
-  /*
-  run(logger: Logger) {
-    if (!this.isRunning) {
-      const bsAccesskey = process.env.BROWSERSTACK_ACCESS_KEY || process.env.BROWSER_STACK_ACCESS_KEY
-      const bsLocalArgs = {
-        key: bsAccesskey,
-        localIdentifier: undefined,
-        forceLocal: true,
-        force: true,
-      }
-      logger.debug('Starting BrowserStackLocal')
-      this.bsLocal.start(bsLocalArgs, function () {
-        logger.debug('Started BrowserStackLocal')
-        //todo: investigate why the log does not print anything, maybe the callback is not called?
-        //console.log('started')
-      })
 
-      this.isRunning = true
-    }
-  }
-*/
-  kill(logger: Logger) {
+  kill(logger: Logger): Promise<void> {
     if (this.isRunning) {
       logger.debug('Stopping BrowserStackLocal')
-      this.bsLocal.stop(function () {
-        logger.debug('Stopped BrowserStackLocal')
-      })
-      this.isRunning = false
+      this.switchPromise = promisify(this.bsLocal.stop)
+        .bind(this.bsLocal)()
+        .then(() => {
+          logger.debug('Stopped BrowserStackLocal')
+          this.isRunning = false
+        })
     }
+    return this.switchPromise
   }
 }
