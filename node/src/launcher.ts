@@ -36,10 +36,6 @@ export function BrowserStackLauncher(
     args.osVersion +
     ' on BrowserStack'
 
-  const httpPort = 2137
-  const httpsPort = calculateHttpsPort(httpPort)
-  const httpHost = makeUrl(false, httpPort)
-  const httpsHost = makeUrl(true, httpsPort)
   let browser: ThenableWebDriver
   let pendingHeartBeat: NodeJS.Timeout | undefined
   const heartbeat = () => {
@@ -64,10 +60,9 @@ export function BrowserStackLauncher(
       browser = browserStackSessionFactory.createBrowser(args, log)
       const session = pageUrl.split('/').slice(-1)[0]
       browserMap.set(this.id, { browser, session })
-      const regexpForLocalhost = /https:\/\/localhost:\d*/
-      pageUrl = args.useHttps
-        ? pageUrl.replace(regexpForLocalhost, httpsHost)
-        : pageUrl.replace(regexpForLocalhost, httpHost)
+      const httpPort = 2137
+      const httpsPort = calculateHttpsPort(httpPort)
+      pageUrl = makeUrl(pageUrl, args.useHttps, args.useHttps ? httpsPort : httpPort)
       await browser.get(pageUrl)
       const sessionId = (await browser.getSession()).getId()
       log.debug(this.id + ' has webdriver SessionId: ' + sessionId)
@@ -109,7 +104,9 @@ export function BrowserStackLauncher(
   })
 }
 
-function makeUrl(isHttps: boolean, port: number) {
-  const localHost = '://localhost:'
-  return (isHttps ? 'https' : 'http') + localHost + port.toString()
+function makeUrl(karmaUrl: string, isHttps: boolean, port: number) {
+  const url = new URL(karmaUrl)
+  url.protocol = isHttps ? 'https' : 'http'
+  url.port = port.toString()
+  return url.href
 }
