@@ -40,15 +40,16 @@ export function BrowserStackLauncher(
   const httpsPort = calculateHttpsPort(httpPort)
   const httpHost = makeUrl(false, httpPort)
   const httpsHost = makeUrl(true, httpsPort)
+  let browser: ThenableWebDriver
   let pendingHeartBeat: NodeJS.Timeout | undefined
-  const heartbeat = (browser: ThenableWebDriver) => {
+  const heartbeat = () => {
     pendingHeartBeat = setTimeout(async () => {
       if (!browser) {
         return
       }
       try {
         await browser.getTitle()
-        heartbeat(browser)
+        heartbeat()
       } catch (e) {
         clearTimeout(pendingHeartBeat)
       }
@@ -60,10 +61,9 @@ export function BrowserStackLauncher(
     try {
       await run
       log.debug('creating browser with attributes: ' + JSON.stringify(args))
-      const browser = browserStackSessionFactory.createBrowser(args, log)
+      browser = browserStackSessionFactory.createBrowser(args, log)
       const session = pageUrl.split('/').slice(-1)[0]
       browserMap.set(this.id, { browser, session })
-
       const regexpForLocalhost = /https:\/\/localhost:\d*/
       pageUrl = args.useHttps
         ? pageUrl.replace(regexpForLocalhost, httpsHost)
@@ -71,7 +71,7 @@ export function BrowserStackLauncher(
       await browser.get(pageUrl)
       const sessionId = (await browser.getSession()).getId()
       log.debug(this.id + ' has webdriver SessionId: ' + sessionId)
-      heartbeat(browser)
+      heartbeat()
     } catch (err) {
       log.error((err as Error) ?? String(err))
       this._done('failure')
