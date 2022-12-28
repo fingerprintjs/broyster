@@ -6,7 +6,7 @@ import { DesiredBrowser } from './desired_browser'
 import { LoggerFactory } from './karma_logger'
 import { calculateHttpsPort } from './custom_servers'
 
-export function BroysterBrowserStackLauncher(
+export function BrowserStackLauncher(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   this: any,
   args: DesiredBrowser,
@@ -22,7 +22,7 @@ export function BroysterBrowserStackLauncher(
   captureTimeoutLauncherDecorator(this)
   retryLauncherDecorator(this)
 
-  const log = logger.create('Broyster Browserstack')
+  const log = logger.create('Browserstack')
   const run = browserStackLocalManager.run(log)
 
   // Setup Browser name that will be printed out by Karma.

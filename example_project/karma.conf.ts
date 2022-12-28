@@ -13,7 +13,7 @@ declare module 'karma' {
   }
 }
 
-const broysterBrowsers = {
+const browsers = {
   OSXMonterey_Safari15: {
     os: 'OS X',
     osVersion: 'Monterey',
@@ -159,12 +159,12 @@ function setupLocal(config: Config) {
   })
 }
 
-function setupBroysterBrowserStack(config: Config) {
+function setupBrowserStack(config: Config) {
   setupLocal(config)
   const customLaunchers: { [key: string]: CustomLauncher } = {}
-  for (const [key, data] of Object.entries(broysterBrowsers)) {
+  for (const [key, data] of Object.entries(browsers)) {
     customLaunchers[key] = {
-      base: 'BroysterBrowserStack',
+      base: 'BrowserStack',
       name: key.replace(/_/g, ' '),
       ...data,
     }
@@ -197,7 +197,7 @@ module.exports = (config: Config) => {
     case 'local':
       return setupLocal(config)
     case 'browserstack':
-      return setupBroysterBrowserStack(config)
+      return setupBrowserStack(config)
     default:
       throw new Error('No --preset option is set or an unknown value is set')
   }
