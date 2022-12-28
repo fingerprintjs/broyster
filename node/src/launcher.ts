@@ -38,9 +38,8 @@ export function BrowserStackLauncher(
 
   const httpPort = 2137
   const httpsPort = calculateHttpsPort(httpPort)
-  const localHost = 'http://localhost:'
-  const httpHost = localHost + httpPort.toString()
-  const httpsHost = localHost + httpsPort.toString()
+  const httpHost = makeUrl(false, httpPort)
+  const httpsHost = makeUrl(true, httpsPort)
   let pendingHeartBeat: NodeJS.Timeout | undefined
   const heartbeat = (browser: ThenableWebDriver) => {
     pendingHeartBeat = setTimeout(async () => {
@@ -108,4 +107,9 @@ export function BrowserStackLauncher(
     await browserStackLocalManager.kill(log)
     done()
   })
+}
+
+function makeUrl(isHttps: boolean, port: number) {
+  const localHost = '://localhost:'
+  return (isHttps ? 'https' : 'http') + localHost + port.toString()
 }
