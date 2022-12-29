@@ -25,7 +25,7 @@ declare module 'karma' {
     name: string
     osVersion: string
     deviceName?: string | undefined
-    browserVersion: string | null | undefined
+    browserVersion?: string | null | undefined
     firefoxCapabilities?: Array<[string, string | number | boolean]>
     useHttps: boolean
     //extraSettings: string[]; //TODO things like timezone, locale
