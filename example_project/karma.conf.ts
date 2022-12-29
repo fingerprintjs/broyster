@@ -109,6 +109,8 @@ const browsers = {
     useHttps: true,
   },
   //iOS10_Safari: { deviceName: 'iPhone 7', platform: 'iOS', osVersion: '10', browserName: 'Safari', useHttps: true },
+  // disabled temporarily because of issues with creating the session
+  // TODO: Investigate failing iOS builds
   iOS11_Safari: {
     deviceName: 'iPhone 8 Plus',
     platform: 'iOS',
@@ -132,7 +134,7 @@ const browsers = {
     osVersion: '15',
     browserName: 'Safari',
     useHttps: true,
-  },
+  }, // disabled temporarily because of issues with creating the session
   TODO: Investigate failing iOS builds
   */
 }
