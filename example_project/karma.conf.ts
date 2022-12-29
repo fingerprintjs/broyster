@@ -102,12 +102,12 @@ const browsers = {
     browserVersion: 'latest-beta',
     useHttps: true,
   },
-  iOS10_Safari: { deviceName: 'iPhone 7', os: 'iOS', osVersion: '10', browserName: 'Safari', useHttps: true },
+  //iOS10_Safari: { deviceName: 'iPhone 7', os: 'iOS', osVersion: '10', browserName: 'Safari', useHttps: true },
   iOS11_Safari: { deviceName: 'iPhone 8 Plus', os: 'iOS', osVersion: '11', browserName: 'Safari', useHttps: true },
   iOS12_Safari: { deviceName: 'iPhone XS', os: 'iOS', osVersion: '12', browserName: 'Safari', useHttps: true },
   iOS13_Safari: { deviceName: 'iPhone 11 Pro', os: 'iOS', osVersion: '13', browserName: 'Safari', useHttps: true },
   iOS14_Safari: { deviceName: 'iPhone 11', os: 'iOS', osVersion: '14', browserName: 'Safari', useHttps: true },
-  iOS15_Safari: { deviceName: 'iPhone 11 Pro', os: 'iOS', osVersion: '15', browserName: 'Safari', useHttps: true },
+  //iOS15_Safari: { deviceName: 'iPhone 11 Pro', os: 'iOS', osVersion: '15', browserName: 'Safari', useHttps: true },
 }
 
 function makeBuildNumber() {
