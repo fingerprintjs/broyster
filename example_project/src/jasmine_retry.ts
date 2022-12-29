@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const jasmine = require('jasmine')
+const jasmine = require('jasmine-core')
 
 export function retryFailedTests(retries: number, millisecondsBetweenRetries: number) {
   const originalSpecConstructor = jasmine.Spec
