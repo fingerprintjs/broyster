@@ -1,4 +1,4 @@
-import { retryFailedTests } from '../jasmine_retry'
+import { retryFailedTests } from './jasmine_retry'
 import { createButton } from './dom'
 
 describe('DOM', () => {
