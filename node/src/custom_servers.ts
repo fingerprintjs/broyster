@@ -13,9 +13,8 @@ export function createServer(...args: RequestListener<typeof IncomingMessage, ty
       httpsServer.on(event, args)
     },
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     listen(server: any, callback: () => void) {
-      console.log('d')
-      console.log(new URL(server._connectionKey.replace('4:', 'http://')).port)
       const port = parseInt(new URL(server._connectionKey.replace('4:', 'http://')).port)
       Promise.all([
         promisify(httpServer.listen.bind(httpServer, server))(),
