@@ -13,9 +13,12 @@ export function createServer(...args: RequestListener<typeof IncomingMessage, ty
       httpsServer.on(event, args)
     },
 
-    listen(port: number, callback: () => void) {
+    listen(server: any, callback: () => void) {
+      console.log('d')
+      console.log(new URL(server._connectionKey.replace('4:', 'http://')).port)
+      const port = parseInt(new URL(server._connectionKey.replace('4:', 'http://')).port)
       Promise.all([
-        promisify(httpServer.listen.bind(httpServer, port))(),
+        promisify(httpServer.listen.bind(httpServer, server))(),
         promisify(httpsServer.listen.bind(httpsServer, calculateHttpsPort(port)))(),
       ]).then(() => callback?.(), callback)
     },
