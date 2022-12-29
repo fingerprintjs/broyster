@@ -2,14 +2,14 @@ import { ThenableWebDriver } from 'selenium-webdriver'
 import { BrowserMap } from './browser_map'
 import { BrowserStackLocalManager } from './browserstack_local_manager'
 import { BrowserStackSessionFactory } from './browserstack_session_factory'
-import { DesiredBrowser } from './desired_browser'
 import { LoggerFactory } from './karma_logger'
 import { calculateHttpsPort } from './custom_servers'
+import { CustomLauncher } from 'karma'
 
 export function BrowserStackLauncher(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   this: any,
-  args: DesiredBrowser,
+  args: CustomLauncher,
   browserMap: BrowserMap,
   logger: LoggerFactory,
   baseLauncherDecorator: (arg: object) => void,
@@ -31,7 +31,7 @@ export function BrowserStackLauncher(
     ' ' +
     (args.browserVersion ?? args.deviceName) +
     ' ' +
-    args.os +
+    args.platform +
     ' ' +
     args.osVersion +
     ' on BrowserStack'

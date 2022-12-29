@@ -1,6 +1,6 @@
 import { ConfigOptions } from 'karma'
 import { CapabilitiesFactory } from './capabilities_factory'
-import { DesiredBrowser } from './desired_browser'
+import { CustomLauncher } from 'karma'
 import { Logger } from './karma_logger'
 import { OptionsBuilder } from './options_builder'
 import { WebDriverFactory } from './webdriver_factory'
@@ -33,14 +33,14 @@ export class BrowserStackSessionFactory {
     this._capsFactory = new CapabilitiesFactory(this._username, this._accessKey)
   }
 
-  createBrowser(browser: DesiredBrowser, log: Logger) {
+  createBrowser(browser: CustomLauncher, log: Logger) {
     const caps = this._capsFactory.create(
       browser.browserName,
       this._build,
       this._build,
       this._project,
       browser.deviceName,
-      browser.os,
+      browser.platform,
       browser.osVersion,
       browser.browserVersion,
     )
