@@ -24,7 +24,7 @@ That provides a self-signed certificate for HTTPS testing on localhost.
 ```httpHttpsServer```
 That gives you a set of two servers - one with HTTP and one with HTTP capabilities.
 Newer versions of Safari do not work nor have workarounds for self-signed certificates, however their behavior is the same for both HTTP and HTTPS. Depending on your entry's *useHttps*, the launcher will redirect respectively.
-The server runs on ports 2137 (HTTP) and 2138 (HTTPS).
+The HTTP server runs on the port provided by Karma, while the HTTPS port will run on +1 from that.
 
 To use mixed HTTP/HTTPS testing, in your karma config file you need to:
 Set the protocol to https

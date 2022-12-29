@@ -60,9 +60,7 @@ export function BrowserStackLauncher(
       browser = browserStackSessionFactory.createBrowser(args, log)
       const session = pageUrl.split('/').slice(-1)[0]
       browserMap.set(this.id, { browser, session })
-      const httpPort = 2137
-      const httpsPort = calculateHttpsPort(httpPort)
-      pageUrl = makeUrl(pageUrl, args.useHttps, args.useHttps ? httpsPort : httpPort)
+      pageUrl = makeUrl(pageUrl, args.useHttps)
       await browser.get(pageUrl)
       const sessionId = (await browser.getSession()).getId()
       log.debug(this.id + ' has webdriver SessionId: ' + sessionId)
@@ -104,9 +102,11 @@ export function BrowserStackLauncher(
   })
 }
 
-function makeUrl(karmaUrl: string, isHttps: boolean, port: number) {
+function makeUrl(karmaUrl: string, isHttps: boolean) {
   const url = new URL(karmaUrl)
   url.protocol = isHttps ? 'https' : 'http'
-  url.port = port.toString()
+  if (isHttps) {
+    url.port = calculateHttpsPort(parseInt(url.port)).toString()
+  }
   return url.href
 }
