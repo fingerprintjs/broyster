@@ -13,11 +13,12 @@ export function createServer(...args: RequestListener<typeof IncomingMessage, ty
       httpsServer.on(event, args)
     },
 
-    listen(port: number, callback: () => void) {
-      port = 2137
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    listen(server: any, callback: () => void) {
+      const port = parseInt(new URL(server._connectionKey.replace('4:', 'http://')).port)
       Promise.all([
-        promisify(httpServer.listen.bind(httpServer, port))(),
-        promisify(httpsServer.listen.bind(httpsServer, port + 1))(),
+        promisify(httpServer.listen.bind(httpServer, server))(),
+        promisify(httpsServer.listen.bind(httpsServer, calculateHttpsPort(port)))(),
       ]).then(() => callback?.(), callback)
     },
 
@@ -37,4 +38,8 @@ export function createServer(...args: RequestListener<typeof IncomingMessage, ty
       ]).then(() => callback?.(), callback)
     },
   }
+}
+
+export function calculateHttpsPort(port: number): number {
+  return port + 1
 }
