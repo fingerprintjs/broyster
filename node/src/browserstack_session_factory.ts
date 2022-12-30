@@ -1,6 +1,6 @@
+import { ConfigOptions } from 'karma'
 import { CapabilitiesFactory } from './capabilities_factory'
-import { DesiredBrowser } from './desired_browser'
-import { KarmaConfig } from './karma_config'
+import { CustomLauncher } from 'karma'
 import { Logger } from './karma_logger'
 import { OptionsBuilder } from './options_builder'
 import { WebDriverFactory } from './webdriver_factory'
@@ -12,7 +12,10 @@ export class BrowserStackSessionFactory {
   private _build: string
   private _capsFactory: CapabilitiesFactory
 
-  constructor(config: KarmaConfig) {
+  constructor(config: ConfigOptions) {
+    if (!config.browserStack) {
+      throw new Error('BrowserStack options are not set')
+    }
     this._username =
       process.env.BROWSERSTACK_USERNAME ||
       process.env.BROWSER_STACK_USERNAME ||
@@ -26,18 +29,18 @@ export class BrowserStackSessionFactory {
         throw new Error('BrowserStack access key is empty')
       })()
     this._project = config.browserStack.project
-    this._build = config.browserStack.build
+    this._build = String(config.browserStack.build)
     this._capsFactory = new CapabilitiesFactory(this._username, this._accessKey)
   }
 
-  createBrowser(browser: DesiredBrowser, log: Logger) {
+  createBrowser(browser: CustomLauncher, log: Logger) {
     const caps = this._capsFactory.create(
       browser.browserName,
       this._build,
       this._build,
       this._project,
       browser.deviceName,
-      browser.os,
+      browser.platform,
       browser.osVersion,
       browser.browserVersion,
     )
@@ -51,6 +54,6 @@ export class BrowserStackSessionFactory {
   }
 }
 
-export function makeBrowserStackSessionFactory(config: KarmaConfig) {
+export function makeBrowserStackSessionFactory(config: ConfigOptions) {
   return new BrowserStackSessionFactory(config)
 }
