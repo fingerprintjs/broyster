@@ -1,4 +1,4 @@
-import { retryFailedTests } from './jasmine_retry'
+import { retryFailedTests } from '@fpjs-incubator/broyster'
 import { createButton } from './dom'
 
 retryFailedTests(3, 100)
