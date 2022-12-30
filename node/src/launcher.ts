@@ -5,6 +5,7 @@ import { BrowserStackSessionFactory } from './browserstack_session_factory'
 import { LoggerFactory } from './karma_logger'
 import { calculateHttpsPort } from './custom_servers'
 import { CustomLauncher } from 'karma'
+import { canNewBrowserBeQueued } from './browserstack_helpers'
 
 export function BrowserStackLauncher(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -55,6 +56,11 @@ export function BrowserStackLauncher(
 
   this.on('start', async (pageUrl: string) => {
     try {
+      while (!canNewBrowserBeQueued()) {
+        setTimeout(() => {
+          log.debug('waiting for queue')
+        }, 10_000)
+      }
       await run
       log.debug('creating browser with attributes: ' + JSON.stringify(args))
       browser = browserStackSessionFactory.createBrowser(args, log)
