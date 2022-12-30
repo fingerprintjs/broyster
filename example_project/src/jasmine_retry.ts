@@ -1,8 +1,8 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const jasmine = require('jasmine-core')
-
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 export function retryFailedTests(retries: number, millisecondsBetweenRetries: number) {
+  // @ts-ignore
   const originalSpecConstructor = jasmine.Spec
+  // @ts-ignore
   jasmine.Spec = function (attrs: unknown) {
     const spec = new originalSpecConstructor(attrs)
     const originalTestFn = spec.queueableFn.fn
