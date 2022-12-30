@@ -38,7 +38,7 @@ export function retryFailedTests(retries: number, millisecondsBetweenRetries: nu
 
         if (millisecondsBetweenRetries && i != retries - 1) {
           await new Promise((resolve) => {
-            setTimeout(resolve, 100)
+            setTimeout(resolve, millisecondsBetweenRetries)
           })
         }
       }
