@@ -3,7 +3,6 @@ import { createButton } from './dom'
 
 retryFailedTests(3, 100)
 describe('DOM', () => {
-  //beforeAll(() => retryFailedTests(3, 100))
 
   describe('createButton', () => {
     it('creates a button', () => {
