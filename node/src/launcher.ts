@@ -58,12 +58,11 @@ export function BrowserStackLauncher(
       await run
       log.debug('creating browser with attributes: ' + JSON.stringify(args))
       browser = browserStackSessionFactory.createBrowser(args, log)
-      const session = pageUrl.split('/').slice(-1)[0]
+      const session = (await browser.getSession()).getId()
+      log.debug(this.id + ' has webdriver SessionId: ' + session)
       browserMap.set(this.id, { browser, session })
       pageUrl = makeUrl(pageUrl, args.useHttps)
       await browser.get(pageUrl)
-      const sessionId = (await browser.getSession()).getId()
-      log.debug(this.id + ' has webdriver SessionId: ' + sessionId)
       heartbeat()
     } catch (err) {
       log.error((err as Error) ?? String(err))
