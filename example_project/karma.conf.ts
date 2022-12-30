@@ -1,6 +1,6 @@
-import { Config } from 'karma'
-import { KarmaTypescriptConfig } from 'karma-typescript/dist/api/configuration'
-// import { karmaPlugin } from '@fpjs-incubator/broyster'
+import { Config, CustomLauncher } from 'karma'
+import { KarmaTypescriptConfig } from 'karma-typescript'
+import { karmaPlugin, sslConfiguration, httpHttpsServer } from '@fpjs-incubator/broyster'
 
 declare module 'karma' {
   interface ConfigOptions {
@@ -9,41 +9,135 @@ declare module 'karma' {
 
   interface Config {
     preset?: string
+    reporters: string[]
   }
 }
 
-/*
- * You can find values for any supported browsers in the interactive form at
- * https://www.browserstack.com/docs/automate/javascript-testing/configure-test-run-options
- * The keys are arbitrary values.
- *
- * Only Chrome is supported on Android, only Safari is supported on iOS: https://www.browserstack.com/question/659
- */
-/* eslint-disable max-len */
-// prettier-ignore
-const browserstackBrowsers = {
-  IE11: { os: 'Windows', os_version: '7', browser: 'IE', browser_version: '11.0' },
-  Windows11_EdgeLatest: { os: 'Windows', os_version: '11', browser: 'Edge', browser_version: 'latest-beta' },
-  Windows10_Chrome49: { os: 'Windows', os_version: '10', browser: 'Chrome', browser_version: '49.0' },
-  Windows11_ChromeLatest: { os: 'Windows', os_version: '11', browser: 'Chrome', browser_version: 'latest-beta' },
-  Windows10_Firefox52: { os: 'Windows', os_version: '10', browser: 'Firefox', browser_version: '52.0' },
-  Windows11_FirefoxLatest: { os: 'Windows', os_version: '11', browser: 'Firefox', browser_version: 'latest-beta' },
-  OSXMojave_Safari12: { os: 'OS X', os_version: 'Mojave', browser: 'Safari', browser_version: '12.1' },
-  OSXMonterey_Safari15: { os: 'OS X', os_version: 'Monterey', browser: 'Safari', browser_version: '15.0' },
-  OSXVentura_Safari16: { os: 'OS X', os_version: 'Ventura', browser: 'Safari', browser_version: '16.0' },
-  OSXMonterey_ChromeLatest: { os: 'OS X', os_version: 'Monterey', browser: 'Chrome', browser_version: 'latest-beta' },
-  OSXMonterey_FirefoxLatest: { os: 'OS X', os_version: 'Monterey', browser: 'Firefox', browser_version: 'latest-beta' },
-  OSXMonterey_EdgeLatest: { os: 'OS X', os_version: 'Monterey', browser: 'Edge', browser_version: 'latest-beta' },
-  Android11_ChromeLatest: { device: 'Google Pixel 4', os: 'Android', os_version: '11.0', browser: 'Chrome', browser_version: 'latest-beta' },
-  iOS10_Safari: { device: 'iPhone 7', os: 'iOS', os_version: '10', browser: 'Safari' },
-  iOS11_Safari: { device: 'iPhone 8 Plus', os: 'iOS', os_version: '11', browser: 'Safari' },
-  iOS12_Safari: { device: 'iPhone XS', os: 'iOS', os_version: '12', browser: 'Safari' },
-  iOS13_Safari: { device: 'iPhone 11 Pro', os: 'iOS', os_version: '13', browser: 'Safari' },
-  iOS14_Safari: { device: 'iPhone 11', os: 'iOS', os_version: '14', browser: 'Safari' },
-  iOS15_Safari: { device: 'iPhone 13', os: 'iOS', os_version: '15', browser: 'Safari' },
-  iOS16_Safari: { device: 'iPhone 14', os: 'iOS', os_version: '16', browser: 'Safari' },
+const browsers = {
+  OSXMonterey_Safari15: {
+    platform: 'OS X',
+    osVersion: 'Monterey',
+    browserName: 'Safari',
+    browserVersion: '15.0',
+    useHttps: false,
+  },
+
+  //IE11: { platform: 'Windows', osVersion: '7', browserName: 'IE', browserVersion: '11.0', useHttps: true },
+
+  Windows11_EdgeLatest: {
+    platform: 'Windows',
+    osVersion: '11',
+    browserName: 'Edge',
+    browserVersion: 'latest-beta',
+    useHttps: true,
+  },
+  Windows10_Chrome49: {
+    platform: 'Windows',
+    osVersion: '10',
+    browserName: 'Chrome',
+    browserVersion: '49.0',
+    useHttps: true,
+  },
+  // Windows10_Chrome49_Incognito: { platform: 'Windows', osVersion: '10',
+  //browserName: 'Chrome', browserVersion: '49.0', ...chromeIncognitoCapabilities },
+  Windows11_ChromeLatest: {
+    platform: 'Windows',
+    osVersion: '11',
+    browserName: 'Chrome',
+    browserVersion: 'latest-beta',
+    useHttps: true,
+  },
+  // Windows11_ChromeLatest_Incognito: { platform: 'Windows', osVersion: '11', browserName: 'Chrome',
+  //browserVersion: 'latest-beta, ...chromeIncognitoCapabilities },
+  Windows10_Firefox52: {
+    platform: 'Windows',
+    osVersion: '10',
+    browserName: 'Firefox',
+    browserVersion: '52.0',
+    useHttps: true,
+  },
+  // Windows10_Firefox52_Incognito: { platform: 'Windows', osVersion: '10', browserName: 'Firefox',
+  //browserVersion: '52.0', ...firefoxIncognitoCapabilities },
+  Windows11_FirefoxLatest: {
+    platform: 'Windows',
+    osVersion: '11',
+    browserName: 'Firefox',
+    browserVersion: 'latest-beta',
+    useHttps: true,
+  },
+  // Windows11_FirefoxLatest_Incognito: { platform: 'Windows', osVersion: '11', browserName: 'Firefox',
+  //browserVersion: 'latest-beta, ...firefoxIncognitoCapabilities },
+  OSXMojave_Safari12: {
+    platform: 'OS X',
+    osVersion: 'Mojave',
+    browserName: 'Safari',
+    browserVersion: '12.1',
+    useHttps: true,
+  },
+  //OSXMonterey_Safari15: { platform: 'OS X', osVersion: 'Monterey', browserName: 'Safari', browserVersion: '15.0' },
+  OSXMonterey_ChromeLatest: {
+    platform: 'OS X',
+    osVersion: 'Monterey',
+    browserName: 'Chrome',
+    browserVersion: 'latest-beta',
+    useHttps: true,
+  },
+  // OSXMonterey_ChromeLatest_Incognito: { platform: 'OS X', osVersion: 'Monterey', browserName: 'Chrome',
+  //browserVersion: 'latest-beta, ...chromeIncognitoCapabilities },
+  OSXMonterey_FirefoxLatest: {
+    platform: 'OS X',
+    osVersion: 'Monterey',
+    browserName: 'Firefox',
+    browserVersion: 'latest-beta',
+    useHttps: true,
+  },
+  // OSXMonterey_FirefoxLatest_Incognito: { platform: 'OS X', osVersion: 'Monterey', browserName: 'Firefox',
+  //browserVersion: 'latest-beta, ...firefoxIncognitoCapabilities },
+  OSXMonterey_EdgeLatest: {
+    platform: 'OS X',
+    osVersion: 'Monterey',
+    browserName: 'Edge',
+    browserVersion: 'latest-beta',
+    useHttps: true,
+  },
+  Android11_ChromeLatest: {
+    deviceName: 'Google Pixel 4',
+    platform: 'Android',
+    osVersion: '11.0',
+    browserName: 'Chrome',
+    browserVersion: 'latest-beta',
+    useHttps: true,
+  },
+  //iOS10_Safari: { deviceName: 'iPhone 7', platform: 'iOS', osVersion: '10', browserName: 'Safari', useHttps: true },
+  // disabled temporarily because of issues with creating the session
+  // TODO: Investigate failing iOS builds
+  iOS11_Safari: {
+    deviceName: 'iPhone 8 Plus',
+    platform: 'iOS',
+    osVersion: '11',
+    browserName: 'Safari',
+    useHttps: true,
+  },
+  iOS12_Safari: { deviceName: 'iPhone XS', platform: 'iOS', osVersion: '12', browserName: 'Safari', useHttps: true },
+  iOS13_Safari: {
+    deviceName: 'iPhone 11 Pro',
+    platform: 'iOS',
+    osVersion: '13',
+    browserName: 'Safari',
+    useHttps: true,
+  },
+  iOS14_Safari: { deviceName: 'iPhone 11', platform: 'iOS', osVersion: '14', browserName: 'Safari', useHttps: true },
+  /*
+  iOS15_Safari: {
+    deviceName: 'iPhone 11 Pro',
+    platform: 'iOS',
+    osVersion: '15',
+    browserName: 'Safari',
+    useHttps: true,
+  }, // disabled temporarily because of issues with creating the session
+  TODO: Investigate failing iOS builds
+  */
 }
-/* eslint-enable max-len */
 
 function makeBuildNumber() {
   return `No CI ${Math.floor(Math.random() * 1e10)}`
@@ -81,21 +175,23 @@ function setupLocal(config: Config) {
     summaryReporter: {
       show: 'skipped',
     },
+
+    protocol: 'https',
+    httpsServerOptions: {
+      key: sslConfiguration.key,
+      cert: sslConfiguration.cert,
+      requestCert: false,
+      rejectUnauthorized: false,
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    httpModule: httpHttpsServer as any,
   })
 }
 
-function setupBrowserstack(config: Config) {
+function setupBrowserStack(config: Config) {
   setupLocal(config)
-
-  // todo: Implement BrowserStack support
-  throw new Error('BrowserStack not implemented')
-
-  browserstackBrowsers
-  makeBuildNumber()
-
-  /*
-  const customLaunchers = {}
-  for (const [key, data] of Object.entries(browserstackBrowsers)) {
+  const customLaunchers: { [key: string]: CustomLauncher } = {}
+  for (const [key, data] of Object.entries(browsers)) {
     customLaunchers[key] = {
       base: 'BrowserStack',
       name: key.replace(/_/g, ' '),
@@ -104,10 +200,11 @@ function setupBrowserstack(config: Config) {
   }
 
   config.set({
-    reporters: [...config.reporters, 'BrowserStack'],
+    reporters: [...config.reporters], //'BrowserStack'], // todo: Turn on when reporter is done
     browsers: Object.keys(customLaunchers),
     customLaunchers,
     concurrency: 5,
+    plugins: [karmaPlugin, 'karma-*'],
 
     browserStack: {
       project: 'FingerprintJS', // todo: Turn to "Broyster" when the repository is open-sourced
@@ -119,7 +216,6 @@ function setupBrowserstack(config: Config) {
       timeout: 120,
     },
   })
-  */
 }
 
 /**
@@ -130,7 +226,7 @@ module.exports = (config: Config) => {
     case 'local':
       return setupLocal(config)
     case 'browserstack':
-      return setupBrowserstack(config)
+      return setupBrowserStack(config)
     default:
       throw new Error('No --preset option is set or an unknown value is set')
   }

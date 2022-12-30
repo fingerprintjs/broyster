@@ -33,6 +33,9 @@
     "node": ">= 16"
   },
   "dependencies": {
-    "tslib": "^2.4.1"
+    "tslib": "^2.4.1",
+    "selenium-webdriver": "^4.7.0",
+    "browserstack-local": "^1.5.1",
+    "browserstack": "~1.5.1"
   }
 }
