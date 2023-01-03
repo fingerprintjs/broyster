@@ -30,7 +30,9 @@
   },
   "sideEffects": false,
   "files": [
-    "dist"
+    "dist",
+    "browser.js",
+    "node.js"
   ],
   "scripts": {
     "prepack": "cp ../LICENSE LICENSE",

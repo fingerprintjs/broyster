@@ -1,5 +1,5 @@
 export function retryFailedTests(retries: number, millisecondsBetweenRetries: number) {
-  const typelessJasmine = jasmine as any // eslint-disable @typescript-eslint/no-explicit-any
+  const typelessJasmine = jasmine as any // eslint-disable-line @typescript-eslint/no-explicit-any
   const originalSpecConstructor = typelessJasmine.Spec
 
   typelessJasmine.Spec = function (attrs: unknown) {
