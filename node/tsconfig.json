@@ -2,7 +2,6 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "module": "commonjs",
-    "target": "es2021",
     "declaration": true,
     "importHelpers": true,
     "outDir": "./dist"

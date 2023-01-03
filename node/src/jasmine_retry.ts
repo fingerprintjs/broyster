@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 export function retryFailedTests(retries: number, millisecondsBetweenRetries: number) {
-  // @ts-ignore
-  const originalSpecConstructor = jasmine.Spec
-  // @ts-ignore
-  jasmine.Spec = function (attrs: unknown) {
+  const typelessJasmine = jasmine as any // eslint-disable @typescript-eslint/no-explicit-any
+  const originalSpecConstructor = typelessJasmine.Spec
+
+  typelessJasmine.Spec = function (attrs: unknown) {
     const spec = new originalSpecConstructor(attrs)
     const originalTestFn = spec.queueableFn.fn
 
