@@ -1,6 +1,8 @@
-import { createAutomateClient } from 'browserstack'
+import { createAutomateClient, GetPlanResponse } from 'browserstack'
+import { promisify } from 'util'
+import { Logger } from './karma_logger'
 
-export function canNewBrowserBeQueued(): boolean {
+export async function canNewBrowserBeQueued(log: Logger): Promise<boolean> {
   const browserstackClient = createAutomateClient({
     username:
       process.env.BROWSERSTACK_USERNAME ||
@@ -15,10 +17,16 @@ export function canNewBrowserBeQueued(): boolean {
         throw new Error('BrowserStack access key is empty')
       })(),
   })
-  const result = browserstackClient.getPlan()
-  console.log(result)
+  const result = await promisify(browserstackClient.getPlan)
+  .bind(browserstackClient)()
+  .then((data: GetPlanResponse) => {
+    log.debug(JSON.stringify(data))
+    return data
+  })
   const max = result.queued_sessions_max_allowed + result.team_parallel_sessions_max_allowed
   const running = result.parallel_sessions_running + result.queued_sessions
 
-  return running < max
+  const shouldWait = running < max
+  log.debug('Max queue: ' + max + '. Running: ' + running + '. Returning: ' + shouldWait)
+  return shouldWait
 }

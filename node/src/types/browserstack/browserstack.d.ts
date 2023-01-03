@@ -1,7 +1,7 @@
 declare module 'browserstack' {
   export type AutomateClient = {
     updateSession(id: string, options: object, fn: (err: string) => void): void
-    getPlan(): GetPlanResponse
+    getPlan(fn: (err: string, data: GetPlanResponse) => void): void
   }
   export function createAutomateClient(credentials: unknown): AutomateClient
   export function canNewBrowserBeQueued(): boolean

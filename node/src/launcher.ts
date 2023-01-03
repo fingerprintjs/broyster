@@ -56,7 +56,7 @@ export function BrowserStackLauncher(
 
   this.on('start', async (pageUrl: string) => {
     try {
-      while (!canNewBrowserBeQueued()) {
+      while (!canNewBrowserBeQueued(log)) {
         setTimeout(() => {
           log.debug('waiting for queue')
         }, 10_000)
