@@ -1,7 +1,5 @@
-import { retryFailedTests } from '@fpjs-incubator/broyster'
 import { createButton } from './dom'
 
-retryFailedTests(3, 100)
 describe('DOM', () => {
   describe('createButton', () => {
     it('creates a button', () => {
