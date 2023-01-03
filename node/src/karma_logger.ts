@@ -6,4 +6,5 @@ export interface Logger {
   error(err: Error | string): void
   warn(message: string): void
   debug(message: string): void
+  info(message: string): void
 }

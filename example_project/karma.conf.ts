@@ -111,32 +111,13 @@ const browsers = {
   //iOS10_Safari: { deviceName: 'iPhone 7', platform: 'iOS', osVersion: '10', browserName: 'Safari', useHttps: true },
   // disabled temporarily because of issues with creating the session
   // TODO: Investigate failing iOS builds
-  iOS11_Safari: {
-    deviceName: 'iPhone 8 Plus',
-    platform: 'iOS',
-    osVersion: '11',
-    browserName: 'Safari',
-    useHttps: true,
-  },
-  iOS12_Safari: { deviceName: 'iPhone XS', platform: 'iOS', osVersion: '12', browserName: 'Safari', useHttps: true },
-  iOS13_Safari: {
-    deviceName: 'iPhone 11 Pro',
-    platform: 'iOS',
-    osVersion: '13',
-    browserName: 'Safari',
-    useHttps: true,
-  },
-  iOS14_Safari: { deviceName: 'iPhone 11', platform: 'iOS', osVersion: '14', browserName: 'Safari', useHttps: true },
-  /*
   iOS15_Safari: {
-    deviceName: 'iPhone 11 Pro',
+    deviceName: ['iPhone 8 Plus', 'iPhone 11 Pro', 'iPhone 11'],
     platform: 'iOS',
     osVersion: '15',
     browserName: 'Safari',
     useHttps: true,
-  }, // disabled temporarily because of issues with creating the session
-  TODO: Investigate failing iOS builds
-  */
+  },
 }
 
 function makeBuildNumber() {
@@ -207,6 +188,7 @@ function setupBrowserStack(config: Config) {
     plugins: [karmaPlugin, 'karma-*'],
 
     browserStack: {
+      maxDeviceRetries: 4,
       project: 'FingerprintJS', // todo: Turn to "Broyster" when the repository is open-sourced
       // A build number is required to group testing sessions in the BrowserStack UI.
       // GitHub Actions will add a value for GITHUB_RUN_ID. More on the environment variables:

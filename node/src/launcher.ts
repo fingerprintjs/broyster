@@ -57,7 +57,7 @@ export function BrowserStackLauncher(
     try {
       await run
       log.debug('creating browser with attributes: ' + JSON.stringify(args))
-      browser = browserStackSessionFactory.createBrowser(args, log)
+      browser = browserStackSessionFactory.tryCreateBrowser(args, log)
       const session = pageUrl.split('/').slice(-1)[0]
       browserMap.set(this.id, { browser, session })
       pageUrl = makeUrl(pageUrl, args.useHttps)

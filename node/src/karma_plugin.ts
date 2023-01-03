@@ -18,13 +18,14 @@ declare module 'karma' {
       project: string
       build: string | number
       timeout: number
+      maxDeviceRetries: number
     }
   }
 
   interface CustomLauncher {
     name: string
     osVersion: string
-    deviceName?: string | undefined
+    deviceName?: string | string[] | undefined
     browserVersion?: string | null | undefined
     firefoxCapabilities?: Array<[string, string | number | boolean]>
     useHttps: boolean
