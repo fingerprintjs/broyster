@@ -18,11 +18,11 @@ export async function canNewBrowserBeQueued(log: Logger): Promise<boolean> {
       })(),
   })
   const result = await promisify(browserstackClient.getPlan)
-  .bind(browserstackClient)()
-  .then((data: GetPlanResponse) => {
-    log.debug(JSON.stringify(data))
-    return data
-  })
+    .bind(browserstackClient)()
+    .then((data: GetPlanResponse) => {
+      log.debug(JSON.stringify(data))
+      return data
+    })
   const max = result.queued_sessions_max_allowed + result.team_parallel_sessions_max_allowed
   const running = result.parallel_sessions_running + result.queued_sessions
 
