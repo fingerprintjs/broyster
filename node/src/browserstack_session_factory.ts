@@ -1,6 +1,6 @@
+import { ConfigOptions } from 'karma'
 import { CapabilitiesFactory } from './capabilities_factory'
-import { BrowserToCreate, DesiredBrowser } from './desired_browser'
-import { KarmaConfig } from './karma_config'
+import { CustomLauncher } from 'karma'
 import { Logger } from './karma_logger'
 import { OptionsBuilder } from './options_builder'
 import { WebDriverFactory } from './webdriver_factory'
@@ -12,7 +12,10 @@ export class BrowserStackSessionFactory {
   private _build: string
   private _capsFactory: CapabilitiesFactory
 
-  constructor(config: KarmaConfig) {
+  constructor(config: ConfigOptions) {
+    if (!config.browserStack) {
+      throw new Error('BrowserStack options are not set')
+    }
     this._username =
       process.env.BROWSERSTACK_USERNAME ||
       process.env.BROWSER_STACK_USERNAME ||
@@ -26,19 +29,19 @@ export class BrowserStackSessionFactory {
         throw new Error('BrowserStack access key is empty')
       })()
     this._project = config.browserStack.project
-    this._build = config.browserStack.build
+    this._build = config.browserStack.build.toString()
     this._capsFactory = new CapabilitiesFactory(this._username, this._accessKey)
   }
 
-  tryCreateBrowser(browsers: DesiredBrowser, log: Logger) {
-    let devices = browsers.deviceName ?? browsers.os
+  tryCreateBrowser(browsers: CustomLauncher, log: Logger) {
+    let devices = browsers.deviceName ?? browsers.platform
     if (devices) {
       devices = devices.concat(devices)
       for (const device of devices) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const configuration: any = {}
         Object.keys(browsers).forEach((key) => {
-          if (!(key === 'os' || key === 'deviceName')) {
+          if (!(key === 'platform' || key === 'deviceName')) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             configuration[key] = (browsers as any)[key]
           } else {
@@ -50,7 +53,7 @@ export class BrowserStackSessionFactory {
             'creating session for ' +
               browsers.browserName +
               ' on ' +
-              (configuration['os'] ?? configuration['deviceName']),
+              (configuration['platform'] ?? configuration['deviceName']),
           )
           return this.createBrowser(configuration, log)
         } catch (err) {
@@ -83,6 +86,6 @@ export class BrowserStackSessionFactory {
   }
 }
 
-export function makeBrowserStackSessionFactory(config: KarmaConfig) {
+export function makeBrowserStackSessionFactory(config: ConfigOptions) {
   return new BrowserStackSessionFactory(config)
 }

@@ -35,13 +35,7 @@
   "dependencies": {
     "tslib": "^2.4.1",
     "selenium-webdriver": "^4.7.0",
-    "q": "~1.5.0",
     "browserstack-local": "^1.5.1",
     "browserstack": "~1.5.1"
-  },
-  "devDependencies": {
-    "@types/selenium-webdriver": "^4.1.9",
-    "@types/q": "^1.5.5",
-    "@types/node": "^18.11.12"
   }
 }
