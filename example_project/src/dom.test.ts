@@ -1,4 +1,4 @@
-import { retryFailedTests } from '@fpjs-incubator/broyster'
+import { retryFailedTests } from '@fpjs-incubator/broyster/browser'
 import { createButton } from './dom'
 
 retryFailedTests(3, 100)

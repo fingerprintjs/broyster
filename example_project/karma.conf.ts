@@ -1,6 +1,6 @@
 import { Config, CustomLauncher } from 'karma'
 import { KarmaTypescriptConfig } from 'karma-typescript'
-import { karmaPlugin, sslConfiguration, httpHttpsServer } from '@fpjs-incubator/broyster'
+import { karmaPlugin, sslConfiguration, httpHttpsServer } from '@fpjs-incubator/broyster/node'
 
 declare module 'karma' {
   interface ConfigOptions {
