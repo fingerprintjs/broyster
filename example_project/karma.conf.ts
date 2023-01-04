@@ -136,7 +136,6 @@ const browsers = {
     useHttps: true,
   }, // disabled temporarily because of issues with creating the session
   TODO: Investigate failing iOS builds
-  */
 }
 
 function makeBuildNumber() {
@@ -176,15 +175,7 @@ function setupLocal(config: Config) {
       show: 'skipped',
     },
 
-    protocol: 'https',
-    httpsServerOptions: {
-      key: sslConfiguration.key,
-      cert: sslConfiguration.cert,
-      requestCert: false,
-      rejectUnauthorized: false,
-    },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    httpModule: httpHttpsServer as any,
+    protocol: 'http',
   })
 }
 
@@ -205,6 +196,16 @@ function setupBrowserStack(config: Config) {
     customLaunchers,
     concurrency: 5,
     plugins: [karmaPlugin, 'karma-*'],
+
+    protocol: 'https',
+    httpsServerOptions: {
+      key: sslConfiguration.key,
+      cert: sslConfiguration.cert,
+      requestCert: false,
+      rejectUnauthorized: false,
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    httpModule: httpHttpsServer as any,
 
     browserStack: {
       project: 'FingerprintJS', // todo: Turn to "Broyster" when the repository is open-sourced
