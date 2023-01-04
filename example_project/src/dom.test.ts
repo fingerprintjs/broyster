@@ -2,9 +2,14 @@ import { retryFailedTests } from '@fpjs-incubator/broyster/browser'
 import { createButton } from './dom'
 
 retryFailedTests(3, 100)
-
+let number = 0
 describe('DOM', () => {
   describe('createButton', () => {
+    it('retries failed tests', () => {
+      number++
+      expect(number).toBe(2)
+    })
+
     it('creates a button', () => {
       const button = createButton('Click me!')
       expect(button).toBeInstanceOf(HTMLButtonElement)
