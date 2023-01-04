@@ -26,7 +26,7 @@ This package exports the following:
         Newer versions of Safari do not work nor have workarounds for self-signed certificates, however their behavior is the same for both HTTP and HTTPS. Depending on your entry's *useHttps*, the launcher will redirect respectively.
         The HTTP server runs on the port provided by Karma, while the HTTPS port will run on +1 from that.
 - `@fpjs-incubator/broyster/node`:
-    - `retryFailedTests` Todo
+    - `retryFailedTests` That allows overriding the different behavior of Jasmine specs. The new behavior will retry a failed test up until the maximum specified in the first parameter, with a delay between each such attempt, indicated by the second parameters (in miliseconds). Remember to only run it once.
 
 To use mixed HTTP/HTTPS testing, in your karma config file you need to:
 Set the protocol to https
