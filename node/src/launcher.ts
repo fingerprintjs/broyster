@@ -58,7 +58,7 @@ export function BrowserStackLauncher(
     try {
       const maxTime = Date.now() + 50_000
       // TODO: move to a singleton for managing concurrent attempts
-      while (!canNewBrowserBeQueued(log)) {
+      while (!(await canNewBrowserBeQueued(log))) {
         if (Date.now() > maxTime) {
           throw new Error(
             'Queue has not been freed within the last 5 minutes. Please check BrowserStack and retry later.',

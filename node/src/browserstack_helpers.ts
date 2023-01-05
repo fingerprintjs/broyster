@@ -22,8 +22,8 @@ export async function canNewBrowserBeQueued(log: Logger): Promise<boolean> {
   const result = await promisify(browserstackClient.getPlan).call(browserstackClient)
   log.debug('getPlan returned:')
   log.debug(JSON.stringify(result))
-  const max = result.queued_sessions_max_allowed + result.team_parallel_sessions_max_allowed
-  const running = result.parallel_sessions_running + result.queued_sessions
+  const max = result.parallel_sessions_max_allowed
+  const running = result.parallel_sessions_running
 
   const canRun = running < max
   log.debug('Max queue: ' + max + '. Running: ' + running + '. Returning: ' + canRun)
