@@ -1,8 +1,9 @@
-import { createAutomateClient, GetPlanResponse } from 'browserstack'
+import { createAutomateClient } from 'browserstack'
 import { promisify } from 'util'
 import { Logger } from './karma_logger'
 
 export async function canNewBrowserBeQueued(log: Logger): Promise<boolean> {
+  // TODO: fix when housekeeping
   const browserstackClient = createAutomateClient({
     username:
       process.env.BROWSERSTACK_USERNAME ||
