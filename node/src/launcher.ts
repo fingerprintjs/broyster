@@ -56,16 +56,15 @@ export function BrowserStackLauncher(
 
   this.on('start', async (pageUrl: string) => {
     try {
-      const maxTime = Date.now() + 5 * 60000
+      const maxTime = Date.now() + 50_000
       while (!canNewBrowserBeQueued(log)) {
         if (Date.now() > maxTime) {
-          process.stderr.write('Queue has not been freed within the last 5 minutes.')
-          process.stderr.write('Please check BrowserStack and retry later.')
-          process.exit(1)
+          throw new Error(
+            'Queue has not been freed within the last 5 minutes. Please check BrowserStack and retry later.',
+          )
         }
-        setTimeout(() => {
-          log.debug('waiting for queue')
-        }, 10_000)
+        log.debug('waiting for queue')
+        await new Promise((r) => setTimeout(r, 1_000))
       }
       await run
       log.debug('creating browser with attributes: ' + JSON.stringify(args))

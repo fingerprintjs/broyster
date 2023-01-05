@@ -1,4 +1,5 @@
 declare module 'browserstack' {
+  // API reference @ https://www.browserstack.com/docs/automate/api-reference/selenium/introduction
   export type AutomateClient = {
     updateSession(id: string, options: object, fn: (err: string) => void): void
     getPlan(fn: (err: string, data: GetPlanResponse) => void): void

@@ -17,16 +17,14 @@ export async function canNewBrowserBeQueued(log: Logger): Promise<boolean> {
         throw new Error('BrowserStack access key is empty')
       })(),
   })
-  const result = await promisify(browserstackClient.getPlan)
-    .bind(browserstackClient)()
-    .then((data: GetPlanResponse) => {
-      log.debug(JSON.stringify(data))
-      return data
-    })
+  log.debug('calling getPlan')
+  const result = await promisify(browserstackClient.getPlan).call(browserstackClient)
+  log.debug('getPlan returned:')
+  log.debug(JSON.stringify(result))
   const max = result.queued_sessions_max_allowed + result.team_parallel_sessions_max_allowed
   const running = result.parallel_sessions_running + result.queued_sessions
 
-  const shouldWait = running < max
-  log.debug('Max queue: ' + max + '. Running: ' + running + '. Returning: ' + shouldWait)
-  return shouldWait
+  const canRun = running < max
+  log.debug('Max queue: ' + max + '. Running: ' + running + '. Returning: ' + canRun)
+  return canRun
 }
