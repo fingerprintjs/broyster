@@ -57,6 +57,7 @@ export function BrowserStackLauncher(
   this.on('start', async (pageUrl: string) => {
     try {
       const maxTime = Date.now() + 50_000
+      // TODO: move to a singleton for managing concurrent attempts
       while (!canNewBrowserBeQueued(log)) {
         if (Date.now() > maxTime) {
           throw new Error(
