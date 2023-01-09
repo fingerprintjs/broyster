@@ -1,6 +1,6 @@
 import { Config, CustomLauncher } from 'karma'
 import { KarmaTypescriptConfig } from 'karma-typescript'
-import { karmaPlugin, sslConfiguration, httpHttpsServer } from '@fpjs-incubator/broyster'
+import { karmaPlugin, setHttpsAndServerForKarma } from '@fpjs-incubator/broyster'
 
 declare module 'karma' {
   interface ConfigOptions {
@@ -176,6 +176,7 @@ function setupLocal(config: Config) {
       show: 'skipped',
     },
   })
+  setHttpsAndServerForKarma(config)
 }
 
 function setupBrowserStack(config: Config) {
@@ -190,7 +191,7 @@ function setupBrowserStack(config: Config) {
   }
 
   config.set({
-    reporters: [...config.reporters], //'BrowserStack'], // todo: Turn on when reporter is done
+    reporters: [...config.reporters, 'BrowserStack'],
     browsers: Object.keys(customLaunchers),
     customLaunchers,
     concurrency: 5,
