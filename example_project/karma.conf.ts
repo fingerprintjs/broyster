@@ -136,6 +136,7 @@ const browsers = {
     useHttps: true,
   }, // disabled temporarily because of issues with creating the session
   TODO: Investigate failing iOS builds
+  */
 }
 
 function makeBuildNumber() {
@@ -174,8 +175,6 @@ function setupLocal(config: Config) {
     summaryReporter: {
       show: 'skipped',
     },
-
-    protocol: 'http',
   })
 }
 
