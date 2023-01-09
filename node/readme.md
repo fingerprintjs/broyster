@@ -25,6 +25,8 @@ That provides a self-signed certificate for HTTPS testing on localhost.
 That gives you a set of two servers - one with HTTP and one with HTTP capabilities.
 Newer versions of Safari do not work nor have workarounds for self-signed certificates, however their behavior is the same for both HTTP and HTTPS. Depending on your entry's *useHttps*, the launcher will redirect respectively.
 The HTTP server runs on the port provided by Karma, while the HTTPS port will run on +1 from that.
+```setHttpsAndServerForKarma```
+That configures karma for HTTP and HTTPS testing without any additional work.
 
 To use mixed HTTP/HTTPS testing, in your karma config file you need to:
 Set the protocol to https
@@ -52,6 +54,13 @@ and use the provided server:
 import { karmaPlugin, sslConfiguration, httpHttpsServer } from '@fpjs-incubator/broyster'
     
 httpModule: httpHttpsServer as any
+```
+
+or use 
+``` js
+import { setHttpsAndServerForKarma } from '@fpjs-incubator/broyster'
+
+setHttpsAndServerForKarma(config)
 ```
 
 ## Launchers
