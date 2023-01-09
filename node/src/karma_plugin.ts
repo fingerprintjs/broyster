@@ -1,4 +1,4 @@
-import { ThenableWebDriver } from 'selenium-webdriver'
+import { WebDriver } from 'selenium-webdriver'
 import { BrowserMap } from './browser_map'
 import { BrowserStackLocalManager } from './browserstack_local_manager'
 import { makeBrowserStackSessionFactory } from './browserstack_session_factory'
@@ -9,7 +9,7 @@ const karmaPlugin: InlinePluginDef = {
   'launcher:BrowserStack': ['type', BrowserStackLauncher],
   browserStackSessionFactory: ['type', makeBrowserStackSessionFactory],
   browserStackLocalManager: ['value', new BrowserStackLocalManager()],
-  browserMap: ['value', new Map<string, { browser: ThenableWebDriver; session: string }>() satisfies BrowserMap],
+  browserMap: ['value', new Map<string, { browser: WebDriver; session: string }>() satisfies BrowserMap],
 }
 
 declare module 'karma' {

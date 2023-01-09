@@ -35,14 +35,14 @@ export class BrowserStackSessionFactory {
     this._capsFactory = new CapabilitiesFactory(this._username, this._accessKey)
   }
 
-  tryCreateBrowser(browsers: CustomLauncher, log: Logger) {
+  async tryCreateBrowser(browsers: CustomLauncher, log: Logger) {
     if (browsers.deviceName) {
-      return this.makeFromDeviceName(browsers, log)
+      return await this.makeFromDeviceName(browsers, log)
     }
-    return this.createBrowser(browsers, log)
+    return await this.createBrowser(browsers, log)
   }
 
-  private makeFromDeviceName(browsers: CustomLauncher, log: Logger) {
+  private async makeFromDeviceName(browsers: CustomLauncher, log: Logger) {
     const devices = []
     const names = Array.isArray(browsers.deviceName) ? browsers.deviceName : [browsers.deviceName]
     for (let index = 0; index < this._maxDeviceRetries; index += 0) {
@@ -68,16 +68,15 @@ export class BrowserStackSessionFactory {
         log.info('created succesfully')
         return browser
       } catch (err) {
-        setTimeout(() => {
-          log.error('could not create session, trying next configuration')
-          log.error((err as Error) ?? String(err))
-        }, 5000)
+        log.error('could not create session, trying next configuration')
+        log.error((err as Error) ?? String(err))
+        await new Promise((r) => setTimeout(r, 5_000))
       }
     }
     throw new Error('Could not create browser for configuration: ' + JSON.stringify(browsers))
   }
 
-  private createBrowser(browser: CustomLauncher, log: Logger) {
+  private async createBrowser(browser: CustomLauncher, log: Logger) {
     const caps = this._capsFactory.create(
       browser.browserName,
       this._build,
