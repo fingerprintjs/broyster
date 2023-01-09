@@ -191,7 +191,7 @@ function setupBrowserStack(config: Config) {
   }
 
   config.set({
-    reporters: [...config.reporters], //'BrowserStack'], // todo: Turn on when reporter is done
+    reporters: [...config.reporters, 'BrowserStack'],
     browsers: Object.keys(customLaunchers),
     customLaunchers,
     concurrency: 5,
