@@ -6,7 +6,6 @@
     "declaration": true,
     "importHelpers": true,
     "outDir": "./dist",
-    "typeRoots": ["./src/types"]
   },
   "include": [
     "src/index.ts",
