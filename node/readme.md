@@ -72,3 +72,12 @@ The launcher provides additional properties:
       ['key3', 'value'],
     ],
 ```
+
+### Reporters
+
+There is a dedicated reproter that will mark successful tests as passed in BrowserStack.
+
+``` js
+  config.set({
+    reporters: [...config.reporters, 'BrowserStack'],
+```
