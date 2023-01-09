@@ -1,6 +1,6 @@
 import { Config, CustomLauncher } from 'karma'
 import { KarmaTypescriptConfig } from 'karma-typescript'
-import { karmaPlugin, sslConfiguration, httpHttpsServer } from '@fpjs-incubator/broyster'
+import { karmaPlugin, setHttpsAndServerForKarma } from '@fpjs-incubator/broyster'
 
 declare module 'karma' {
   interface ConfigOptions {
@@ -175,17 +175,8 @@ function setupLocal(config: Config) {
     summaryReporter: {
       show: 'skipped',
     },
-
-    protocol: 'https',
-    httpsServerOptions: {
-      key: sslConfiguration.key,
-      cert: sslConfiguration.cert,
-      requestCert: false,
-      rejectUnauthorized: false,
-    },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    httpModule: httpHttpsServer as any,
   })
+  setHttpsAndServerForKarma(config)
 }
 
 function setupBrowserStack(config: Config) {
