@@ -4,9 +4,11 @@ import { BrowserStackLocalManager } from './browserstack_local_manager'
 import { makeBrowserStackSessionFactory } from './browserstack_session_factory'
 import { BrowserStackLauncher } from './launcher'
 import { InlinePluginDef } from 'karma'
+import { BrowserStackReporter } from './browserstack_reporter'
 
 const karmaPlugin: InlinePluginDef = {
   'launcher:BrowserStack': ['type', BrowserStackLauncher],
+  'reporter:BrowserStack': ['type', BrowserStackReporter],
   browserStackSessionFactory: ['type', makeBrowserStackSessionFactory],
   browserStackLocalManager: ['value', new BrowserStackLocalManager()],
   browserMap: ['value', new Map<string, { browser: WebDriver; session: string }>() satisfies BrowserMap],
