@@ -176,7 +176,6 @@ function setupLocal(config: Config) {
       show: 'skipped',
     },
   })
-  setHttpsAndServerForKarma(config)
 }
 
 function setupBrowserStack(config: Config) {
@@ -196,7 +195,6 @@ function setupBrowserStack(config: Config) {
     customLaunchers,
     concurrency: 5,
     plugins: [karmaPlugin, 'karma-*'],
-
     browserStack: {
       project: 'FingerprintJS', // todo: Turn to "Broyster" when the repository is open-sourced
       // A build number is required to group testing sessions in the BrowserStack UI.
@@ -207,6 +205,7 @@ function setupBrowserStack(config: Config) {
       timeout: 120,
     },
   })
+  setHttpsAndServerForKarma(config)
 }
 
 /**
