@@ -31,7 +31,7 @@ export class BrowserStackSessionFactory {
       })()
     this._project = config.browserStack.project
     this._build = config.browserStack.build.toString()
-    this._maxDeviceRetries = config.browserStack.maxDeviceRetries
+    this._maxDeviceRetries = config.retryLimit || 1
     this._capsFactory = new CapabilitiesFactory(this._username, this._accessKey)
   }
 

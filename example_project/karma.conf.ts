@@ -186,9 +186,8 @@ function setupBrowserStack(config: Config) {
     customLaunchers,
     concurrency: 5,
     plugins: [karmaPlugin, 'karma-*'],
-
+    retryLimit: 4,
     browserStack: {
-      maxDeviceRetries: 4,
       project: 'FingerprintJS', // todo: Turn to "Broyster" when the repository is open-sourced
       // A build number is required to group testing sessions in the BrowserStack UI.
       // GitHub Actions will add a value for GITHUB_RUN_ID. More on the environment variables:
