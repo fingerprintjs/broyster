@@ -9,7 +9,7 @@ export function BrowserStackReporter(
   logger: LoggerFactory,
   browserMap: BrowserMap,
 ) {
-  const log = logger.create('Browserstack Selenium Reporter')
+  const log = logger.create('Browserstack Reporter')
 
   let pendingUpdates = 0
   // eslint-disable-next-line @typescript-eslint/no-empty-function

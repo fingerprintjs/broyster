@@ -85,7 +85,7 @@ export function BrowserStackLauncher(
         log.debug('browser not found, cannot kill')
       }
     } catch (err) {
-      log.error('Could not quit the BrowserStack Selenium connection. Failure message:')
+      log.error('Could not quit the BrowserStack connection. Failure message:')
       log.error((err as Error) ?? String(err))
     }
 
