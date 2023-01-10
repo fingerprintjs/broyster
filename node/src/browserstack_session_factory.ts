@@ -12,7 +12,6 @@ export class BrowserStackSessionFactory {
   private _build: string
   private _capsFactory: CapabilitiesFactory
   private _index: number
-  private _browser: CustomLauncher | undefined
 
   constructor(config: ConfigOptions) {
     if (!config.browserStack) {
@@ -45,23 +44,22 @@ export class BrowserStackSessionFactory {
     return this.createBrowser(browsers, log)
   }
 
-  private makeFromDeviceName(browsers: CustomLauncher, log: Logger) {
+  private async makeFromDeviceName(browsers: CustomLauncher, log: Logger) {
     try {
       log.info('creating session for ' + browsers.browserName + ' on ' + browsers.deviceName)
       const browser = this.createBrowser(browsers, log)
       log.info('created succesfully')
       return browser
     } catch (err) {
-      setTimeout(() => {
-        log.error('could not create session, trying next configuration')
-        log.error((err as Error) ?? String(err))
-      }, 5000)
+      log.error('could not create session, trying next configuration')
+      log.error((err as Error) ?? String(err))
+      await new Promise((r) => setTimeout(r, 5_000))
     }
 
     throw new Error('Could not create browser for configuration: ' + JSON.stringify(browsers))
   }
 
-  private createBrowser(browser: CustomLauncher, log: Logger) {
+  private async createBrowser(browser: CustomLauncher, log: Logger) {
     const caps = this._capsFactory.create(
       browser.browserName,
       this._build,
