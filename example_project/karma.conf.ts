@@ -118,7 +118,6 @@ const browsers = {
     browserVersion: 'latest-beta',
     useHttps: true,
   },
-  //iOS10_Safari: { deviceName: 'iPhone 7', platform: 'iOS', osVersion: '10', browserName: 'Safari', useHttps: true },
   // disabled temporarily because of issues with creating the session
   // TODO: Investigate failing iOS builds
   iOS15_Safari: {
