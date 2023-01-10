@@ -22,24 +22,13 @@ const browsers = {
     useHttps: false,
   },
 
-  //IE11: { platform: 'Windows', osVersion: '7', browserName: 'IE', browserVersion: '11.0', useHttps: true },
-
-  Windows11_EdgeLatest: {
-    platform: 'Windows',
-    osVersion: '11',
-    browserName: 'Edge',
-    browserVersion: 'latest-beta',
-    useHttps: true,
-  },
-  Windows10_Chrome49: {
+  Windows10_Chrome57: {
     platform: 'Windows',
     osVersion: '10',
     browserName: 'Chrome',
-    browserVersion: '49.0',
+    browserVersion: '57',
     useHttps: true,
   },
-  // Windows10_Chrome49_Incognito: { platform: 'Windows', osVersion: '10',
-  //browserName: 'Chrome', browserVersion: '49.0', ...chromeIncognitoCapabilities },
   Windows11_ChromeLatest: {
     platform: 'Windows',
     osVersion: '11',
@@ -49,15 +38,15 @@ const browsers = {
   },
   // Windows11_ChromeLatest_Incognito: { platform: 'Windows', osVersion: '11', browserName: 'Chrome',
   //browserVersion: 'latest-beta, ...chromeIncognitoCapabilities },
-  Windows10_Firefox52: {
+  Windows10_Firefox67: {
     platform: 'Windows',
     osVersion: '10',
     browserName: 'Firefox',
-    browserVersion: '52.0',
+    browserVersion: '67',
     useHttps: true,
   },
-  // Windows10_Firefox52_Incognito: { platform: 'Windows', osVersion: '10', browserName: 'Firefox',
-  //browserVersion: '52.0', ...firefoxIncognitoCapabilities },
+  // Windows10_Firefox67_Incognito: { platform: 'Windows', osVersion: '10', browserName: 'Firefox',
+  //browserVersion: '67', ...firefoxIncognitoCapabilities },
   Windows11_FirefoxLatest: {
     platform: 'Windows',
     osVersion: '11',
@@ -67,52 +56,72 @@ const browsers = {
   },
   // Windows11_FirefoxLatest_Incognito: { platform: 'Windows', osVersion: '11', browserName: 'Firefox',
   //browserVersion: 'latest-beta, ...firefoxIncognitoCapabilities },
-  OSXMojave_Safari12: {
+  Windows11_EdgeLatest: {
+    platform: 'Windows',
+    osVersion: '11',
+    browserName: 'Edge',
+    browserVersion: 'latest-beta',
+    useHttps: true,
+  },
+
+  'OSX10.14_Safari12': {
     platform: 'OS X',
     osVersion: 'Mojave',
     browserName: 'Safari',
-    browserVersion: '12.1',
+    browserVersion: '12',
     useHttps: true,
   },
-  //OSXMonterey_Safari15: { platform: 'OS X', osVersion: 'Monterey', browserName: 'Safari', browserVersion: '15.0' },
-  OSXMonterey_ChromeLatest: {
+  OSX12_Safari15: {
     platform: 'OS X',
     osVersion: 'Monterey',
+    browserName: 'Safari',
+    browserVersion: '15',
+    useHttps: true,
+  },
+  OSX13_Safari16: {
+    platform: 'OS X',
+    osVersion: 'Ventura',
+    browserName: 'Safari',
+    browserVersion: '16',
+    useHttps: true,
+  },
+  OSX13_ChromeLatest: {
+    platform: 'OS X',
+    osVersion: 'Ventura',
     browserName: 'Chrome',
     browserVersion: 'latest-beta',
     useHttps: true,
   },
   // OSXMonterey_ChromeLatest_Incognito: { platform: 'OS X', osVersion: 'Monterey', browserName: 'Chrome',
   //browserVersion: 'latest-beta, ...chromeIncognitoCapabilities },
-  OSXMonterey_FirefoxLatest: {
+  OSX13_FirefoxLatest: {
     platform: 'OS X',
-    osVersion: 'Monterey',
+    osVersion: 'Ventura',
     browserName: 'Firefox',
     browserVersion: 'latest-beta',
     useHttps: true,
   },
   // OSXMonterey_FirefoxLatest_Incognito: { platform: 'OS X', osVersion: 'Monterey', browserName: 'Firefox',
   //browserVersion: 'latest-beta, ...firefoxIncognitoCapabilities },
-  OSXMonterey_EdgeLatest: {
+  OSX13_EdgeLatest: {
     platform: 'OS X',
-    osVersion: 'Monterey',
+    osVersion: 'Ventura',
     browserName: 'Edge',
     browserVersion: 'latest-beta',
     useHttps: true,
   },
-  Android11_ChromeLatest: {
-    deviceName: 'Google Pixel 4',
+  Android13_ChromeLatest: {
+    deviceName: 'Google Pixel 7',
     platform: 'Android',
-    osVersion: '11.0',
+    osVersion: '13.0',
     browserName: 'Chrome',
     browserVersion: 'latest-beta',
     useHttps: true,
   },
-  //iOS10_Safari: { deviceName: 'iPhone 7', platform: 'iOS', osVersion: '10', browserName: 'Safari', useHttps: true },
   // disabled temporarily because of issues with creating the session
   // TODO: Investigate failing iOS builds
   iOS15_Safari: {
-    deviceName: ['iPhone 8 Plus', 'iPhone 11 Pro', 'iPhone 11'],
+    devices: ['iPhone 8 Plus', 'iPhone 13', 'iPhone XS', 'iPhone 11', 'iPhone 14'],
     platform: 'iOS',
     osVersion: '15',
     browserName: 'Safari',
@@ -176,7 +185,7 @@ function setupBrowserStack(config: Config) {
     customLaunchers,
     concurrency: 5,
     plugins: [karmaPlugin, 'karma-*'],
-    retryLimit: 4,
+    retryLimit: 10,
     browserStack: {
       project: 'FingerprintJS', // todo: Turn to "Broyster" when the repository is open-sourced
       // A build number is required to group testing sessions in the BrowserStack UI.

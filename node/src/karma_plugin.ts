@@ -26,7 +26,8 @@ declare module 'karma' {
   interface CustomLauncher {
     name: string
     osVersion: string
-    deviceName?: string | string[] | undefined
+    deviceName?: string | undefined
+    devices?: string[] | undefined
     browserVersion?: string | null | undefined
     firefoxCapabilities?: Array<[string, string | number | boolean]>
     useHttps: boolean

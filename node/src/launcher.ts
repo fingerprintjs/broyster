@@ -1,4 +1,4 @@
-import { WebDriver } from 'selenium-webdriver'
+import { ThenableWebDriver } from 'selenium-webdriver'
 import { BrowserMap } from './browser_map'
 import { BrowserStackLocalManager } from './browserstack_local_manager'
 import { BrowserStackSessionFactory } from './browserstack_session_factory'
@@ -36,7 +36,7 @@ export function BrowserStackLauncher(
     args.osVersion +
     ' on BrowserStack'
 
-  let browser: WebDriver
+  let browser: ThenableWebDriver
   let pendingHeartBeat: NodeJS.Timeout | undefined
   const heartbeat = () => {
     pendingHeartBeat = setTimeout(async () => {
@@ -57,7 +57,7 @@ export function BrowserStackLauncher(
     try {
       await run
       log.debug('creating browser with attributes: ' + JSON.stringify(args))
-      browser = await browserStackSessionFactory.tryCreateBrowser(args, log)
+      browser = browserStackSessionFactory.tryCreateBrowser(args, log)
       const session = (await browser.getSession()).getId()
       log.debug(this.id + ' has webdriver SessionId: ' + session)
       browserMap.set(this.id, { browser, session })
