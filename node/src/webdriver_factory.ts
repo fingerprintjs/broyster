@@ -4,7 +4,6 @@ import * as safari from 'selenium-webdriver/safari'
 import * as chrome from 'selenium-webdriver/chrome'
 import * as webdriver from 'selenium-webdriver'
 import { SessionCapabilities } from './session_capabilities'
-import { Logger } from './karma_logger'
 
 export class WebDriverFactory {
   private static url = 'https://hub-cloud.browserstack.com/wd/hub'
@@ -12,7 +11,6 @@ export class WebDriverFactory {
   static createFromOptions(
     options: chrome.Options | firefox.Options | safari.Options | edge.Options,
     browserStack: SessionCapabilities,
-    log: Logger,
     firefoxProfile?: Array<[string, string | number | boolean]>,
   ) {
     const builder = new webdriver.Builder().usingServer(this.url)

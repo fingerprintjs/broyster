@@ -11,7 +11,6 @@ export class BrowserStackSessionFactory {
   private _project: string
   private _build: string
   private _capsFactory: CapabilitiesFactory
-  private _index: number
 
   constructor(config: ConfigOptions) {
     if (!config.browserStack) {
@@ -32,22 +31,21 @@ export class BrowserStackSessionFactory {
     this._project = config.browserStack.project
     this._build = config.browserStack.build.toString()
     this._capsFactory = new CapabilitiesFactory(this._username, this._accessKey)
-    this._index = 0
   }
 
-  tryCreateBrowser(browsers: CustomLauncher, log: Logger) {
+  async tryCreateBrowser(browsers: CustomLauncher, attempt: number, log: Logger) {
     if (browsers.devices) {
-      const device = browsers.devices[this._index++ % browsers.devices.length]
+      const device = browsers.devices[attempt % browsers.devices.length]
       browsers.deviceName = device
-      return this.makeFromDeviceName(browsers, log)
+      return await this.makeFromDeviceName(browsers, log)
     }
-    return this.createBrowser(browsers, log)
+    return await this.createBrowser(browsers, log)
   }
 
   private async makeFromDeviceName(browsers: CustomLauncher, log: Logger) {
     try {
       log.info('creating session for ' + browsers.browserName + ' on ' + browsers.deviceName)
-      const browser = this.createBrowser(browsers, log)
+      const browser = await this.createBrowser(browsers, log)
       log.info('created succesfully')
       return browser
     } catch (err) {
@@ -76,7 +74,7 @@ export class BrowserStackSessionFactory {
     if (browser.firefoxCapabilities) {
       log.debug('using firefox capabilities: ' + browser.firefoxCapabilities)
     }
-    return WebDriverFactory.createFromOptions(opts, caps, log, browser.firefoxCapabilities)
+    return WebDriverFactory.createFromOptions(opts, caps, browser.firefoxCapabilities)
   }
 }
 

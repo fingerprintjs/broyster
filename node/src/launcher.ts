@@ -29,8 +29,8 @@ export function BrowserStackLauncher(
   this.name =
     args.browserName +
     ' ' +
-    (args.browserVersion ?? args.deviceName) +
-    ' ' +
+    (args.browserVersion ?? args.deviceName ?? 'on any of ' + args.devices) +
+    ' for ' +
     args.platform +
     ' ' +
     args.osVersion +
@@ -52,12 +52,13 @@ export function BrowserStackLauncher(
       return
     }, 60000)
   }
+  this.attempt = 0
 
   this.on('start', async (pageUrl: string) => {
     try {
       await run
       log.debug('creating browser with attributes: ' + JSON.stringify(args))
-      browser = await browserStackSessionFactory.tryCreateBrowser(args, log)
+      browser = await browserStackSessionFactory.tryCreateBrowser(args, this.attempt, log)
       const session = (await browser.getSession()).getId()
       log.debug(this.id + ' has webdriver SessionId: ' + session)
       browserMap.set(this.id, { browser, session })
@@ -67,7 +68,7 @@ export function BrowserStackLauncher(
     } catch (err) {
       log.error((err as Error) ?? String(err))
       this._done('failure')
-      return
+      this.attempt++
     }
   })
 
