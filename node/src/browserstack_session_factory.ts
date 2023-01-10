@@ -11,7 +11,8 @@ export class BrowserStackSessionFactory {
   private _project: string
   private _build: string
   private _capsFactory: CapabilitiesFactory
-  private _maxDeviceRetries: number
+  private _index: number
+  private _browser: CustomLauncher | undefined
 
   constructor(config: ConfigOptions) {
     if (!config.browserStack) {
@@ -31,49 +32,32 @@ export class BrowserStackSessionFactory {
       })()
     this._project = config.browserStack.project
     this._build = config.browserStack.build.toString()
-    this._maxDeviceRetries = config.browserStack.maxDeviceRetries
     this._capsFactory = new CapabilitiesFactory(this._username, this._accessKey)
+    this._index = 0
   }
 
   tryCreateBrowser(browsers: CustomLauncher, log: Logger) {
-    if (browsers.deviceName) {
+    if (browsers.devices) {
+      const device = browsers.devices[this._index++ % browsers.devices.length]
+      browsers.deviceName = device
       return this.makeFromDeviceName(browsers, log)
     }
     return this.createBrowser(browsers, log)
   }
 
   private makeFromDeviceName(browsers: CustomLauncher, log: Logger) {
-    const devices = []
-    const names = Array.isArray(browsers.deviceName) ? browsers.deviceName : [browsers.deviceName]
-    for (let index = 0; index < this._maxDeviceRetries; index += 0) {
-      for (const name of names) {
-        devices.push(name)
-        index++
-      }
+    try {
+      log.info('creating session for ' + browsers.browserName + ' on ' + browsers.deviceName)
+      const browser = this.createBrowser(browsers, log)
+      log.info('created succesfully')
+      return browser
+    } catch (err) {
+      setTimeout(() => {
+        log.error('could not create session, trying next configuration')
+        log.error((err as Error) ?? String(err))
+      }, 5000)
     }
-    for (const device of devices) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const configuration: any = {}
-      Object.keys(browsers).forEach((key) => {
-        if (key === 'deviceName') {
-          configuration[key] = device
-        } else {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          configuration[key] = (browsers as any)[key]
-        }
-      })
-      try {
-        log.info('creating session for ' + browsers.browserName + ' on ' + device)
-        const browser = this.createBrowser(configuration, log)
-        log.info('created succesfully')
-        return browser
-      } catch (err) {
-        setTimeout(() => {
-          log.error('could not create session, trying next configuration')
-          log.error((err as Error) ?? String(err))
-        }, 5000)
-      }
-    }
+
     throw new Error('Could not create browser for configuration: ' + JSON.stringify(browsers))
   }
 
