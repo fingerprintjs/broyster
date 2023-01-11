@@ -145,7 +145,6 @@ function makeBuildNumber() {
 
 function setupLocal(config: Config) {
   const files = ['src/**/*.ts']
-
   config.set({
     frameworks: ['jasmine', 'karma-typescript'],
     files,
@@ -164,7 +163,14 @@ function setupLocal(config: Config) {
         sourceMap: true,
       },
     },
-
+    client: {
+      jasmine: {
+        random: true,
+        seed: '4321',
+        timeoutInterval: 1000,
+        helpers: 'helpers/*.ts',
+      },
+    },
     specReporter: {
       suppressSummary: true,
       suppressErrorSummary: true,
