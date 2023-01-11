@@ -34,27 +34,25 @@ export class BrowserStackSessionFactory {
   }
 
   async tryCreateBrowser(browsers: CustomLauncher, attempt: number, log: Logger) {
-    if (browsers.devices) {
-      const device = browsers.devices[attempt % browsers.devices.length]
-      browsers.deviceName = device
-      return await this.makeFromDeviceName(browsers, log)
+    if (Array.isArray(browsers.deviceName)) {
+      const device = browsers.deviceName[attempt]
+      return await this.makeFromDevicesSet(browsers, device, log)
     }
     return await this.createBrowser(browsers, log)
   }
 
-  private async makeFromDeviceName(browsers: CustomLauncher, log: Logger) {
+  private async makeFromDevicesSet(browsers: CustomLauncher, device: string, log: Logger) {
     try {
-      log.info('creating session for ' + browsers.browserName + ' on ' + browsers.deviceName)
-      const browser = await this.createBrowser(browsers, log)
+      log.info('creating session for ' + browsers.browserName + ' on ' + device)
+      const launcher = Object.assign({}, browsers)
+      launcher.deviceName = device
+      const browser = await this.createBrowser(launcher, log)
       log.info('created succesfully')
       return browser
     } catch (err) {
       log.error('could not create session, trying next configuration')
-      log.error((err as Error) ?? String(err))
-      await new Promise((r) => setTimeout(r, 5_000))
+      throw err
     }
-
-    throw new Error('Could not create browser for configuration: ' + JSON.stringify(browsers))
   }
 
   private async createBrowser(browser: CustomLauncher, log: Logger) {

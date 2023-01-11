@@ -118,10 +118,55 @@ const browsers = {
     browserVersion: 'latest-beta',
     useHttps: true,
   },
+
   // disabled temporarily because of issues with creating the session
   // TODO: Investigate failing iOS builds
+  iOS11_Safari: {
+    deviceName: 'iPhone 8 Plus',
+    platform: 'iOS',
+    osVersion: '11',
+    browserName: 'Safari',
+    useHttps: true,
+  },
+  iOS12_Safari: {
+    deviceName: 'iPhone XS',
+    platform: 'iOS',
+    osVersion: '12',
+    browserName: 'Safari',
+    useHttps: true,
+  },
+  iOS13_Safari: {
+    deviceName: 'iPhone 11 Pro',
+    platform: 'iOS',
+    osVersion: '13',
+    browserName: 'Safari',
+    useHttps: true,
+  },
+  iOS14_Safari: {
+    deviceName: 'iPhone 11',
+    platform: 'iOS',
+    osVersion: '15',
+    browserName: 'Safari',
+    useHttps: true,
+  },
   iOS15_Safari: {
-    devices: ['iPhone 8 Plus', 'iPhone 13', 'iPhone XS', 'iPhone 11', 'iPhone 14'],
+    deviceName: 'iPhone 13',
+    platform: 'iOS',
+    osVersion: '15',
+    browserName: 'Safari',
+    useHttps: true,
+  },
+  iOS16_Safari: {
+    deviceName: 'iPhone 14',
+    platform: 'iOS',
+    osVersion: '16',
+    browserName: 'Safari',
+    useHttps: true,
+  },
+  iOS15_Safari_many_devices: {
+    deviceName: ['iPhone 8 Plus', 'iPhone 13', 'iPhone XS', 'iPhone 11', 'iPhone 14'],
+    // iPhone 8 Plus with iOS 15 is not available
+    // this is expected to fail to showcase how the next nevice will be picked up
     platform: 'iOS',
     osVersion: '15',
     browserName: 'Safari',
@@ -185,7 +230,7 @@ function setupBrowserStack(config: Config) {
     customLaunchers,
     concurrency: 5,
     plugins: [karmaPlugin, 'karma-*'],
-    retryLimit: 10,
+    retryLimit: 4,
     browserStack: {
       project: 'FingerprintJS', // todo: Turn to "Broyster" when the repository is open-sourced
       // A build number is required to group testing sessions in the BrowserStack UI.

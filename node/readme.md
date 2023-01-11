@@ -72,7 +72,7 @@ The launcher provides additional properties:
     useHttps: true
 ```
 
-*devices* is a `string[] | undefined`. In case of passing a value, it will mean there is a list of devices that are acceptable and any of them will be good to use. The list of devices will be iterated only in an attempt to launch a session, so the first succesful configuration to run will be the one that the tests run against. Tests will not run against all devices in the list. Note that the compatibility between the devices and the rest of the specified config is your responsibility.
+*deviceName* is now a union type of `string | string[] | undefined`. In case of passing an array, it will mean there is a list of devices that are acceptable and any of them will be good to use. The list of devices will be iterated only in an attempt to launch a session, so the first succesful configuration to run will be the one that the tests run against. Tests will not run against all devices in the list. Note that the compatibility between the devices and the rest of the specified config is your responsibility.
 
 ``` js
   Android11_ChromeLatest: {
@@ -89,7 +89,7 @@ or
 
 ``` js
   iOS15_Safari: {
-    devices: ['iPhone 8 Plus', 'iPhone 11 Pro', 'iPhone 11'],
+    deviceName: ['iPhone 8 Plus', 'iPhone 11 Pro', 'iPhone 11'],
     platform: 'iOS',
     osVersion: '15',
     browserName: 'Safari',

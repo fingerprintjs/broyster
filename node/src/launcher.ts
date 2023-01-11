@@ -25,11 +25,11 @@ export function BrowserStackLauncher(
   const log = logger.create('Browserstack')
   const run = browserStackLocalManager.run(log)
 
-  // Setup Browser name that will be printed out by Karma.
   this.name =
     args.browserName +
     ' ' +
-    (args.browserVersion ?? args.deviceName ?? 'on any of ' + args.devices) +
+    (args.browserVersion ??
+      (Array.isArray(args.deviceName) ? 'on any of ' + args.deviceName.join(', ') : args.deviceName)) +
     ' for ' +
     args.platform +
     ' ' +
