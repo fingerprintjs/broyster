@@ -25,7 +25,7 @@ declare module 'karma' {
   }
 
   interface ClientOptions {
-    jasmine: any
+    jasmine: unknown
   }
 
   interface CustomLauncher {
