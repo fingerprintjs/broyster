@@ -1,4 +1,3 @@
-
 import { createButton } from './dom'
 
 describe('DOM', () => {
