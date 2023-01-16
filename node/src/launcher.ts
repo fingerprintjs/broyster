@@ -5,7 +5,7 @@ import { BrowserStackSessionFactory } from './browserstack_session_factory'
 import { LoggerFactory } from './karma_logger'
 import { calculateHttpsPort } from './custom_servers'
 import { CustomLauncher } from 'karma'
-import { canNewBrowserBeQueued } from './browserstack_helpers'
+import { BrowserStackSessionsManager } from './browserstack_sessions_manager'
 
 export function BrowserStackLauncher(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -56,18 +56,10 @@ export function BrowserStackLauncher(
 
   this.on('start', async (pageUrl: string) => {
     try {
-      const maxTime = Date.now() + 50_000
-      // TODO: move to a singleton for managing concurrent attempts
-      while (!(await canNewBrowserBeQueued(log))) {
-        if (Date.now() > maxTime) {
-          throw new Error(
-            'Queue has not been freed within the last 5 minutes. Please check BrowserStack and retry later.',
-          )
-        }
-        log.debug('waiting for queue')
+      await run
+      while (!(await BrowserStackSessionsManager.getInstance().checkIfNewSessionCanBeQueued(log))) {
         await new Promise((r) => setTimeout(r, 1_000))
       }
-      await run
       log.debug('creating browser with attributes: ' + JSON.stringify(args))
       browser = browserStackSessionFactory.createBrowser(args, log)
       const session = pageUrl.split('/').slice(-1)[0]
@@ -98,7 +90,7 @@ export function BrowserStackLauncher(
         log.debug('browser not found, cannot kill')
       }
     } catch (err) {
-      log.error('Could not quit the BrowserStack Selenium connection. Failure message:')
+      log.error(`Could not quit the BrowserStack connection for ${this.name}. Failure message:`)
       log.error((err as Error) ?? String(err))
     }
 
