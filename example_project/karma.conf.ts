@@ -1,6 +1,6 @@
 import { Config, CustomLauncher } from 'karma'
 import { KarmaTypescriptConfig } from 'karma-typescript'
-import { karmaPlugin, setHttpsAndServerForKarma } from '@fpjs-incubator/broyster'
+import { karmaPlugin, setHttpsAndServerForKarma } from '@fpjs-incubator/broyster/node'
 
 declare module 'karma' {
   interface ConfigOptions {
@@ -145,7 +145,6 @@ function makeBuildNumber() {
 
 function setupLocal(config: Config) {
   const files = ['src/**/*.ts']
-
   config.set({
     frameworks: ['jasmine', 'karma-typescript'],
     files,
@@ -164,7 +163,6 @@ function setupLocal(config: Config) {
         sourceMap: true,
       },
     },
-
     specReporter: {
       suppressSummary: true,
       suppressErrorSummary: true,
