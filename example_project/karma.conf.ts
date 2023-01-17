@@ -111,7 +111,7 @@ const browsers = {
     useHttps: true,
   },
   Android13_ChromeLatest: {
-    deviceName: 'Google Pixel 7',
+    deviceName: ['Google Pixel 7', 'Google Pixel 6 Pro'],
     platform: 'Android',
     osVersion: '13.0',
     browserName: 'Chrome',
@@ -150,14 +150,14 @@ const browsers = {
     useHttps: true,
   },
   iOS15_Safari: {
-    deviceName: 'iPhone 13',
+    deviceName: ['iPhone 13', 'iPhone 13 Mini'],
     platform: 'iOS',
     osVersion: '15',
     browserName: 'Safari',
     useHttps: true,
   },
   iOS16_Safari: {
-    deviceName: 'iPhone 14',
+    deviceName: ['iPhone 14', 'iPhone 14 Pro Max', 'iPhone 14 Pro', 'iPhone 14 Plus', 'iPhone 12 Pro Max', 'iPhone 12 Pro', 'iPhone 12 Mini', 'iPhone 11 Pro Max'],
     platform: 'iOS',
     osVersion: '16',
     browserName: 'Safari',
