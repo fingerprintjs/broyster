@@ -165,10 +165,7 @@ function setupLocal(config: Config) {
     },
     client: {
       jasmine: {
-        random: true,
-        seed: '4321',
-        timeoutInterval: 1000,
-        helpers: 'helpers/*.ts',
+        helpers: 'test_helpers/*.ts',
       },
     },
     specReporter: {
