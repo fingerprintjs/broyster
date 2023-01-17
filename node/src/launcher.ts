@@ -58,7 +58,7 @@ export function BrowserStackLauncher(
     try {
       await run
       log.debug('creating browser with attributes: ' + JSON.stringify(args))
-      browser = await browserStackSessionFactory.tryCreateBrowser(args, this.attempt, log)
+      browser = await browserStackSessionFactory.tryCreateBrowser(args, this.attempt++, log)
       const session = (await browser.getSession()).getId()
       log.debug(this.id + ' has webdriver SessionId: ' + session)
       browserMap.set(this.id, { browser, session })
@@ -68,7 +68,6 @@ export function BrowserStackLauncher(
     } catch (err) {
       log.error((err as Error) ?? String(err))
       this._done('failure')
-      this.attempt++
     }
   })
 
