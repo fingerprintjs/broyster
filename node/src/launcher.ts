@@ -1,4 +1,4 @@
-import { ThenableWebDriver } from 'selenium-webdriver'
+import { WebDriver } from 'selenium-webdriver'
 import { BrowserMap } from './browser_map'
 import { BrowserStackLocalManager } from './browserstack_local_manager'
 import { BrowserStackSessionFactory } from './browserstack_session_factory'
@@ -25,18 +25,18 @@ export function BrowserStackLauncher(
   const log = logger.create('Browserstack')
   const run = browserStackLocalManager.run(log)
 
-  // Setup Browser name that will be printed out by Karma.
   this.name =
     args.browserName +
     ' ' +
-    (args.browserVersion ?? args.deviceName) +
-    ' ' +
+    (args.browserVersion ??
+      (Array.isArray(args.deviceName) ? 'on any of ' + args.deviceName.join(', ') : args.deviceName)) +
+    ' for ' +
     args.platform +
     ' ' +
     args.osVersion +
     ' on BrowserStack'
 
-  let browser: ThenableWebDriver
+  let browser: WebDriver
   let pendingHeartBeat: NodeJS.Timeout | undefined
   const heartbeat = () => {
     pendingHeartBeat = setTimeout(async () => {
@@ -52,12 +52,13 @@ export function BrowserStackLauncher(
       return
     }, 60000)
   }
+  this.attempt = 0
 
   this.on('start', async (pageUrl: string) => {
     try {
       await run
       log.debug('creating browser with attributes: ' + JSON.stringify(args))
-      browser = browserStackSessionFactory.createBrowser(args, log)
+      browser = await browserStackSessionFactory.tryCreateBrowser(args, this.attempt++, log)
       const session = (await browser.getSession()).getId()
       log.debug(this.id + ' has webdriver SessionId: ' + session)
       browserMap.set(this.id, { browser, session })
@@ -67,7 +68,6 @@ export function BrowserStackLauncher(
     } catch (err) {
       log.error((err as Error) ?? String(err))
       this._done('failure')
-      return
     }
   })
 

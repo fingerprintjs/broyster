@@ -1,3 +1,3 @@
-import { ThenableWebDriver } from 'selenium-webdriver'
+import { WebDriver } from 'selenium-webdriver'
 
-export type BrowserMap = Map<string, { browser: ThenableWebDriver; session: string }>
+export type BrowserMap = Map<string, { browser: WebDriver; session: string }>

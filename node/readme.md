@@ -73,6 +73,31 @@ The launcher provides additional properties:
 useHttps: true
 ```
 
+*deviceName* is now a union type of `string | string[] | undefined`. In case of passing an array, it will mean there is a list of devices that are acceptable and any of them will be good to use. The list of devices will be iterated only in an attempt to launch a session, so the first succesful configuration to run will be the one that the tests run against. Tests will not run against all devices in the list. Note that the compatibility between the devices and the rest of the specified config is your responsibility.
+
+``` js
+  Android11_ChromeLatest: {
+    deviceName: 'Google Pixel 4',
+    platform: 'Android',
+    osVersion: '11.0',
+    browserName: 'Chrome',
+    browserVersion: 'latest-beta',
+    useHttps: true,
+  },
+```
+
+or
+
+``` js
+  iOS15_Safari: {
+    deviceName: ['iPhone 8 Plus', 'iPhone 11 Pro', 'iPhone 11'],
+    platform: 'iOS',
+    osVersion: '15',
+    browserName: 'Safari',
+    useHttps: true,
+  },
+```
+
 *firefoxCapabilities* an array of extra capabilities specifically for Firefox.
 
 ``` js
