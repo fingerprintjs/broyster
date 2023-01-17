@@ -27,7 +27,7 @@ This package exports the following:
         The HTTP server runs on the port provided by Karma, while the HTTPS port will run on +1 from that.
     - `setHttpsAndServerForKarma` That configures karma for HTTP and HTTPS testing without any additional work.
 - `@fpjs-incubator/broyster/node`:
-    - `retryFailedTests` That allows overriding the different behavior of Jasmine specs. The new behavior will retry a failed test up until the maximum specified in the first parameter, with a delay between each such attempt, indicated by the second parameters (in miliseconds). Remember to only run it once.
+    - `retryFailedTests` That allows overriding the different behavior of Jasmine specs. The new behavior will retry a failed test up until the maximum specified in the first parameter, with a delay between each such attempt, indicated by the second parameters (in miliseconds). There is a safety mechanism to prevent recurring apply, however you may also use `helpers` in Jasmine.
 
 To use mixed HTTP/HTTPS testing, in your karma config file you need to:
 Set the protocol to https

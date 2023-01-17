@@ -1,4 +1,9 @@
+let hasBeenSetAlready = false
+
 export function retryFailedTests(retries: number, millisecondsBetweenRetries: number) {
+  if (hasBeenSetAlready) {
+    return
+  }
   const typelessJasmine = jasmine as any // eslint-disable-line @typescript-eslint/no-explicit-any
   const originalSpecConstructor = typelessJasmine.Spec
 
@@ -47,7 +52,7 @@ export function retryFailedTests(retries: number, millisecondsBetweenRetries: nu
       }
       return returnValue
     }
-
     return spec
   }
+  hasBeenSetAlready = true
 }
