@@ -111,7 +111,7 @@ const browsers = {
     useHttps: true,
   },
   Android13_ChromeLatest: {
-    deviceName: ['Google Pixel 7', 'Google Pixel 6 Pro'],
+    deviceName: 'Google Pixel 7',
     platform: 'Android',
     osVersion: '13.0',
     browserName: 'Chrome',
@@ -150,7 +150,15 @@ const browsers = {
     useHttps: true,
   },
   iOS15_Safari: {
-    deviceName: 'iPhone 13',
+    deviceName: [
+      'iPhone 13',
+      'iPhone 13 Mini',
+      'iPhone 11 Pro',
+      'iPhone 11',
+      'iPhone XS',
+      'iPhone 13 Pro',
+      'iPhone 13 Pro Max',
+    ],
     platform: 'iOS',
     osVersion: '15',
     browserName: 'Safari',
@@ -230,7 +238,7 @@ function setupBrowserStack(config: Config) {
     customLaunchers,
     concurrency: 5,
     plugins: [karmaPlugin, 'karma-*'],
-    retryLimit: 4,
+    retryLimit: 8,
     browserStack: {
       project: 'FingerprintJS', // todo: Turn to "Broyster" when the repository is open-sourced
       // A build number is required to group testing sessions in the BrowserStack UI.
