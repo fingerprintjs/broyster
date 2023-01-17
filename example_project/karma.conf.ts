@@ -163,11 +163,6 @@ function setupLocal(config: Config) {
         sourceMap: true,
       },
     },
-    client: {
-      jasmine: {
-        helpers: 'test_helpers/*.ts',
-      },
-    },
     specReporter: {
       suppressSummary: true,
       suppressErrorSummary: true,
