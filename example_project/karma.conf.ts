@@ -145,7 +145,7 @@ const browsers = {
   iOS14_Safari: {
     deviceName: 'iPhone 11',
     platform: 'iOS',
-    osVersion: '15',
+    osVersion: '14',
     browserName: 'Safari',
     useHttps: true,
   },
