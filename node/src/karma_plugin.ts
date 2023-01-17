@@ -21,7 +21,6 @@ declare module 'karma' {
       build: string | number
       timeout: number
     }
-    client?: ClientOptions | undefined
   }
 
   interface CustomLauncher {
