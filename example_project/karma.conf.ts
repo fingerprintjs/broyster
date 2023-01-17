@@ -163,15 +163,6 @@ const browsers = {
     browserName: 'Safari',
     useHttps: true,
   },
-  iOS15_Safari_many_devices: {
-    deviceName: ['iPhone 8 Plus', 'iPhone 13', 'iPhone XS', 'iPhone 11', 'iPhone 14'],
-    // iPhone 8 Plus with iOS 15 is not available
-    // this is expected to fail to showcase how the next nevice will be picked up
-    platform: 'iOS',
-    osVersion: '15',
-    browserName: 'Safari',
-    useHttps: true,
-  },
 }
 
 function makeBuildNumber() {
