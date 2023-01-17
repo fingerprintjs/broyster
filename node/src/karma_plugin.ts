@@ -24,10 +24,6 @@ declare module 'karma' {
     client?: ClientOptions | undefined
   }
 
-  interface ClientOptions {
-    jasmine: unknown
-  }
-
   interface CustomLauncher {
     name: string
     osVersion: string

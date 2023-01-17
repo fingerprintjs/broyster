@@ -10,9 +10,10 @@
   },
   "devDependencies": {
     "@types/node": "^18.11.12",
+    "@types/selenium-webdriver": "^4.1.9",
     "@typescript-eslint/eslint-plugin": "^5.46.0",
     "@typescript-eslint/parser": "^5.46.0",
-    "@types/selenium-webdriver": "^4.1.9",
+    "@types/karma-jasmine": "^4.0.2",
     "eslint": "^8.29.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
