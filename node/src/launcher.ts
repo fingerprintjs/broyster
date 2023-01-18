@@ -54,6 +54,16 @@ export function BrowserStackLauncher(
     }, 60000)
   }
   this.pendingTimeoutId = null
+  const startTimeout = timer.setTimeout(() => {
+    this.pendingTimeoutId = null
+    if (this.state !== this.STATE_BEING_CAPTURED) {
+      return
+    }
+
+    log.warn(`${this.name} has not captured in ${config.captureTimeout} ms, killing.`)
+    this.error = 'timeout'
+    this.kill()
+  }, config.captureTimeout)
 
   this.on('start', async (pageUrl: string) => {
     try {
@@ -68,17 +78,10 @@ export function BrowserStackLauncher(
         log.debug('waiting for queue')
         await new Promise((r) => setTimeout(r, 1_000))
       }
-      await run
-      this.pendingTimeoutId = timer.setTimeout(() => {
-        this.pendingTimeoutId = null
-        if (this.state !== this.STATE_BEING_CAPTURED) {
-          return
-        }
 
-        log.warn(`${this.name} has not captured in ${config.captureTimeout} ms, killing.`)
-        this.error = 'timeout'
-        this.kill()
-      }, config.captureTimeout)
+      await run
+
+      this.pendingTimeoutId = startTimeout()
 
       log.debug('creating browser with attributes: ' + JSON.stringify(args))
       browser = browserStackSessionFactory.createBrowser(args, log)
