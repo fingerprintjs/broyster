@@ -2,9 +2,9 @@ import { ThenableWebDriver } from 'selenium-webdriver'
 import { BrowserMap } from './browser_map'
 import { BrowserStackLocalManager } from './browserstack_local_manager'
 import { BrowserStackSessionFactory } from './browserstack_session_factory'
-import { LoggerFactory } from './karma_logger'
+import { Logger, LoggerFactory } from './karma_logger'
 import { calculateHttpsPort } from './custom_servers'
-import { CustomLauncher, ConfigOptions } from 'karma'
+import { CustomLauncher, ConfigOptions, Timer } from 'karma'
 import { canNewBrowserBeQueued } from './browserstack_helpers'
 
 export function BrowserStackLauncher(
@@ -14,7 +14,7 @@ export function BrowserStackLauncher(
   browserMap: BrowserMap,
   logger: LoggerFactory,
   config: ConfigOptions,
-  timer: any,
+  timer: Timer,
   baseLauncherDecorator: (arg: object) => void,
   retryLauncherDecorator: (arg: object) => void,
   browserStackSessionFactory: BrowserStackSessionFactory,
@@ -53,31 +53,24 @@ export function BrowserStackLauncher(
       return
     }, 60000)
   }
-  this.pendingTimeoutId = null
-  const startTimeout = timer.setTimeout(() => {
-    this.pendingTimeoutId = null
-    if (this.state !== this.STATE_BEING_CAPTURED) {
-      return
-    }
 
-    log.warn(`${this.name} has not captured in ${config.captureTimeout} ms, killing.`)
-    this.error = 'timeout'
-    this.kill()
-  }, config.captureTimeout)
+  this.pendingTimeoutId = null
+  const startTimeout = () => {
+    return timer.setTimeout(() => {
+      this.pendingTimeoutId = null
+      if (this.state !== this.STATE_BEING_CAPTURED) {
+        return
+      }
+
+      log.warn(`${this.name} has not captured in ${config.captureTimeout} ms, killing.`)
+      this.error = 'timeout'
+      this.kill()
+    }, config.captureTimeout)
+  }
 
   this.on('start', async (pageUrl: string) => {
     try {
-      const maxTime = Date.now() + 60_000 * (config.browserStack?.queueTimeout ?? 1)
-      // TODO: move to a singleton for managing concurrent attempts
-      while (!(await canNewBrowserBeQueued(log))) {
-        if (Date.now() > maxTime) {
-          throw new Error(
-            'Queue has not been freed within the last 5 minutes. Please check BrowserStack and retry later.',
-          )
-        }
-        log.debug('waiting for queue')
-        await new Promise((r) => setTimeout(r, 1_000))
-      }
+      await waitForEmptyQueue(config, log)
 
       await run
 
@@ -143,4 +136,16 @@ function makeUrl(karmaUrl: string, isHttps: boolean) {
     url.port = calculateHttpsPort(parseInt(url.port)).toString()
   }
   return url.href
+}
+
+async function waitForEmptyQueue(config: ConfigOptions, log: Logger) {
+  const maxTime = Date.now() + 60_000 * (config.browserStack?.queueTimeout ?? 1)
+  // TODO: move to a singleton for managing concurrent attempts
+  while (!(await canNewBrowserBeQueued(log))) {
+    if (Date.now() > maxTime) {
+      throw new Error('Queue has not been freed within the last 5 minutes. Please check BrowserStack and retry later.')
+    }
+    log.debug('waiting for queue')
+    await new Promise((r) => setTimeout(r, 1_000))
+  }
 }
