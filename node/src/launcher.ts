@@ -4,7 +4,7 @@ import { BrowserStackLocalManager } from './browserstack_local_manager'
 import { BrowserStackSessionFactory } from './browserstack_session_factory'
 import { LoggerFactory } from './karma_logger'
 import { calculateHttpsPort } from './custom_servers'
-import { CustomLauncher } from 'karma'
+import { CustomLauncher, ConfigOptions } from 'karma'
 import { canNewBrowserBeQueued } from './browserstack_helpers'
 
 export function BrowserStackLauncher(
@@ -13,14 +13,14 @@ export function BrowserStackLauncher(
   args: CustomLauncher,
   browserMap: BrowserMap,
   logger: LoggerFactory,
+  config: ConfigOptions,
+  timer: any,
   baseLauncherDecorator: (arg: object) => void,
-  captureTimeoutLauncherDecorator: (arg: object) => void,
   retryLauncherDecorator: (arg: object) => void,
   browserStackSessionFactory: BrowserStackSessionFactory,
   browserStackLocalManager: BrowserStackLocalManager,
 ) {
   baseLauncherDecorator(this)
-  captureTimeoutLauncherDecorator(this)
   retryLauncherDecorator(this)
 
   const log = logger.create('Browserstack')
@@ -53,10 +53,11 @@ export function BrowserStackLauncher(
       return
     }, 60000)
   }
+  this.pendingTimeoutId = null
 
   this.on('start', async (pageUrl: string) => {
     try {
-      const maxTime = Date.now() + 50_000
+      const maxTime = Date.now() + 60_000 * (config.browserStack?.queueTimeout ?? 1)
       // TODO: move to a singleton for managing concurrent attempts
       while (!(await canNewBrowserBeQueued(log))) {
         if (Date.now() > maxTime) {
@@ -68,6 +69,17 @@ export function BrowserStackLauncher(
         await new Promise((r) => setTimeout(r, 1_000))
       }
       await run
+      this.pendingTimeoutId = timer.setTimeout(() => {
+        this.pendingTimeoutId = null
+        if (this.state !== this.STATE_BEING_CAPTURED) {
+          return
+        }
+
+        log.warn(`${this.name} has not captured in ${config.captureTimeout} ms, killing.`)
+        this.error = 'timeout'
+        this.kill()
+      }, config.captureTimeout)
+
       log.debug('creating browser with attributes: ' + JSON.stringify(args))
       browser = browserStackSessionFactory.createBrowser(args, log)
       const session = pageUrl.split('/').slice(-1)[0]
@@ -81,6 +93,13 @@ export function BrowserStackLauncher(
       log.error((err as Error) ?? String(err))
       this._done('failure')
       return
+    }
+  })
+
+  this.on('done', () => {
+    if (this.pendingTimeoutId) {
+      timer.clearTimeout(this.pendingTimeoutId)
+      this.pendingTimeoutId = null
     }
   })
 
