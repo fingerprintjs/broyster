@@ -137,13 +137,15 @@ function makeUrl(karmaUrl: string, isHttps: boolean) {
 }
 
 async function waitForEmptyQueue(config: ConfigOptions, log: Logger) {
-  const minutes = 1_000 * (config.browserStack?.queueTimeout ?? 60)
-  const maxTime = Date.now() + minutes
+  const timeout = 1_000 * (config.browserStack?.queueTimeout ?? 60)
+  const maxTime = Date.now() + timeout
   // TODO: move to a singleton for managing concurrent attempts
   while (!(await canNewBrowserBeQueued(log))) {
     if (Date.now() > maxTime) {
       throw new Error(
-        `Queue has not been freed within the last ${minutes} minutes. Please check BrowserStack and retry later.`,
+        `Queue has not been freed within the last ${
+          timeout / 60_000
+        } minutes. Please check BrowserStack and retry later.`,
       )
     }
     log.debug('waiting for queue')
