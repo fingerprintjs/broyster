@@ -10,7 +10,7 @@ export class CapabilitiesFactory {
   }
 
   create(
-    browserName: string,
+    browserName: string | undefined,
     buildName: string,
     sessionName: string,
     projectName: string,
@@ -30,9 +30,8 @@ export class CapabilitiesFactory {
         local: true,
         userName: this._username,
         accessKey: this._accessKey,
-        idleTimeout: process.env.idleTimeout || '10',
       },
-      browserName: browserName.toLowerCase(),
+      browserName: browserName?.toLowerCase() ?? '',
       browserVersion: browserVersion || 'latest',
       acceptInsecureCerts: true,
     }

@@ -1,4 +1,4 @@
-export default class Arguments {
-  static Incognito = 'incognito'
-  static Headless = 'headless'
+export enum Arguments {
+  Incognito = 'incognito',
+  Headless = 'headless',
 }

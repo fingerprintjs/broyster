@@ -1,63 +1,59 @@
 import * as edge from 'selenium-webdriver/edge'
-import Arguments from './arguments'
+import { Arguments } from './arguments'
 import * as chrome from 'selenium-webdriver/chrome'
 import * as safari from 'selenium-webdriver/safari'
 import * as firefox from 'selenium-webdriver/firefox'
-import * as ie from 'selenium-webdriver/ie'
 
 export class OptionsBuilder {
-  static create(browserName: string, rawArgs: string[]) {
-    const args = this.mapArguments(browserName, rawArgs ?? new Array<string>())
-    switch (browserName.toLowerCase()) {
-      case 'chrome': {
-        const opts = new chrome.Options()
-        opts.setAcceptInsecureCerts(true)
-        for (const arg of args.filter((arg) => arg !== Arguments.Headless)) {
-          opts.addArguments(arg)
+  static create(browserName: string | undefined, rawArgs: string[] | undefined) {
+    if (browserName) {
+      const args = this.mapArguments(browserName, rawArgs ?? new Array<string>())
+      switch (browserName.toLowerCase()) {
+        case 'chrome': {
+          const opts = new chrome.Options()
+          opts.setAcceptInsecureCerts(true)
+          for (const arg of args) {
+            if (arg === Arguments.Headless) {
+              opts.headless()
+            } else {
+              opts.addArguments(arg)
+            }
+          }
+          return opts
         }
-        if (args.some((arg) => arg === Arguments.Headless)) {
-          opts.headless()
+        case 'firefox': {
+          const opts = new firefox.Options()
+          opts.setAcceptInsecureCerts(true)
+          for (const arg of args) {
+            if (arg === Arguments.Headless) {
+              opts.headless()
+            } else {
+              opts.addArguments(arg)
+            }
+          }
+          return opts
         }
-        return opts
-      }
-      case 'firefox': {
-        const opts = new firefox.Options()
-        opts.setAcceptInsecureCerts(true)
-        for (const arg of args.filter((arg) => arg !== Arguments.Headless)) {
-          opts.addArguments(arg)
+        case 'safari': {
+          const opts = new safari.Options()
+          opts.setAcceptInsecureCerts(true)
+          // no args allowed?
+          return opts
         }
-        if (args.some((arg) => arg === Arguments.Headless)) {
-          opts.headless()
+        case 'edge': {
+          const opts = new edge.Options()
+          opts.setAcceptInsecureCerts(true)
+          for (const arg of args) {
+            if (arg === Arguments.Headless) {
+              opts.headless()
+            } else {
+              opts.addArguments(arg)
+            }
+          }
+          return opts
         }
-        return opts
-      }
-      case 'safari': {
-        const opts = new safari.Options()
-        opts.setAcceptInsecureCerts(true)
-        // no args allowed?
-        return opts
-      }
-      case 'edge': {
-        const opts = new edge.Options()
-        opts.setAcceptInsecureCerts(true)
-        for (const arg of args.filter((arg) => arg !== Arguments.Headless)) {
-          opts.addArguments(arg)
-        }
-        if (args.some((arg) => arg === Arguments.Headless)) {
-          opts.headless()
-        }
-        return opts
-      }
-      case 'ie': {
-        const opts = new ie.Options()
-        opts.setAcceptInsecureCerts(true)
-        for (const arg of args.filter((arg) => arg !== Arguments.Headless)) {
-          opts.addArguments(arg)
-        }
-        return opts
       }
     }
-    throw new Error(`Unknown browser: ${browserName}`)
+    throw new Error(`Unknown or unsupported browser: ${browserName}`)
   }
 
   private static mapArguments(browserName: string, args: string[]) {
