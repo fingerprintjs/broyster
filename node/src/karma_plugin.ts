@@ -19,8 +19,7 @@ declare module 'karma' {
     browserStack?: {
       project: string
       build: string | number
-      timeout: number
-      idleTimeout?: number
+      timeout?: number
     }
   }
 
