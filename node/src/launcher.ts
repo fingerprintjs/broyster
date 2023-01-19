@@ -4,7 +4,7 @@ import { BrowserStackLocalManager } from './browserstack_local_manager'
 import { BrowserStackSessionFactory } from './browserstack_session_factory'
 import { Logger, LoggerFactory } from './karma_logger'
 import { calculateHttpsPort } from './custom_servers'
-import { CustomLauncher, ConfigOptions, Timer } from 'karma'
+import { CustomLauncher, ConfigOptions } from 'karma'
 import { canNewBrowserBeQueued } from './browserstack_helpers'
 
 export function BrowserStackLauncher(
@@ -14,7 +14,6 @@ export function BrowserStackLauncher(
   browserMap: BrowserMap,
   logger: LoggerFactory,
   config: ConfigOptions,
-  timer: Timer,
   baseLauncherDecorator: (arg: object) => void,
   retryLauncherDecorator: (arg: object) => void,
   browserStackSessionFactory: BrowserStackSessionFactory,
@@ -57,7 +56,7 @@ export function BrowserStackLauncher(
 
   this.pendingTimeoutId = null
   const startTimeout = () => {
-    return timer.setTimeout(() => {
+    return setTimeout(() => {
       this.pendingTimeoutId = null
       if (this.state !== this.STATE_BEING_CAPTURED) {
         return
@@ -93,7 +92,7 @@ export function BrowserStackLauncher(
 
   this.on('done', () => {
     if (this.pendingTimeoutId) {
-      timer.clearTimeout(this.pendingTimeoutId)
+      clearTimeout(this.pendingTimeoutId)
       this.pendingTimeoutId = null
     }
   })
@@ -138,11 +137,14 @@ function makeUrl(karmaUrl: string, isHttps: boolean) {
 }
 
 async function waitForEmptyQueue(config: ConfigOptions, log: Logger) {
-  const maxTime = Date.now() + 60_000 * (config.browserStack?.queueTimeout ?? 1)
+  const minutes = 1_000 * (config.browserStack?.queueTimeout ?? 60)
+  const maxTime = Date.now() + minutes
   // TODO: move to a singleton for managing concurrent attempts
   while (!(await canNewBrowserBeQueued(log))) {
     if (Date.now() > maxTime) {
-      throw new Error('Queue has not been freed within the last 5 minutes. Please check BrowserStack and retry later.')
+      throw new Error(
+        `Queue has not been freed within the last ${minutes} minutes. Please check BrowserStack and retry later.`,
+      )
     }
     log.debug('waiting for queue')
     await new Promise((r) => setTimeout(r, 1_000))

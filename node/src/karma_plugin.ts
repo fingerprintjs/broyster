@@ -33,11 +33,6 @@ declare module 'karma' {
     useHttps: boolean
     //extraSettings: string[]; //TODO things like timezone, locale
   }
-
-  interface Timer {
-    clearTimeout(timeoutId: NodeJS.Timeout | string | number | undefined): void
-    setTimeout(callback: (args: void) => void, ms?: number): NodeJS.Timeout
-  }
 }
 
 export default karmaPlugin
