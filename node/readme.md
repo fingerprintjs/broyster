@@ -116,3 +116,9 @@ There is a dedicated reproter that will mark successful tests as passed in Brows
   config.set({
     reporters: [...config.reporters, 'BrowserStack'],
 ```
+
+### Launcher specific settings
+
+The following config options are available inside the browserStack section of the config:
+
+- `queueTimeout`: expressed in seconds, specifies the maximum amount of time to wait for a the BrowserStack queue to free up a slot.
