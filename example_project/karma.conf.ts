@@ -245,6 +245,7 @@ function setupBrowserStack(config: Config) {
       build: process.env.GITHUB_RUN_ID || makeBuildNumber(),
       // The timeout is reduced for testing sessions to not hold the BrowserStack queue long in case of problems.
       timeout: 120,
+      idleTimeout: 10
     },
   })
   setHttpsAndServerForKarma(config)
