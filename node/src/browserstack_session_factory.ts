@@ -31,7 +31,7 @@ export class BrowserStackSessionFactory {
       })()
     this._project = config.browserStack.project
     this._build = config.browserStack.build.toString()
-    this._idleTimeout = config.browserStack.timeout ?? 60
+    this._idleTimeout = config.browserStack.idleTimeout ?? 60
     this._capsFactory = new CapabilitiesFactory(this._username, this._accessKey)
   }
 

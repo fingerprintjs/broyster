@@ -122,4 +122,4 @@ There is a dedicated reproter that will mark successful tests as passed in Brows
 
 The following config options are available inside the browserStack section of the config:
 
-- `timeout`: expressed in seconds, specifies the amount of time that BrowserStack is supposed to keep the session alive without any activity before automatically killing it.
+- `idleTimeout`: expressed in seconds, specifies the amount of time that BrowserStack is supposed to keep the session alive without any activity before automatically killing it.
