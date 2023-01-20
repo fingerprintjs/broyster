@@ -14,14 +14,6 @@ declare module 'karma' {
 }
 
 const browsers = {
-  OSXMonterey_Safari15: {
-    platform: 'OS X',
-    osVersion: 'Monterey',
-    browserName: 'Safari',
-    browserVersion: '15.0',
-    useHttps: false,
-  },
-
   Windows10_Chrome57: {
     platform: 'Windows',
     osVersion: '10',
@@ -92,7 +84,7 @@ const browsers = {
     browserVersion: 'latest-beta',
     useHttps: true,
   },
-  // OSXMonterey_ChromeLatest_Incognito: { platform: 'OS X', osVersion: 'Monterey', browserName: 'Chrome',
+  // OSX13_ChromeLatest_Incognito: { platform: 'OS X', osVersion: 'Ventura', browserName: 'Chrome',
   //browserVersion: 'latest-beta, ...chromeIncognitoCapabilities },
   OSX13_FirefoxLatest: {
     platform: 'OS X',
@@ -101,7 +93,7 @@ const browsers = {
     browserVersion: 'latest-beta',
     useHttps: true,
   },
-  // OSXMonterey_FirefoxLatest_Incognito: { platform: 'OS X', osVersion: 'Monterey', browserName: 'Firefox',
+  // OSX13_FirefoxLatest_Incognito: { platform: 'OS X', osVersion: 'Ventura', browserName: 'Firefox',
   //browserVersion: 'latest-beta, ...firefoxIncognitoCapabilities },
   OSX13_EdgeLatest: {
     platform: 'OS X',
