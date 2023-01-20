@@ -8,4 +8,5 @@ export interface BstackOptions {
   local: boolean
   userName: string
   accessKey: string
+  idleTimeout: number
 }

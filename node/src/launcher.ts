@@ -50,7 +50,7 @@ export function BrowserStackLauncher(
         clearTimeout(pendingHeartBeat)
       }
       return
-    }, 60000)
+    }, 9_000)
   }
   this.attempt = 0
 
