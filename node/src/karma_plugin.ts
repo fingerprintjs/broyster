@@ -20,6 +20,7 @@ declare module 'karma' {
       project: string
       build: string | number
       idleTimeout?: number
+      queueTimeout?: number
     }
   }
 
