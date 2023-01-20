@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "moduleResolution": "node",
+    "target": "es6", // The TypeScript library is both for Node.js and browsers
+    "moduleResolution": "node16",
     "removeComments": false,
     "resolveJsonModule": true,
     "importHelpers": true,

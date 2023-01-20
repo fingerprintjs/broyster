@@ -1,6 +1,6 @@
 import { Config, CustomLauncher } from 'karma'
 import { KarmaTypescriptConfig } from 'karma-typescript'
-import { karmaPlugin, sslConfiguration, httpHttpsServer } from '@fpjs-incubator/broyster'
+import { karmaPlugin, setHttpsAndServerForKarma } from '@fpjs-incubator/broyster/node'
 
 declare module 'karma' {
   interface ConfigOptions {
@@ -22,24 +22,13 @@ const browsers = {
     useHttps: false,
   },
 
-  //IE11: { platform: 'Windows', osVersion: '7', browserName: 'IE', browserVersion: '11.0', useHttps: true },
-
-  Windows11_EdgeLatest: {
-    platform: 'Windows',
-    osVersion: '11',
-    browserName: 'Edge',
-    browserVersion: 'latest-beta',
-    useHttps: true,
-  },
-  Windows10_Chrome49: {
+  Windows10_Chrome57: {
     platform: 'Windows',
     osVersion: '10',
     browserName: 'Chrome',
-    browserVersion: '49.0',
+    browserVersion: '57',
     useHttps: true,
   },
-  // Windows10_Chrome49_Incognito: { platform: 'Windows', osVersion: '10',
-  //browserName: 'Chrome', browserVersion: '49.0', ...chromeIncognitoCapabilities },
   Windows11_ChromeLatest: {
     platform: 'Windows',
     osVersion: '11',
@@ -49,15 +38,15 @@ const browsers = {
   },
   // Windows11_ChromeLatest_Incognito: { platform: 'Windows', osVersion: '11', browserName: 'Chrome',
   //browserVersion: 'latest-beta, ...chromeIncognitoCapabilities },
-  Windows10_Firefox52: {
+  Windows10_Firefox67: {
     platform: 'Windows',
     osVersion: '10',
     browserName: 'Firefox',
-    browserVersion: '52.0',
+    browserVersion: '67',
     useHttps: true,
   },
-  // Windows10_Firefox52_Incognito: { platform: 'Windows', osVersion: '10', browserName: 'Firefox',
-  //browserVersion: '52.0', ...firefoxIncognitoCapabilities },
+  // Windows10_Firefox67_Incognito: { platform: 'Windows', osVersion: '10', browserName: 'Firefox',
+  //browserVersion: '67', ...firefoxIncognitoCapabilities },
   Windows11_FirefoxLatest: {
     platform: 'Windows',
     osVersion: '11',
@@ -67,76 +56,130 @@ const browsers = {
   },
   // Windows11_FirefoxLatest_Incognito: { platform: 'Windows', osVersion: '11', browserName: 'Firefox',
   //browserVersion: 'latest-beta, ...firefoxIncognitoCapabilities },
-  OSXMojave_Safari12: {
+  Windows11_EdgeLatest: {
+    platform: 'Windows',
+    osVersion: '11',
+    browserName: 'Edge',
+    browserVersion: 'latest-beta',
+    useHttps: true,
+  },
+
+  'OSX10.14_Safari12': {
     platform: 'OS X',
     osVersion: 'Mojave',
     browserName: 'Safari',
-    browserVersion: '12.1',
+    browserVersion: '12',
     useHttps: true,
   },
-  //OSXMonterey_Safari15: { platform: 'OS X', osVersion: 'Monterey', browserName: 'Safari', browserVersion: '15.0' },
-  OSXMonterey_ChromeLatest: {
+  OSX12_Safari15: {
     platform: 'OS X',
     osVersion: 'Monterey',
+    browserName: 'Safari',
+    browserVersion: '15',
+    useHttps: true,
+  },
+  OSX13_Safari16: {
+    platform: 'OS X',
+    osVersion: 'Ventura',
+    browserName: 'Safari',
+    browserVersion: '16',
+    useHttps: true,
+  },
+  OSX13_ChromeLatest: {
+    platform: 'OS X',
+    osVersion: 'Ventura',
     browserName: 'Chrome',
     browserVersion: 'latest-beta',
     useHttps: true,
   },
   // OSXMonterey_ChromeLatest_Incognito: { platform: 'OS X', osVersion: 'Monterey', browserName: 'Chrome',
   //browserVersion: 'latest-beta, ...chromeIncognitoCapabilities },
-  OSXMonterey_FirefoxLatest: {
+  OSX13_FirefoxLatest: {
     platform: 'OS X',
-    osVersion: 'Monterey',
+    osVersion: 'Ventura',
     browserName: 'Firefox',
     browserVersion: 'latest-beta',
     useHttps: true,
   },
   // OSXMonterey_FirefoxLatest_Incognito: { platform: 'OS X', osVersion: 'Monterey', browserName: 'Firefox',
   //browserVersion: 'latest-beta, ...firefoxIncognitoCapabilities },
-  OSXMonterey_EdgeLatest: {
+  OSX13_EdgeLatest: {
     platform: 'OS X',
-    osVersion: 'Monterey',
+    osVersion: 'Ventura',
     browserName: 'Edge',
     browserVersion: 'latest-beta',
     useHttps: true,
   },
-  Android11_ChromeLatest: {
-    deviceName: 'Google Pixel 4',
+  Android13_ChromeLatest: {
+    deviceName: 'Google Pixel 7',
     platform: 'Android',
-    osVersion: '11.0',
+    osVersion: '13.0',
     browserName: 'Chrome',
     browserVersion: 'latest-beta',
     useHttps: true,
   },
-  //iOS10_Safari: { deviceName: 'iPhone 7', platform: 'iOS', osVersion: '10', browserName: 'Safari', useHttps: true },
+
   // disabled temporarily because of issues with creating the session
   // TODO: Investigate failing iOS builds
   iOS11_Safari: {
-    deviceName: 'iPhone 8 Plus',
+    deviceName: ['iPhone 8 Plus', 'iPhone X', 'iPhone SE'],
     platform: 'iOS',
     osVersion: '11',
     browserName: 'Safari',
     useHttps: true,
   },
-  iOS12_Safari: { deviceName: 'iPhone XS', platform: 'iOS', osVersion: '12', browserName: 'Safari', useHttps: true },
+  iOS12_Safari: {
+    deviceName: ['iPhone XS', 'iPhone XR', 'iPhone 7'],
+    platform: 'iOS',
+    osVersion: '12',
+    browserName: 'Safari',
+    useHttps: true,
+  },
   iOS13_Safari: {
-    deviceName: 'iPhone 11 Pro',
+    deviceName: ['iPhone 11 Pro', 'iPhone 8', 'iPhone XS'],
     platform: 'iOS',
     osVersion: '13',
     browserName: 'Safari',
     useHttps: true,
   },
-  iOS14_Safari: { deviceName: 'iPhone 11', platform: 'iOS', osVersion: '14', browserName: 'Safari', useHttps: true },
-  /*
+  iOS14_Safari: {
+    deviceName: ['iPhone 11', 'iPhone XS', 'iPhone 12 Pro'],
+    platform: 'iOS',
+    osVersion: '14',
+    browserName: 'Safari',
+    useHttps: true,
+  },
   iOS15_Safari: {
-    deviceName: 'iPhone 11 Pro',
+    deviceName: [
+      'iPhone 13',
+      'iPhone 13 Mini',
+      'iPhone 11 Pro',
+      'iPhone 11',
+      'iPhone XS',
+      'iPhone 13 Pro',
+      'iPhone 13 Pro Max',
+    ],
     platform: 'iOS',
     osVersion: '15',
     browserName: 'Safari',
     useHttps: true,
-  }, // disabled temporarily because of issues with creating the session
-  TODO: Investigate failing iOS builds
-  */
+  },
+  iOS16_Safari: {
+    deviceName: [
+      'iPhone 14',
+      'iPhone 14 Pro Max',
+      'iPhone 14 Pro',
+      'iPhone 14 Plus',
+      'iPhone 12 Pro Max',
+      'iPhone 12 Pro',
+      'iPhone 12 Mini',
+      'iPhone 11 Pro Max',
+    ],
+    platform: 'iOS',
+    osVersion: '16',
+    browserName: 'Safari',
+    useHttps: true,
+  },
 }
 
 function makeBuildNumber() {
@@ -145,7 +188,6 @@ function makeBuildNumber() {
 
 function setupLocal(config: Config) {
   const files = ['src/**/*.ts']
-
   config.set({
     frameworks: ['jasmine', 'karma-typescript'],
     files,
@@ -164,7 +206,6 @@ function setupLocal(config: Config) {
         sourceMap: true,
       },
     },
-
     specReporter: {
       suppressSummary: true,
       suppressErrorSummary: true,
@@ -175,16 +216,6 @@ function setupLocal(config: Config) {
     summaryReporter: {
       show: 'skipped',
     },
-
-    protocol: 'https',
-    httpsServerOptions: {
-      key: sslConfiguration.key,
-      cert: sslConfiguration.cert,
-      requestCert: false,
-      rejectUnauthorized: false,
-    },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    httpModule: httpHttpsServer as any,
   })
 }
 
@@ -200,12 +231,12 @@ function setupBrowserStack(config: Config) {
   }
 
   config.set({
-    reporters: [...config.reporters], //'BrowserStack'], // todo: Turn on when reporter is done
+    reporters: [...config.reporters, 'BrowserStack'],
     browsers: Object.keys(customLaunchers),
     customLaunchers,
     concurrency: 5,
     plugins: [karmaPlugin, 'karma-*'],
-
+    retryLimit: 8,
     browserStack: {
       project: 'FingerprintJS', // todo: Turn to "Broyster" when the repository is open-sourced
       // A build number is required to group testing sessions in the BrowserStack UI.
@@ -213,9 +244,11 @@ function setupBrowserStack(config: Config) {
       // https://docs.github.com/en/free-pro-team@latest/actions/reference/environment-variables#default-environment-variables
       build: process.env.GITHUB_RUN_ID || makeBuildNumber(),
       // The timeout is reduced for testing sessions to not hold the BrowserStack queue long in case of problems.
-      timeout: 120,
+      idleTimeout: 20,
+      queueTimeout: 60,
     },
   })
+  setHttpsAndServerForKarma(config)
 }
 
 /**

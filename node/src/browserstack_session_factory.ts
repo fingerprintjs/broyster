@@ -11,6 +11,7 @@ export class BrowserStackSessionFactory {
   private _project: string
   private _build: string
   private _capsFactory: CapabilitiesFactory
+  private _idleTimeout: number
 
   constructor(config: ConfigOptions) {
     if (!config.browserStack) {
@@ -29,20 +30,44 @@ export class BrowserStackSessionFactory {
         throw new Error('BrowserStack access key is empty')
       })()
     this._project = config.browserStack.project
-    this._build = String(config.browserStack.build)
+    this._build = config.browserStack.build.toString()
+    this._idleTimeout = config.browserStack.idleTimeout ?? 60
     this._capsFactory = new CapabilitiesFactory(this._username, this._accessKey)
   }
 
-  createBrowser(browser: CustomLauncher, log: Logger) {
+  async tryCreateBrowser(browsers: CustomLauncher, attempt: number, log: Logger) {
+    if (Array.isArray(browsers.deviceName)) {
+      const device = browsers.deviceName[attempt]
+      return await this.makeFromDevicesSet(browsers, device, log)
+    }
+    return await this.createBrowser(browsers, log)
+  }
+
+  private async makeFromDevicesSet(browsers: CustomLauncher, device: string, log: Logger) {
+    try {
+      log.info('creating session for ' + browsers.browserName + ' on ' + device)
+      const launcher = Object.assign({}, browsers)
+      launcher.deviceName = device
+      const browser = await this.createBrowser(launcher, log)
+      log.info('created succesfully')
+      return browser
+    } catch (err) {
+      log.error('could not create session, trying next configuration')
+      throw err
+    }
+  }
+
+  private async createBrowser(browser: CustomLauncher, log: Logger) {
     const caps = this._capsFactory.create(
       browser.browserName,
       this._build,
       this._build,
       this._project,
-      browser.deviceName,
+      browser.deviceName as string,
       browser.platform,
       browser.osVersion,
       browser.browserVersion,
+      this._idleTimeout,
     )
     log.debug('created capabilities: ' + JSON.stringify(caps))
     const opts = OptionsBuilder.create(browser.browserName, browser.flags)
@@ -50,7 +75,7 @@ export class BrowserStackSessionFactory {
     if (browser.firefoxCapabilities) {
       log.debug('using firefox capabilities: ' + browser.firefoxCapabilities)
     }
-    return WebDriverFactory.createFromOptions(opts, caps, log, browser.firefoxCapabilities)
+    return WebDriverFactory.createFromOptions(opts, caps, browser.firefoxCapabilities)
   }
 }
 

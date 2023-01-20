@@ -1,11 +1,12 @@
-import { ThenableWebDriver } from 'selenium-webdriver'
+import { WebDriver } from 'selenium-webdriver'
 import { BrowserMap } from './browser_map'
 import { BrowserStackLocalManager } from './browserstack_local_manager'
 import { BrowserStackSessionFactory } from './browserstack_session_factory'
-import { LoggerFactory } from './karma_logger'
+import { Logger, LoggerFactory } from './karma_logger'
 import { calculateHttpsPort } from './custom_servers'
-import { CustomLauncher } from 'karma'
 import { BrowserStackSessionsManager } from './browserstack_sessions_manager'
+import { CustomLauncher, ConfigOptions } from 'karma'
+import { canNewBrowserBeQueued } from './browserstack_helpers'
 
 export function BrowserStackLauncher(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -13,31 +14,30 @@ export function BrowserStackLauncher(
   args: CustomLauncher,
   browserMap: BrowserMap,
   logger: LoggerFactory,
+  config: ConfigOptions,
   baseLauncherDecorator: (arg: object) => void,
-  captureTimeoutLauncherDecorator: (arg: object) => void,
   retryLauncherDecorator: (arg: object) => void,
   browserStackSessionFactory: BrowserStackSessionFactory,
   browserStackLocalManager: BrowserStackLocalManager,
 ) {
   baseLauncherDecorator(this)
-  captureTimeoutLauncherDecorator(this)
   retryLauncherDecorator(this)
 
   const log = logger.create('Browserstack')
   const run = browserStackLocalManager.run(log)
 
-  // Setup Browser name that will be printed out by Karma.
   this.name =
     args.browserName +
     ' ' +
-    (args.browserVersion ?? args.deviceName) +
-    ' ' +
+    (args.browserVersion ??
+      (Array.isArray(args.deviceName) ? 'on any of ' + args.deviceName.join(', ') : args.deviceName)) +
+    ' for ' +
     args.platform +
     ' ' +
     args.osVersion +
     ' on BrowserStack'
 
-  let browser: ThenableWebDriver
+  let browser: WebDriver
   let pendingHeartBeat: NodeJS.Timeout | undefined
   const heartbeat = () => {
     pendingHeartBeat = setTimeout(async () => {
@@ -51,28 +51,53 @@ export function BrowserStackLauncher(
         clearTimeout(pendingHeartBeat)
       }
       return
-    }, 60000)
+    }, 9_000)
+  }
+  this.attempt = 0
+
+  this.pendingTimeoutId = null
+  const startTimeout = () => {
+    return setTimeout(() => {
+      this.pendingTimeoutId = null
+      if (this.state !== this.STATE_BEING_CAPTURED) {
+        return
+      }
+
+      log.warn(`${this.name} has not captured in ${config.captureTimeout} ms, killing.`)
+      this.error = 'timeout'
+      this.kill()
+    }, config.captureTimeout)
   }
 
   this.on('start', async (pageUrl: string) => {
     try {
+      await waitForEmptyQueue(config, log)
+
       await run
       while (!(await BrowserStackSessionsManager.getInstance().checkIfNewSessionCanBeQueued(log))) {
         await new Promise((r) => setTimeout(r, 1_000))
       }
+
+      this.pendingTimeoutId = startTimeout()
+
       log.debug('creating browser with attributes: ' + JSON.stringify(args))
-      browser = browserStackSessionFactory.createBrowser(args, log)
-      const session = pageUrl.split('/').slice(-1)[0]
+      browser = await browserStackSessionFactory.tryCreateBrowser(args, this.attempt++, log)
+      const session = (await browser.getSession()).getId()
+      log.debug(this.id + ' has webdriver SessionId: ' + session)
       browserMap.set(this.id, { browser, session })
       pageUrl = makeUrl(pageUrl, args.useHttps)
       await browser.get(pageUrl)
-      const sessionId = (await browser.getSession()).getId()
-      log.debug(this.id + ' has webdriver SessionId: ' + sessionId)
       heartbeat()
     } catch (err) {
       log.error((err as Error) ?? String(err))
       this._done('failure')
-      return
+    }
+  })
+
+  this.on('done', () => {
+    if (this.pendingTimeoutId) {
+      clearTimeout(this.pendingTimeoutId)
+      this.pendingTimeoutId = null
     }
   })
 
@@ -113,4 +138,21 @@ function makeUrl(karmaUrl: string, isHttps: boolean) {
     url.port = calculateHttpsPort(parseInt(url.port)).toString()
   }
   return url.href
+}
+
+async function waitForEmptyQueue(config: ConfigOptions, log: Logger) {
+  const timeout = 1_000 * (config.browserStack?.queueTimeout ?? 60)
+  const maxTime = Date.now() + timeout
+  // TODO: move to a singleton for managing concurrent attempts
+  while (!(await canNewBrowserBeQueued(log))) {
+    if (Date.now() > maxTime) {
+      throw new Error(
+        `Queue has not been freed within the last ${
+          timeout / 60_000
+        } minutes. Please check BrowserStack and retry later.`,
+      )
+    }
+    log.debug('waiting for queue')
+    await new Promise((r) => setTimeout(r, 1_000))
+  }
 }
