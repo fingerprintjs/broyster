@@ -2,11 +2,10 @@ import { WebDriver } from 'selenium-webdriver'
 import { BrowserMap } from './browser_map'
 import { BrowserStackLocalManager } from './browserstack_local_manager'
 import { BrowserStackSessionFactory } from './browserstack_session_factory'
-import { Logger, LoggerFactory } from './karma_logger'
+import { LoggerFactory } from './karma_logger'
 import { calculateHttpsPort } from './custom_servers'
 import { BrowserStackSessionsManager } from './browserstack_sessions_manager'
 import { CustomLauncher, ConfigOptions } from 'karma'
-import { canNewBrowserBeQueued } from './browserstack_helpers'
 
 export function BrowserStackLauncher(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -71,11 +70,11 @@ export function BrowserStackLauncher(
 
   this.on('start', async (pageUrl: string) => {
     try {
-      await waitForEmptyQueue(config, log)
-
       await run
-      while (!(await BrowserStackSessionsManager.getInstance().checkIfNewSessionCanBeQueued(log))) {
-        await new Promise((r) => setTimeout(r, 1_000))
+
+      const queue = await BrowserStackSessionsManager.getInstance().waitForQueue(config, log)
+      if (!queue) {
+        throw new Error(`queue unavailable, browser ${this.id} will fail.`)
       }
 
       this.pendingTimeoutId = startTimeout()
@@ -138,21 +137,4 @@ function makeUrl(karmaUrl: string, isHttps: boolean) {
     url.port = calculateHttpsPort(parseInt(url.port)).toString()
   }
   return url.href
-}
-
-async function waitForEmptyQueue(config: ConfigOptions, log: Logger) {
-  const timeout = 1_000 * (config.browserStack?.queueTimeout ?? 60)
-  const maxTime = Date.now() + timeout
-  // TODO: move to a singleton for managing concurrent attempts
-  while (!(await canNewBrowserBeQueued(log))) {
-    if (Date.now() > maxTime) {
-      throw new Error(
-        `Queue has not been freed within the last ${
-          timeout / 60_000
-        } minutes. Please check BrowserStack and retry later.`,
-      )
-    }
-    log.debug('waiting for queue')
-    await new Promise((r) => setTimeout(r, 1_000))
-  }
 }
