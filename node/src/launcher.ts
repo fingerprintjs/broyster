@@ -74,7 +74,7 @@ export function BrowserStackLauncher(
 
       const queue = await browserStackSessionsManager.waitForQueue(config, log)
       if (!queue) {
-        throw new Error(`queue unavailable, browser ${this.id} will fail.`)
+        throw new Error(`the BrowserStack Automate queue is at full capacity, browser ${this.id} will fail.`)
       }
 
       this.pendingTimeoutId = startTimeout()
