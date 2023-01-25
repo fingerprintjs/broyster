@@ -68,14 +68,14 @@ const browsers = {
     osVersion: 'Monterey',
     browserName: 'Safari',
     browserVersion: '15',
-    useHttps: true,
+    useHttps: false,
   },
   OSX13_Safari16: {
     platform: 'OS X',
     osVersion: 'Ventura',
     browserName: 'Safari',
     browserVersion: '16',
-    useHttps: true,
+    useHttps: false,
   },
   OSX13_ChromeLatest: {
     platform: 'OS X',
