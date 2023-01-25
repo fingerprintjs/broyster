@@ -1,4 +1,4 @@
-import AsyncLock = require('async-lock')
+import * as AsyncLock from 'async-lock'
 import { Logger } from './karma_logger'
 import { canNewBrowserBeQueued } from './browserstack_helpers'
 import { ConfigOptions } from 'karma'
