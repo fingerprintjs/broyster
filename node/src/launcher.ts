@@ -4,7 +4,7 @@ import { BrowserStackLocalManager } from './browserstack_local_manager'
 import { BrowserStackSessionFactory } from './browserstack_session_factory'
 import { LoggerFactory } from './karma_logger'
 import { calculateHttpsPort } from './custom_servers'
-import { BrowserStackSessionsManager } from './browserstack_sessions_manager'
+import { browserStackSessionsManager } from './browserstack_sessions_manager'
 import { CustomLauncher, ConfigOptions } from 'karma'
 
 export function BrowserStackLauncher(
@@ -72,7 +72,7 @@ export function BrowserStackLauncher(
     try {
       await run
 
-      const queue = await BrowserStackSessionsManager.getInstance().waitForQueue(config, log)
+      const queue = await browserStackSessionsManager.waitForQueue(config, log)
       if (!queue) {
         throw new Error(`queue unavailable, browser ${this.id} will fail.`)
       }

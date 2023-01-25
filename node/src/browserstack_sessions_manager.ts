@@ -4,16 +4,9 @@ import { canNewBrowserBeQueued } from './browserstack_helpers'
 import { ConfigOptions } from 'karma'
 
 export class BrowserStackSessionsManager {
-  private _lock
-  public constructor() {
+  private _lock = new AsyncLock()
+  constructor() {
     this._lock = new AsyncLock()
-  }
-  private static _instance?: BrowserStackSessionsManager
-  static getInstance() {
-    if (!this._instance) {
-      this._instance = new BrowserStackSessionsManager()
-    }
-    return this._instance
   }
 
   async checkIfNewSessionCanBeQueued(log: Logger) {
@@ -37,3 +30,5 @@ export class BrowserStackSessionsManager {
     return true
   }
 }
+
+export const browserStackSessionsManager = new BrowserStackSessionsManager()
