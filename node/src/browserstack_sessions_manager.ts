@@ -5,9 +5,6 @@ import { ConfigOptions } from 'karma'
 
 export class BrowserStackSessionsManager {
   private _lock = new AsyncLock()
-  constructor() {
-    this._lock = new AsyncLock()
-  }
 
   async checkIfNewSessionCanBeQueued(log: Logger) {
     return this._lock.acquire('key1', async function () {
