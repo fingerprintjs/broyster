@@ -22,6 +22,8 @@ export function BrowserStackLauncher(
   baseLauncherDecorator(this)
   retryLauncherDecorator(this)
 
+  // TODO add launcher ID to help identify sessions more easily
+  // (this logger and maybe the name as the default launcher logger cannot be changed)
   const log = logger.create('Browserstack')
   const run = browserStackLocalManager.run(log)
 

@@ -5,7 +5,7 @@ import { ConfigOptions } from 'karma'
 
 export class BrowserStackSessionsManager {
   private _lock = new AsyncLock()
-
+  // TODO: use DI to inject the queue timeout from config instead of passing the config
   private async checkIfNewSessionCanBeQueued(log: Logger) {
     return this._lock.acquire('key1', async function () {
       return await canNewBrowserBeQueued(log)
