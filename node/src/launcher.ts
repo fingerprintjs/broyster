@@ -2,10 +2,10 @@ import { WebDriver } from 'selenium-webdriver'
 import { BrowserMap } from './browser_map'
 import { BrowserStackLocalManager } from './browserstack_local_manager'
 import { BrowserStackSessionFactory } from './browserstack_session_factory'
-import { Logger, LoggerFactory } from './karma_logger'
+import { LoggerFactory } from './karma_logger'
 import { calculateHttpsPort } from './custom_servers'
+import { browserStackSessionsManager } from './browserstack_sessions_manager'
 import { CustomLauncher, ConfigOptions } from 'karma'
-import { canNewBrowserBeQueued } from './browserstack_helpers'
 
 export function BrowserStackLauncher(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -22,6 +22,8 @@ export function BrowserStackLauncher(
   baseLauncherDecorator(this)
   retryLauncherDecorator(this)
 
+  // TODO add launcher ID to help identify sessions more easily
+  // (this logger and maybe the name as the default launcher logger cannot be changed)
   const log = logger.create('Browserstack')
   const run = browserStackLocalManager.run(log)
 
@@ -70,9 +72,12 @@ export function BrowserStackLauncher(
 
   this.on('start', async (pageUrl: string) => {
     try {
-      await waitForEmptyQueue(config, log)
-
       await run
+
+      const queue = await browserStackSessionsManager.waitForQueue(config, log)
+      if (!queue) {
+        throw new Error(`the BrowserStack Automate queue is at full capacity, browser ${this.id} will fail.`)
+      }
 
       this.pendingTimeoutId = startTimeout()
 
@@ -111,7 +116,7 @@ export function BrowserStackLauncher(
         log.debug('browser not found, cannot kill')
       }
     } catch (err) {
-      log.error('Could not quit the BrowserStack connection. Failure message:')
+      log.error(`Could not quit the BrowserStack connection for ${this.name}. Failure message:`)
       log.error((err as Error) ?? String(err))
     }
 
@@ -134,21 +139,4 @@ function makeUrl(karmaUrl: string, isHttps: boolean) {
     url.port = calculateHttpsPort(parseInt(url.port)).toString()
   }
   return url.href
-}
-
-async function waitForEmptyQueue(config: ConfigOptions, log: Logger) {
-  const timeout = 1_000 * (config.browserStack?.queueTimeout ?? 60)
-  const maxTime = Date.now() + timeout
-  // TODO: move to a singleton for managing concurrent attempts
-  while (!(await canNewBrowserBeQueued(log))) {
-    if (Date.now() > maxTime) {
-      throw new Error(
-        `Queue has not been freed within the last ${
-          timeout / 60_000
-        } minutes. Please check BrowserStack and retry later.`,
-      )
-    }
-    log.debug('waiting for queue')
-    await new Promise((r) => setTimeout(r, 1_000))
-  }
 }
