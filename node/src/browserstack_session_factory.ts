@@ -45,7 +45,16 @@ export class BrowserStackSessionFactory {
 
   private async makeFromDevicesSet(browsers: CustomLauncher, device: string, log: Logger) {
     try {
-      log.info('creating session for ' + browsers.browserName + ' on ' + device)
+      log.info(
+        'creating session for ' +
+          browsers.browserName +
+          ' on ' +
+          device +
+          ' for ' +
+          browsers.platform +
+          ' ' +
+          browsers.osVersion,
+      )
       const launcher = Object.assign({}, browsers)
       launcher.deviceName = device
       const browser = await this.createBrowser(launcher, log)
