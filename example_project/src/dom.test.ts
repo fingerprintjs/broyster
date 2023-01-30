@@ -23,9 +23,9 @@ describe('DOM', () => {
       const result = parser.getResult()
       if (
         !(
-          result.browser.name?.match('Safari') &&
-          ((result.browser.name.match('Mobile') && result.browser.version === '11.0') ||
-            parseInt(result.browser.version ?? '0') >= 15)
+          result.browser.name?.startsWith('Safari') &&
+          result.os.name === 'Mac OS' &&
+          parseInt(result.browser.version ?? '0') >= 15
         )
       ) {
         expect(window.isSecureContext).toBeTrue()
