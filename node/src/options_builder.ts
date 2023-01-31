@@ -58,7 +58,8 @@ export class OptionsBuilder {
 
   private static mapArguments(browserName: string, args: string[]) {
     const newArgs = new Array<string>()
-    for (const arg of args) {
+    for (let arg of args) {
+      arg = arg.replace('-', '')
       switch (browserName.toLowerCase()) {
         case 'chrome': {
           const newArg = this.chromeArgs.get(arg)
