@@ -1,5 +1,6 @@
 import { createButton } from './dom'
 import { retryFailedTests } from '@fpjs-incubator/broyster/browser'
+import * as UAParser from 'ua-parser-js'
 
 retryFailedTests(3, 100)
 describe('DOM', () => {
@@ -15,6 +16,20 @@ describe('DOM', () => {
       const button = createButton('Click me!', onClick)
       button.click()
       expect(onClick).toHaveBeenCalledTimes(1)
+    })
+
+    it('has a secure context', () => {
+      const parser = new UAParser()
+      const result = parser.getResult()
+      if (
+        !(
+          result.browser.name?.startsWith('Safari') &&
+          result.os.name === 'Mac OS' &&
+          parseInt(result.browser.version ?? '0') >= 15
+        )
+      ) {
+        expect(window.isSecureContext).toBeTrue()
+      }
     })
   })
 })
