@@ -4,6 +4,7 @@ import { CustomLauncher } from 'karma'
 import { Logger } from './karma_logger'
 import { OptionsBuilder } from './options_builder'
 import { WebDriverFactory } from './webdriver_factory'
+import { getBrowserStackUserName, getBrowserStackAccessKey } from './browserstack_helpers'
 
 export class BrowserStackSessionFactory {
   private _username: string
@@ -17,18 +18,8 @@ export class BrowserStackSessionFactory {
     if (!config.browserStack) {
       throw new Error('BrowserStack options are not set')
     }
-    this._username =
-      process.env.BROWSERSTACK_USERNAME ||
-      process.env.BROWSER_STACK_USERNAME ||
-      (() => {
-        throw new Error('BrowserStack username is empty')
-      })()
-    this._accessKey =
-      process.env.BROWSERSTACK_ACCESS_KEY ||
-      process.env.BROWSER_STACK_ACCESS_KEY ||
-      (() => {
-        throw new Error('BrowserStack access key is empty')
-      })()
+    this._username = getBrowserStackUserName()
+    this._accessKey = getBrowserStackAccessKey()
     this._project = config.browserStack.project
     this._build = config.browserStack.build.toString()
     this._idleTimeout = config.browserStack.idleTimeout ?? 60
