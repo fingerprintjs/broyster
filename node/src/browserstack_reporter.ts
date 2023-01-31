@@ -1,7 +1,7 @@
 import { LoggerFactory } from './karma_logger'
-import { createAutomateClient } from 'browserstack'
 import { BrowserSession, Result } from './browser_session'
 import { BrowserMap } from './browser_map'
+import { createBrowserStackClient } from './browserstack_helpers'
 
 export function BrowserStackReporter(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -20,20 +20,7 @@ export function BrowserStackReporter(
       callWhenFinished()
     }
   }
-  const browserstackClient = createAutomateClient({
-    username:
-      process.env.BROWSERSTACK_USERNAME ||
-      process.env.BROWSER_STACK_USERNAME ||
-      (() => {
-        throw new Error('BrowserStack username is empty')
-      })(),
-    password:
-      process.env.BROWSERSTACK_ACCESS_KEY ||
-      process.env.BROWSER_STACK_ACCESS_KEY ||
-      (() => {
-        throw new Error('BrowserStack access key is empty')
-      })(),
-  })
+  const browserstackClient = createBrowserStackClient()
 
   this.onBrowserComplete = function (browser: BrowserSession) {
     const result: Result = browser.lastResult
