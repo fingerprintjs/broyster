@@ -22,8 +22,6 @@
     "karma-typescript": "^5.5.3"
   },
   "dependencies": {
-    "i": "^0.3.7",
-    "npm": "^9.4.0",
     "ua-parser-js": "^1.0.33"
   }
 }
