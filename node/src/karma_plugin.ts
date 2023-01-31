@@ -2,6 +2,7 @@ import { WebDriver } from 'selenium-webdriver'
 import { BrowserMap } from './browser_map'
 import { BrowserStackLocalManager } from './browserstack_local_manager'
 import { makeBrowserStackSessionFactory } from './browserstack_session_factory'
+import { makeBrowserStackSessionsManager } from './browserstack_sessions_manager'
 import { BrowserStackLauncher } from './launcher'
 import { InlinePluginDef } from 'karma'
 import { BrowserStackReporter } from './browserstack_reporter'
@@ -11,6 +12,7 @@ const karmaPlugin: InlinePluginDef = {
   'reporter:BrowserStack': ['type', BrowserStackReporter],
   browserStackSessionFactory: ['type', makeBrowserStackSessionFactory],
   browserStackLocalManager: ['value', new BrowserStackLocalManager()],
+  browserStackSessionsManager: ['type', makeBrowserStackSessionsManager],
   browserMap: ['value', new Map<string, { browser: WebDriver; session: string }>() satisfies BrowserMap],
 }
 
