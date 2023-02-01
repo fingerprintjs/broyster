@@ -16,7 +16,6 @@ export class CaptureTimeout {
       this.launcher.error = 'timeout'
       this.launcher.kill()
     }, this.config.captureTimeout)
-    this.launcher.kill()
   }
 
   onDone() {
