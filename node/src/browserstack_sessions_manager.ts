@@ -16,6 +16,7 @@ export class BrowserStackSessionsManager {
     })
   }
 
+  // TODO: this should probably be locked instead of the underlying call?
   async waitForQueue(log: Logger) {
     if (Date.now() > this._timeout) {
       log.debug('queue has timed out')
