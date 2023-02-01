@@ -2,6 +2,7 @@ import { Logger } from './karma_logger'
 import { ConfigOptions } from 'karma'
 
 export class CaptureTimeout {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(private launcher: any, private config: ConfigOptions, private log: Logger) {}
 
   onStart() {
