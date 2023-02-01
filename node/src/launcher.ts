@@ -65,9 +65,13 @@ export function BrowserStackLauncher(
       const queue = await browserStackSessionsManager.waitForQueue(log)
       if (!queue) {
         log.info(`the BrowserStack Automate queue is at full capacity, browser ${this.id} will fail.`)
+        throw Error('browser ' + this.id + ' due to queue hitting timeout')
       }
-
-      this.pendingTimeoutId = captureTimeout.onStart()
+      // TODO: with a capture timeout of 10 seconds, the browser will often times take a bit more,
+      // perhaps this should be moved into a callback upon the browser being created to eliminate the retry decorator
+      // firing off?
+      // the bulk of the problem is in not loding the karma server anyway, BStack is more reliable
+      captureTimeout.onStart()
 
       log.debug('creating browser with attributes: ' + JSON.stringify(args))
       browser = await browserStackSessionFactory.tryCreateBrowser(args, this.attempt++, log)
