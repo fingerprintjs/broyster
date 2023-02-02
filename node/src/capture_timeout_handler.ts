@@ -3,8 +3,8 @@ import { ConfigOptions } from 'karma'
 import { BrowserStackSessionsManager } from './browserstack_sessions_manager'
 
 export class CaptureTimeout {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private launcher: any,
     private browserStackSessionsManager: BrowserStackSessionsManager,
     private config: ConfigOptions,
