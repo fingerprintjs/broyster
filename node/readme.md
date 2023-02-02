@@ -142,4 +142,4 @@ The following config options are available inside the browserStack section of th
   },
 ```
 
-Currently supported flags: Incognito, Headless (case insensitive)
+Currently supported flags: Incognito, Headless (case insensitive). Multiword flags will be stripped of dashes.
