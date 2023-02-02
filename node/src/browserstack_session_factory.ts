@@ -28,7 +28,7 @@ export class BrowserStackSessionFactory {
 
   async tryCreateBrowser(browsers: CustomLauncher, attempt: number, log: Logger, callback: () => void) {
     if (Array.isArray(browsers.deviceName)) {
-      const device = browsers.deviceName[attempt]
+      const device = browsers.deviceName[attempt % browsers.deviceName.length]
       return await this.makeFromDevicesSet(browsers, device, log, callback)
     }
     return await this.createBrowser(browsers, log, callback)
