@@ -27,14 +27,14 @@ describe('DOM', () => {
 
       function isDesktopSafari(result: UAParser.IResult): boolean {
         return (
-          result.browser.name!.startsWith('Safari') &&
+          (result.browser.name?.startsWith('Safari') ?? false) &&
           result.os.name === 'Mac OS' &&
           parseInt(result.browser.version ?? '0') >= 15
         )
       }
 
       function isMobileSafari11(result: UAParser.IResult): boolean {
-        return result.browser.name!.startsWith('Mobile Safari') && result.browser.version === '11.0'
+        return (result.browser.name?.startsWith('Mobile Safari') ?? false) && result.browser.version === '11.0'
       }
     })
   })
