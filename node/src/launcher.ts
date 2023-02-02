@@ -61,15 +61,11 @@ export function BrowserStackLauncher(
       await run
 
       await captureTimeout.onQueue()
-      /*
-      TODO: with a capture timeout of 10 seconds, the browser will often times take a bit more,
-      perhaps this should be moved into a callback upon the browser being created to eliminate the retry decorator
-      firing off?
-      the bulk of the problem is in not loding the karma server anyway, BStack is more reliable
-      */
 
       log.debug('creating browser with attributes: ' + JSON.stringify(args))
-      browser = await browserStackSessionFactory.tryCreateBrowser(args, this.attempt++, log, () => captureTimeout.onStart())
+      browser = await browserStackSessionFactory.tryCreateBrowser(args, this.attempt++, log, () =>
+        captureTimeout.onStart(),
+      )
       const session = (await browser.getSession()).getId()
       log.debug(this.id + ' has webdriver SessionId: ' + session)
       browserMap.set(this.id, { browser, session })
