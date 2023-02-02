@@ -69,10 +69,9 @@ export function BrowserStackLauncher(
       firing off?
       the bulk of the problem is in not loding the karma server anyway, BStack is more reliable
       */
-      captureTimeout.onStart()
 
       log.debug('creating browser with attributes: ' + JSON.stringify(args))
-      browser = await browserStackSessionFactory.tryCreateBrowser(args, this.attempt++, log)
+      browser = await browserStackSessionFactory.tryCreateBrowser(args, this.attempt++, log, () => captureTimeout.onStart())
       const session = (await browser.getSession()).getId()
       log.debug(this.id + ' has webdriver SessionId: ' + session)
       browserMap.set(this.id, { browser, session })

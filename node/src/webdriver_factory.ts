@@ -11,6 +11,7 @@ export class WebDriverFactory {
   static createFromOptions(
     options: chrome.Options | firefox.Options | safari.Options | edge.Options,
     browserStack: SessionCapabilities,
+    callback: () => void,
     firefoxProfile?: Array<[string, string | number | boolean]>,
   ) {
     const builder = new webdriver.Builder().usingServer(this.url)
@@ -41,6 +42,8 @@ export class WebDriverFactory {
         break
       }
     }
-    return builder.withCapabilities(browserStack).build()
+    const driver = builder.withCapabilities(browserStack).build()
+    callback()
+    return driver
   }
 }
