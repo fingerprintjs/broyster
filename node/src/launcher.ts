@@ -65,7 +65,9 @@ export function BrowserStackLauncher(
       const queue = await browserStackSessionsManager.waitForQueue(log)
       if (!queue) {
         log.info(`the BrowserStack Automate queue is at full capacity, browser ${this.id} will fail.`)
-        throw Error('browser ' + this.id + ' due to queue hitting timeout')
+        this.kill()
+        this._retryLimit = 0
+        throw Error('browser ' + this.id + ' will not launch due to queue hitting timeout')
       }
       /*
       TODO: with a capture timeout of 10 seconds, the browser will often times take a bit more,
