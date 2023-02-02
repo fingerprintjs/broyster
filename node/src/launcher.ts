@@ -25,7 +25,7 @@ export function BrowserStackLauncher(
   retryLauncherDecorator(this)
   const log = logger.create('Browserstack ' + this.id)
   const run = browserStackLocalManager.run(log)
-  const captureTimeout = new CaptureTimeout(this, config, log)
+  const captureTimeout = new CaptureTimeout(this, browserStackSessionsManager, config, log)
 
   this.name =
     args.browserName +
@@ -62,13 +62,7 @@ export function BrowserStackLauncher(
     try {
       await run
 
-      const queue = await browserStackSessionsManager.waitForQueue(log)
-      if (!queue) {
-        log.info(`the BrowserStack Automate queue is at full capacity, browser ${this.id} will fail.`)
-        this.kill()
-        this._retryLimit = 0
-        throw Error('browser ' + this.id + ' will not launch due to queue hitting timeout')
-      }
+      await captureTimeout.onQueue()
       /*
       TODO: with a capture timeout of 10 seconds, the browser will often times take a bit more,
       perhaps this should be moved into a callback upon the browser being created to eliminate the retry decorator
