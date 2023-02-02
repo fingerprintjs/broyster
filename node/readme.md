@@ -122,13 +122,13 @@ There is a dedicated reproter that will mark successful tests as passed in Brows
 
 The following config options are available inside the browserStack section of the config:
 
-- `idleTimeout`: expressed in seconds, specifies the amount of time that BrowserStack is supposed to keep the session alive without any activity before automatically killing it.
+- `idleTimeout`: expressed in miliseconds, specifies the amount of time that BrowserStack is supposed to keep the session alive without any activity before automatically killing it.
 
 ### Launcher specific settings
 
 The following config options are available inside the browserStack section of the config:
 
-- `queueTimeout`: expressed in seconds, specifies the maximum amount of time to wait for a the BrowserStack queue to free up a slot.
+- `queueTimeout`: expressed in miliseconds, specifies the maximum amount of time to wait for a the BrowserStack queue to free up a slot.
 - `flags`: a unified set of extra arguments that will be passed to the browser. For example passing *incognito' will apply the relevant seting to the browsers for which the flags were specified (incongnito in Chrome, private mdoe in Firefox or nothing in the case of Safari):
 
 ``` js

@@ -226,7 +226,7 @@ function setupBrowserStack(config: Config) {
     concurrency: 5,
     plugins: [karmaPlugin, 'karma-*'],
     retryLimit: 3,
-    captureTimeout: 35_000,
+    captureTimeout: 15_000,
     browserStack: {
       project: 'FingerprintJS', // todo: Turn to "Broyster" when the repository is open-sourced
       // A build number is required to group testing sessions in the BrowserStack UI.
@@ -234,9 +234,8 @@ function setupBrowserStack(config: Config) {
       // https://docs.github.com/en/free-pro-team@latest/actions/reference/environment-variables#default-environment-variables
       build: process.env.GITHUB_RUN_ID || makeBuildNumber(),
       // The timeout is reduced for testing sessions to not hold the BrowserStack queue long in case of problems.
-      // TODO: discuss if timeouts we introduce should be in seconds or miliseconds as well for consistency?
-      idleTimeout: 20,
-      queueTimeout: 360,
+      idleTimeout: 20_000,
+      queueTimeout: 300_000,
     },
   })
   setHttpsAndServerForKarma(config)

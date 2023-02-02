@@ -7,7 +7,7 @@ export class BrowserStackSessionsManager {
   private _lock = new AsyncLock()
   private _timeout: number
   constructor(config: ConfigOptions) {
-    this._timeout = Date.now() + 1_000 * (config.browserStack?.queueTimeout ?? 60)
+    this._timeout = Date.now() + (config.browserStack?.queueTimeout ?? 300_000)
   }
 
   private async checkIfNewSessionCanBeQueued(log: Logger) {
