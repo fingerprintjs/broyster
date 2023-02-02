@@ -56,8 +56,6 @@ export function BrowserStackLauncher(
   }
   this.attempt = 0
 
-  this.pendingTimeoutId = null
-
   this.on('start', async (pageUrl: string) => {
     try {
       await run

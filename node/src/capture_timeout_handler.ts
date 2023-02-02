@@ -3,13 +3,17 @@ import { ConfigOptions } from 'karma'
 import { BrowserStackSessionsManager } from './browserstack_sessions_manager'
 
 export class CaptureTimeout {
+  private _pendingTimeoutId: NodeJS.Timeout | null
+
   constructor(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private launcher: any,
     private browserStackSessionsManager: BrowserStackSessionsManager,
     private config: ConfigOptions,
     private log: Logger,
-  ) {}
+  ) {
+    this._pendingTimeoutId = null
+  }
 
   async onQueue() {
     const queue = await this.browserStackSessionsManager.waitForQueue(this.log)
@@ -23,7 +27,7 @@ export class CaptureTimeout {
 
   onStart() {
     setTimeout(() => {
-      this.launcher.pendingTimeoutId = null
+      this._pendingTimeoutId = null
       if (this.launcher.state !== this.launcher.STATE_BEING_CAPTURED) {
         return
       }
@@ -35,8 +39,8 @@ export class CaptureTimeout {
   }
 
   onDone() {
-    if (this.launcher.pendingTimeoutId) {
-      clearTimeout(this.launcher.pendingTimeoutId)
+    if (this._pendingTimeoutId) {
+      clearTimeout(this._pendingTimeoutId)
     }
   }
 }
