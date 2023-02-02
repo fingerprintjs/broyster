@@ -21,14 +21,20 @@ describe('DOM', () => {
     it('has a secure context', () => {
       const parser = new UAParser()
       const result = parser.getResult()
-      if (
-        !(
-          result.browser.name?.startsWith('Safari') &&
+      if (!(isDesktopSafari(result) || isMobileSafari11(result))) {
+        expect(window.isSecureContext).toBeTrue()
+      }
+
+      function isDesktopSafari(result: UAParser.IResult): boolean {
+        return (
+          result.browser.name!.startsWith('Safari') &&
           result.os.name === 'Mac OS' &&
           parseInt(result.browser.version ?? '0') >= 15
         )
-      ) {
-        expect(window.isSecureContext).toBeTrue()
+      }
+
+      function isMobileSafari11(result: UAParser.IResult): boolean {
+        return result.browser.name!.startsWith('Mobile Safari') && result.browser.version === '11.0'
       }
     })
   })
