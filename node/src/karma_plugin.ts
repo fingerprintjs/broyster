@@ -10,9 +10,9 @@ import { BrowserStackReporter } from './browserstack_reporter'
 const karmaPlugin: InlinePluginDef = {
   'launcher:BrowserStack': ['type', BrowserStackLauncher],
   'reporter:BrowserStack': ['type', BrowserStackReporter],
-  browserStackSessionFactory: ['type', makeBrowserStackSessionFactory],
+  browserStackSessionFactory: ['factory', makeBrowserStackSessionFactory],
   browserStackLocalManager: ['value', new BrowserStackLocalManager()],
-  browserStackSessionsManager: ['type', makeBrowserStackSessionsManager],
+  browserStackSessionsManager: ['factory', makeBrowserStackSessionsManager],
   browserMap: ['value', new Map<string, { browser: WebDriver; session: string }>() satisfies BrowserMap],
 }
 
