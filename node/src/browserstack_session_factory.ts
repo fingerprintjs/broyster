@@ -26,15 +26,15 @@ export class BrowserStackSessionFactory {
     this._capsFactory = new CapabilitiesFactory(this._username, this._accessKey)
   }
 
-  async tryCreateBrowser(browsers: CustomLauncher, attempt: number, log: Logger, callback: () => void) {
+  async tryCreateBrowser(browsers: CustomLauncher, attempt: number, log: Logger) {
     if (Array.isArray(browsers.deviceName)) {
       const device = browsers.deviceName[attempt % browsers.deviceName.length]
-      return await this.makeFromDevicesSet(browsers, device, log, callback)
+      return await this.makeFromDevicesSet(browsers, device, log)
     }
-    return await this.createBrowser(browsers, log, callback)
+    return await this.createBrowser(browsers, log)
   }
 
-  private async makeFromDevicesSet(browsers: CustomLauncher, device: string, log: Logger, callback: () => void) {
+  private async makeFromDevicesSet(browsers: CustomLauncher, device: string, log: Logger) {
     try {
       log.info(
         'creating session for ' +
@@ -48,7 +48,7 @@ export class BrowserStackSessionFactory {
       )
       const launcher = Object.assign({}, browsers)
       launcher.deviceName = device
-      const browser = await this.createBrowser(launcher, log, callback)
+      const browser = await this.createBrowser(launcher, log)
       log.info('created succesfully')
       return browser
     } catch (err) {
@@ -57,7 +57,7 @@ export class BrowserStackSessionFactory {
     }
   }
 
-  private async createBrowser(browser: CustomLauncher, log: Logger, callback: () => void) {
+  private async createBrowser(browser: CustomLauncher, log: Logger) {
     const caps = this._capsFactory.create(
       browser.browserName,
       this._build,
@@ -75,7 +75,7 @@ export class BrowserStackSessionFactory {
     if (browser.firefoxCapabilities) {
       log.debug('using firefox capabilities: ' + browser.firefoxCapabilities)
     }
-    return WebDriverFactory.createFromOptions(opts, caps, callback, browser.firefoxCapabilities)
+    return WebDriverFactory.createFromOptions(opts, caps, browser.firefoxCapabilities)
   }
 }
 

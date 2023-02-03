@@ -63,9 +63,8 @@ export function BrowserStackLauncher(
       await captureTimeout.onQueue()
 
       log.debug('creating browser with attributes: ' + JSON.stringify(args))
-      browser = await browserStackSessionFactory.tryCreateBrowser(args, this.attempt++, log, () =>
-        captureTimeout.onStart(),
-      )
+      browser = await browserStackSessionFactory.tryCreateBrowser(args, this.attempt++, log)
+      captureTimeout.onStart()
       const session = (await browser.getSession()).getId()
       log.debug(this.id + ' has webdriver SessionId: ' + session)
       browserMap.set(this.id, { browser, session })
