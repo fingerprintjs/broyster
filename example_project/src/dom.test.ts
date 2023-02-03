@@ -21,8 +21,11 @@ describe('DOM', () => {
     it('has a secure context', () => {
       const parser = new UAParser()
       const result = parser.getResult()
-      if (!(isDesktopSafari(result) || isMobileSafari11(result))) {
-        expect(window.isSecureContext).toBeTrue()
+      if (!isDesktopSafari(result)) {
+        const isSecureContext = window.isSecureContext
+        if (isSecureContext !== undefined) {
+          expect(isSecureContext).toBeTrue()
+        }
       }
 
       function isDesktopSafari(result: UAParser.IResult): boolean {
@@ -31,10 +34,6 @@ describe('DOM', () => {
           result.os.name === 'Mac OS' &&
           parseInt(result.browser.version ?? '0') >= 15
         )
-      }
-
-      function isMobileSafari11(result: UAParser.IResult): boolean {
-        return (result.browser.name?.startsWith('Mobile Safari') ?? false) && result.browser.version === '11.0'
       }
     })
   })
