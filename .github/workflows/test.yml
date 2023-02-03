@@ -27,7 +27,7 @@ jobs:
       - name: Build the Node.js tools
         run: yarn --cwd node build
       - name: Test the example project on BrowserStack
-        run: yarn --cwd example_project test:browserstack
+        run: yarn --cwd example_project debug:browserstack
         env:
           BROWSERSTACK_USERNAME: ${{secrets.BROWSERSTACK_USERNAME}}
           BROWSERSTACK_ACCESS_KEY: ${{secrets.BROWSERSTACK_ACCESS_KEY}}
