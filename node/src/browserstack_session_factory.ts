@@ -26,15 +26,15 @@ export class BrowserStackSessionFactory {
     this._capsFactory = new CapabilitiesFactory(this._username, this._accessKey)
   }
 
-  tryCreateBrowser(browsers: CustomLauncher, attempt: number, log: Logger) {
+  async tryCreateBrowser(browsers: CustomLauncher, attempt: number, log: Logger) {
     if (Array.isArray(browsers.deviceName)) {
       const device = browsers.deviceName[attempt % browsers.deviceName.length]
-      return this.makeFromDevicesSet(browsers, device, log)
+      return await this.makeFromDevicesSet(browsers, device, log)
     }
-    return this.createBrowser(browsers, log)
+    return await this.createBrowser(browsers, log)
   }
 
-  private makeFromDevicesSet(browsers: CustomLauncher, device: string, log: Logger) {
+  private async makeFromDevicesSet(browsers: CustomLauncher, device: string, log: Logger) {
     try {
       log.info(
         'creating session for ' +
@@ -48,7 +48,7 @@ export class BrowserStackSessionFactory {
       )
       const launcher = Object.assign({}, browsers)
       launcher.deviceName = device
-      const browser = this.createBrowser(launcher, log)
+      const browser = await this.createBrowser(launcher, log)
       log.info('created succesfully')
       return browser
     } catch (err) {
@@ -57,7 +57,7 @@ export class BrowserStackSessionFactory {
     }
   }
 
-  private createBrowser(browser: CustomLauncher, log: Logger) {
+  private async createBrowser(browser: CustomLauncher, log: Logger) {
     const caps = this._capsFactory.create(
       browser.browserName,
       this._build,
