@@ -129,7 +129,7 @@ The following config options are available inside the browserStack section of th
 The following config options are available inside the browserStack section of the config:
 
 - `queueTimeout`: expressed in miliseconds, specifies the maximum amount of time to wait for a the BrowserStack queue to free up a slot.
-- `flags`: a unified set of extra arguments that will be passed to the browser. For example passing *incognito' will apply the relevant seting to the browsers for which the flags were specified (incongnito in Chrome, private mdoe in Firefox or nothing in the case of Safari):
+- `flags`: a unified set of extra arguments that will be passed to the browser. For example passing *incognito' will apply the relevant seting to the browsers for which the flags were specified (incongnito in Chrome, private mode in Firefox or nothing in the case of Safari):
 
 ``` js
   Incognito_Chrome: {
