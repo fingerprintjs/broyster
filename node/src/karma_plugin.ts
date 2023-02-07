@@ -1,5 +1,4 @@
-import { WebDriver } from 'selenium-webdriver'
-import { BrowserMap } from './browser_map'
+import { makeBrowserMapFactory } from './browser_map'
 import { BrowserStackLocalManager } from './browserstack_local_manager'
 import { makeBrowserStackSessionFactory } from './browserstack_session_factory'
 import { makeBrowserStackSessionsManager } from './browserstack_sessions_manager'
@@ -13,7 +12,7 @@ const karmaPlugin: InlinePluginDef = {
   browserStackSessionFactory: ['factory', makeBrowserStackSessionFactory],
   browserStackLocalManager: ['value', new BrowserStackLocalManager()],
   browserStackSessionsManager: ['factory', makeBrowserStackSessionsManager],
-  browserMap: ['value', new Map<string, { browser: WebDriver; session: string }>() satisfies BrowserMap],
+  browserMap: ['factory', makeBrowserMapFactory],
 }
 
 declare module 'karma' {
