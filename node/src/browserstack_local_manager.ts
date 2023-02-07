@@ -40,3 +40,7 @@ export class BrowserStackLocalManager {
     return this.switchPromise
   }
 }
+
+export function makeBrowserStackLocalManagerFactory() {
+  return new BrowserStackLocalManager()
+}

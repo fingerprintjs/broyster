@@ -73,7 +73,8 @@ export function BrowserStackLauncher(
       heartbeat()
     } catch (err) {
       log.error((err as Error) ?? String(err))
-      this._done('failure')
+      this._done('failure') // this may end up hanging the process
+      // however it is very unlikely as it requires all attempts to fail and never create a driver
     }
   })
 
