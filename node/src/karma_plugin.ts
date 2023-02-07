@@ -1,5 +1,5 @@
 import { makeBrowserMapFactory } from './browser_map'
-import { BrowserStackLocalManager } from './browserstack_local_manager'
+import { makeBrowserStackLocalManagerFactory } from './browserstack_local_manager'
 import { makeBrowserStackSessionFactory } from './browserstack_session_factory'
 import { makeBrowserStackSessionsManager } from './browserstack_sessions_manager'
 import { BrowserStackLauncher } from './launcher'
@@ -10,7 +10,7 @@ const karmaPlugin: InlinePluginDef = {
   'launcher:BrowserStack': ['type', BrowserStackLauncher],
   'reporter:BrowserStack': ['type', BrowserStackReporter],
   browserStackSessionFactory: ['factory', makeBrowserStackSessionFactory],
-  browserStackLocalManager: ['value', new BrowserStackLocalManager()],
+  browserStackLocalManager: ['factory', makeBrowserStackLocalManagerFactory],
   browserStackSessionsManager: ['factory', makeBrowserStackSessionsManager],
   browserMap: ['factory', makeBrowserMapFactory],
 }
