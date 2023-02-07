@@ -41,6 +41,7 @@ export class WebDriverFactory {
         break
       }
     }
-    return builder.withCapabilities(browserStack).build()
+    const driver = builder.withCapabilities(browserStack).build()
+    return driver
   }
 }

@@ -110,9 +110,6 @@ const browsers = {
     browserVersion: 'latest-beta',
     useHttps: true,
   },
-
-  // disabled temporarily because of issues with creating the session
-  // TODO: Investigate failing iOS builds
   iOS11_Safari: {
     deviceName: ['iPhone 8 Plus', 'iPhone X', 'iPhone SE'],
     platform: 'iOS',
@@ -228,7 +225,8 @@ function setupBrowserStack(config: Config) {
     customLaunchers,
     concurrency: 5,
     plugins: [karmaPlugin, 'karma-*'],
-    retryLimit: 8,
+    retryLimit: 3,
+    captureTimeout: 15_000,
     browserStack: {
       project: 'FingerprintJS', // todo: Turn to "Broyster" when the repository is open-sourced
       // A build number is required to group testing sessions in the BrowserStack UI.
@@ -236,8 +234,8 @@ function setupBrowserStack(config: Config) {
       // https://docs.github.com/en/free-pro-team@latest/actions/reference/environment-variables#default-environment-variables
       build: process.env.GITHUB_RUN_ID || makeBuildNumber(),
       // The timeout is reduced for testing sessions to not hold the BrowserStack queue long in case of problems.
-      idleTimeout: 20,
-      queueTimeout: 60,
+      idleTimeout: 20_000,
+      queueTimeout: 300_000,
     },
   })
   setHttpsAndServerForKarma(config)

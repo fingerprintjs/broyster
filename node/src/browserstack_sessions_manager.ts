@@ -5,19 +5,23 @@ import { ConfigOptions } from 'karma'
 
 export class BrowserStackSessionsManager {
   private _lock = new AsyncLock()
-  // TODO: use DI to inject the queue timeout from config instead of passing the config
+  private _timeout: number
+  constructor(config: ConfigOptions) {
+    this._timeout = Date.now() + (config.browserStack?.queueTimeout ?? 300_000)
+  }
+
   private async checkIfNewSessionCanBeQueued(log: Logger) {
     return this._lock.acquire('key1', async function () {
       return await canNewBrowserBeQueued(log)
     })
   }
 
-  async waitForQueue(config: ConfigOptions, log: Logger) {
-    const timeout = 1_000 * (config.browserStack?.queueTimeout ?? 60)
-    const maxTime = Date.now() + timeout
-    log.debug('expected timeout to be at ' + new Date(maxTime).toISOString())
+  // TODO: this should probably be locked instead of the underlying call?
+  async waitForQueue(log: Logger) {
+    log.debug('expected timeout to be at ' + new Date(this._timeout).toISOString())
     while (!(await this.checkIfNewSessionCanBeQueued(log))) {
-      if (Date.now() > maxTime) {
+      if (Date.now() > this._timeout) {
+        log.debug('queue timeout exceeded, failing')
         return false
       }
       log.debug('waiting for queue')
@@ -28,4 +32,6 @@ export class BrowserStackSessionsManager {
   }
 }
 
-export const browserStackSessionsManager = new BrowserStackSessionsManager()
+export function makeBrowserStackSessionsManager(config: ConfigOptions) {
+  return new BrowserStackSessionsManager(config)
+}

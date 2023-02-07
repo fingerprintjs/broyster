@@ -4,6 +4,7 @@ import { CustomLauncher } from 'karma'
 import { Logger } from './karma_logger'
 import { OptionsBuilder } from './options_builder'
 import { WebDriverFactory } from './webdriver_factory'
+import { getBrowserStackUserName, getBrowserStackAccessKey } from './browserstack_helpers'
 
 export class BrowserStackSessionFactory {
   private _username: string
@@ -17,33 +18,23 @@ export class BrowserStackSessionFactory {
     if (!config.browserStack) {
       throw new Error('BrowserStack options are not set')
     }
-    this._username =
-      process.env.BROWSERSTACK_USERNAME ||
-      process.env.BROWSER_STACK_USERNAME ||
-      (() => {
-        throw new Error('BrowserStack username is empty')
-      })()
-    this._accessKey =
-      process.env.BROWSERSTACK_ACCESS_KEY ||
-      process.env.BROWSER_STACK_ACCESS_KEY ||
-      (() => {
-        throw new Error('BrowserStack access key is empty')
-      })()
+    this._username = getBrowserStackUserName()
+    this._accessKey = getBrowserStackAccessKey()
     this._project = config.browserStack.project
     this._build = config.browserStack.build.toString()
-    this._idleTimeout = config.browserStack.idleTimeout ?? 60
+    this._idleTimeout = config.browserStack.idleTimeout ?? 60_000
     this._capsFactory = new CapabilitiesFactory(this._username, this._accessKey)
   }
 
-  async tryCreateBrowser(browsers: CustomLauncher, attempt: number, log: Logger) {
+  tryCreateBrowser(browsers: CustomLauncher, attempt: number, log: Logger) {
     if (Array.isArray(browsers.deviceName)) {
-      const device = browsers.deviceName[attempt]
-      return await this.makeFromDevicesSet(browsers, device, log)
+      const device = browsers.deviceName[attempt % browsers.deviceName.length]
+      return this.makeFromDevicesSet(browsers, device, log)
     }
-    return await this.createBrowser(browsers, log)
+    return this.createBrowser(browsers, log)
   }
 
-  private async makeFromDevicesSet(browsers: CustomLauncher, device: string, log: Logger) {
+  private makeFromDevicesSet(browsers: CustomLauncher, device: string, log: Logger) {
     try {
       log.info(
         'creating session for ' +
@@ -57,7 +48,7 @@ export class BrowserStackSessionFactory {
       )
       const launcher = Object.assign({}, browsers)
       launcher.deviceName = device
-      const browser = await this.createBrowser(launcher, log)
+      const browser = this.createBrowser(launcher, log)
       log.info('created succesfully')
       return browser
     } catch (err) {
@@ -66,7 +57,7 @@ export class BrowserStackSessionFactory {
     }
   }
 
-  private async createBrowser(browser: CustomLauncher, log: Logger) {
+  private createBrowser(browser: CustomLauncher, log: Logger) {
     const caps = this._capsFactory.create(
       browser.browserName,
       this._build,
