@@ -25,16 +25,16 @@ export function BrowserStackReporter(
   const browserstackClient = createBrowserStackClient()
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  this.onRunComplete = function (browsers: any) {
-    const browsersLaunched = Object.keys(browsers.browsers)
+  this.onRunComplete = function (browsers: { browsers: BrowserSession[] }) {
+    const browsersLaunched = browsers.browsers
     const browsersScheduled = Object.keys(config.customLaunchers ?? {})
     log.info('Executed ' + browsersLaunched.length + ' launchers out of ' + browsersScheduled.length)
     if (browsersLaunched.length !== browsersScheduled.length) {
       log.info(
         'Browsers launched: ' +
-          browsers.browsers
-            .map((browser: { name: string; id: string }) => {
-              browser.name + ' (' + browser.id + ')'
+          browsersLaunched
+            .map((browser: BrowserSession) => {
+              return browser.name + ' (' + browser.id + ')'
             })
             .join(', '),
       )

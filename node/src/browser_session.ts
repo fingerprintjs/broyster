@@ -14,4 +14,5 @@ export interface BrowserSession {
   id: string
   launchId: string
   lastResult: Result
+  name: string
 }
