@@ -5,7 +5,7 @@
   "scripts": {
     "test:local": "karma start --preset local --single-run",
     "test:browserstack": "karma start --preset browserstack --single-run",
-    "debug:browserstack": "karma start --preset browserstack --single-run --log-level debug"
+    "debug:browserstack": "test:browserstack --log-level debug"
   },
   "devDependencies": {
     "@fpjs-incubator/broyster": "*",

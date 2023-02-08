@@ -6,7 +6,8 @@
   ],
   "scripts": {
     "lint": "eslint --ext .js,.ts,.html --ignore-path .gitignore --max-warnings 0 .",
-    "lint:fix": "yarn lint --fix"
+    "lint:fix": "yarn lint --fix",
+    "debug:browserstack": "yarn --cwd example_project debug:browserstack"
   },
   "devDependencies": {
     "@types/node": "^18.11.12",
