@@ -50,21 +50,23 @@ export class BrowserStackSessionsManager {
   }
 
   private async waitForQueue(log: Logger) {
+    log.debug('queue state is ' + this._state)
     if (this._state !== QueueState.Pending) {
-      log.debug('queue state is ' + this._state + ' . Returning')
+      log.debug('returning')
       return
     }
-    log.debug('expected timeout to be at ' + new Date(this._timeout).toISOString())
+    log.info('waiting for BrowserStack to have free slots: ' + this._requiredSlots)
+    log.info('expected timeout to be at ' + new Date(this._timeout).toISOString())
     while (!(await this.checkIfNewSessionCanBeQueued(log))) {
       if (Date.now() > this._timeout) {
-        log.debug('queue timeout exceeded, failing')
+        log.info('queue timeout exceeded, failing')
         this.setTimedout()
         return
       }
       log.debug('waiting for queue')
       await new Promise((r) => setTimeout(r, 1_000))
     }
-    log.debug('queue freed up')
+    log.info('enough slots free')
     this.setFree()
   }
 
