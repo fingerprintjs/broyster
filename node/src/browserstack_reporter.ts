@@ -1,4 +1,5 @@
 import { LoggerFactory } from './karma_logger'
+import { ConfigOptions } from 'karma'
 import { BrowserSession, Result } from './browser_session'
 import { BrowserMap } from './browser_map'
 import { createBrowserStackClient } from './browserstack_helpers'
@@ -6,6 +7,7 @@ import { createBrowserStackClient } from './browserstack_helpers'
 export function BrowserStackReporter(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   this: any,
+  config: ConfigOptions,
   logger: LoggerFactory,
   browserMap: BrowserMap,
 ) {
@@ -21,6 +23,24 @@ export function BrowserStackReporter(
     }
   }
   const browserstackClient = createBrowserStackClient()
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  this.onRunComplete = function (browsers: { browsers: BrowserSession[] }) {
+    const browsersLaunched = browsers.browsers
+    const browsersScheduled = Object.keys(config.customLaunchers ?? {})
+    log.info('Executed ' + browsersLaunched.length + ' launchers out of ' + browsersScheduled.length)
+    if (browsersLaunched.length !== browsersScheduled.length) {
+      log.info(
+        'Browsers launched: ' +
+          browsersLaunched
+            .map((browser: BrowserSession) => {
+              return browser.name + ' (' + browser.id + ')'
+            })
+            .join(', '),
+      )
+      log.info('Browsers that were configured: ' + browsersScheduled.join(', '))
+    }
+  }
 
   this.onBrowserComplete = function (browser: BrowserSession) {
     const result: Result = browser.lastResult
