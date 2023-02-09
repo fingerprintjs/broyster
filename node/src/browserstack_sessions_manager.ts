@@ -3,7 +3,7 @@ import { Logger } from './karma_logger'
 import { QueueState } from './queue_state'
 import { QueueError } from './queue_error'
 import { canNewBrowserBeQueued } from './browserstack_helpers'
-import { ConfigOptions } from 'karma'
+import { ConfigOptions, Launcher } from 'karma'
 
 export class BrowserStackSessionsManager {
   private _lock = new AsyncLock()
@@ -23,7 +23,14 @@ export class BrowserStackSessionsManager {
     return await this.checkIfCanLaunchSessions(1, log)
   }
 
-  async getNewLauncher(log: Logger) {
+  async ensureQueue(launcher: Launcher, log: Logger) {
+    const isAvailable = await this.getQueue(launcher, log)
+    if (isAvailable) {
+      await this.getNewLauncher(log)
+    }
+  }
+
+  private async getNewLauncher(log: Logger) {
     const timeout = Date.now() + this._queueTimeout
     while (!(await this.canNewSessionBeLaunched(log))) {
       if (Date.now() > timeout) {
@@ -35,7 +42,7 @@ export class BrowserStackSessionsManager {
     }
   }
 
-  async getQueue(launcher: { id: string; kill: () => void }, log: Logger) {
+  private async getQueue(launcher: Launcher, log: Logger) {
     if (this._state === QueueState.Pending) {
       await this._lock.acquire('queueLock', async () => {
         return await this.waitForQueue(log)

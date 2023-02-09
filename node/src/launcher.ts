@@ -25,7 +25,7 @@ export function BrowserStackLauncher(
   retryLauncherDecorator(this)
   const log = logger.create('Browserstack ' + this.id)
   const run = browserStackLocalManager.run(log)
-  const captureTimeout = new CaptureTimeout(this, browserStackSessionsManager, config, log)
+  const captureTimeout = new CaptureTimeout(this, config, log)
 
   this.name =
     args.browserName +
@@ -60,7 +60,7 @@ export function BrowserStackLauncher(
     try {
       await run
 
-      await captureTimeout.onQueue()
+      await browserStackSessionsManager.ensureQueue(this, log)
 
       log.debug('creating browser with attributes: ' + JSON.stringify(args))
       browser = await browserStackSessionFactory.tryCreateBrowser(args, this.attempt++, log)
