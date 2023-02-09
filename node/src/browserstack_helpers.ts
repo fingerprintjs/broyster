@@ -29,7 +29,7 @@ export function createBrowserStackClient(): AutomateClient {
   })
 }
 
-export async function canNewBrowserBeQueued(log: Logger): Promise<boolean> {
+export async function canNewBrowserBeQueued(slots: number, log: Logger): Promise<boolean> {
   const browserstackClient = createBrowserStackClient()
   log.debug('calling getPlan')
   const result = await promisify(browserstackClient.getPlan).call(browserstackClient)
@@ -38,7 +38,7 @@ export async function canNewBrowserBeQueued(log: Logger): Promise<boolean> {
   const max = result.parallel_sessions_max_allowed
   const running = result.parallel_sessions_running
 
-  const canRun = running < max
-  log.debug('Max queue: ' + max + '. Running: ' + running + '. Returning: ' + canRun)
+  const canRun = max - running >= slots
+  log.debug('Max queue: ' + max + '. Running: ' + running + '. Required ' + slots + '. Returning: ' + canRun)
   return canRun
 }
