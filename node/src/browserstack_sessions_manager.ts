@@ -37,7 +37,7 @@ export class BrowserStackSessionsManager {
 
   async getQueue(launcher: { id: string; kill: () => void }, log: Logger) {
     if (this._state === QueueState.Pending) {
-      await this._lock.acquire('key1', async () => {
+      await this._lock.acquire('queueLock', async () => {
         return await this.waitForQueue(log)
       })
     }
@@ -85,7 +85,7 @@ export class BrowserStackSessionsManager {
   }
 
   private checkIfCanLaunchSessions(slots: number, log: Logger) {
-    return this._lock.acquire('key2', async function () {
+    return this._lock.acquire('sessionsLock', async function () {
       return await canNewBrowserBeQueued(slots, log)
     })
   }
