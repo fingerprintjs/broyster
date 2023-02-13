@@ -40,9 +40,14 @@ export function BrowserStackLauncher(
 
   let browser: WebDriver
   let pendingHeartBeat: NodeJS.Timeout | undefined
+  const timeout = Date.now() + (config.browserStack?.queueTimeout ?? 60_000)
   const heartbeat = () => {
     pendingHeartBeat = setTimeout(async () => {
       if (!browser) {
+        return
+      }
+      if (Date.now() > timeout) {
+        clearTimeout(pendingHeartBeat)
         return
       }
       try {
