@@ -35,24 +35,16 @@ export class BrowserStackSessionFactory {
   }
 
   private makeFromDevicesSet(browsers: CustomLauncher, device: string, log: Logger) {
+    const name = browsers.browserName + ' on ' + device + ' for ' + browsers.platform + ' ' + browsers.osVersion
     try {
-      log.info(
-        'creating session for ' +
-          browsers.browserName +
-          ' on ' +
-          device +
-          ' for ' +
-          browsers.platform +
-          ' ' +
-          browsers.osVersion,
-      )
+      log.info('creating session for ' + name)
       const launcher = Object.assign({}, browsers)
       launcher.deviceName = device
       const browser = this.createBrowser(launcher, log)
-      log.info('created succesfully')
+      log.info(name + ' created succesfully')
       return browser
     } catch (err) {
-      log.error('could not create session, trying next configuration')
+      log.error('could not create session for ' + name + ', trying next configuration')
       throw err
     }
   }
