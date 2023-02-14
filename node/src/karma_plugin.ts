@@ -25,12 +25,6 @@ declare module 'karma' {
     }
   }
 
-  interface Launcher {
-    kill: () => void
-    id: string
-    name: string
-  }
-
   interface CustomLauncher {
     name: string
     osVersion: string

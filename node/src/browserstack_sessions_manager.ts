@@ -3,7 +3,7 @@ import { Logger } from './karma_logger'
 import { QueueState } from './queue_state'
 import { QueueError } from './queue_error'
 import { canNewBrowserBeQueued } from './browserstack_helpers'
-import { ConfigOptions, Launcher } from 'karma'
+import { ConfigOptions } from 'karma'
 
 export class BrowserStackSessionsManager {
   private _lock = new AsyncLock()
