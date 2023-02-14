@@ -1,41 +1,29 @@
 import { Logger } from './karma_logger'
 import { ConfigOptions } from 'karma'
-import { BrowserStackSessionsManager } from './browserstack_sessions_manager'
 
 export class CaptureTimeout {
   private _pendingTimeoutId: NodeJS.Timeout | null
 
   constructor(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private launcher: any,
-    private browserStackSessionsManager: BrowserStackSessionsManager,
-    private config: ConfigOptions,
-    private log: Logger,
+    private _launcher: any,
+    private _config: ConfigOptions,
+    private _log: Logger,
   ) {
     this._pendingTimeoutId = null
-  }
-
-  async onQueue() {
-    const queue = await this.browserStackSessionsManager.waitForQueue(this.log)
-    if (!queue) {
-      this.log.info(`the BrowserStack Automate queue is at full capacity, browser ${this.launcher.id} will fail.`)
-      this.launcher.kill()
-      this.launcher._retryLimit = 0
-      throw Error('browser ' + this.launcher.id + ' will not launch due to queue hitting timeout')
-    }
   }
 
   onStart() {
     setTimeout(() => {
       this._pendingTimeoutId = null
-      if (this.launcher.state !== this.launcher.STATE_BEING_CAPTURED) {
+      if (this._launcher.state !== this._launcher.STATE_BEING_CAPTURED) {
         return
       }
 
-      this.log.warn(`${this.launcher.name} has not captured in ${this.config.captureTimeout} ms, killing.`)
-      this.launcher.error = 'timeout'
-      this.launcher.kill()
-    }, this.config.captureTimeout)
+      this._log.warn(`${this._launcher.name} has not captured in ${this._config.captureTimeout} ms, killing.`)
+      this._launcher.error = 'timeout'
+      this._launcher.kill()
+    }, this._config.captureTimeout)
   }
 
   onDone() {
