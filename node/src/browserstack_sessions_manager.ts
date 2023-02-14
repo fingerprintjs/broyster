@@ -2,6 +2,7 @@ import * as AsyncLock from 'async-lock'
 import { Logger } from './karma_logger'
 import { QueueState } from './queue_state'
 import { QueueError } from './queue_error'
+import { KarmaLauncher } from './karma_launcher'
 import { canNewBrowserBeQueued } from './browserstack_helpers'
 import { ConfigOptions } from 'karma'
 
@@ -23,7 +24,7 @@ export class BrowserStackSessionsManager {
     return await this.checkIfCanLaunchSessions(1, log)
   }
 
-  async ensureQueue(launcher: Launcher, log: Logger) {
+  async ensureQueue(launcher: KarmaLauncher, log: Logger) {
     const isAvailable = await this.getQueue(launcher, log)
     if (isAvailable) {
       await this.getNewLauncher(log)
