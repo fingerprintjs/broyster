@@ -43,7 +43,7 @@ export class BrowserStackSessionsManager {
     }
   }
 
-  private async getQueue(launcher: Launcher, log: Logger) {
+  private async getQueue(launcher: KarmaLauncher, log: Logger) {
     if (this._state === QueueState.Pending) {
       await this._lock.acquire('queueLock', async () => {
         return await this.waitForQueue(log)
