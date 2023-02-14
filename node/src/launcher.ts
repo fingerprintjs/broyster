@@ -27,16 +27,23 @@ export function BrowserStackLauncher(
   const run = browserStackLocalManager.run(log)
   const captureTimeout = new CaptureTimeout(this, config, log)
 
-  this.name =
-    args.browserName +
-    ' ' +
-    (args.browserVersion ??
-      (Array.isArray(args.deviceName) ? 'on any of ' + args.deviceName.join(', ') : args.deviceName)) +
-    ' for ' +
-    args.platform +
-    ' ' +
-    args.osVersion +
-    ' on BrowserStack'
+  const makeName = (device: string | undefined) => {
+    this.name =
+      args.browserName +
+      ' ' +
+      args.browserVersion +
+      ' ' +
+      device +
+      ' for ' +
+      args.platform +
+      ' ' +
+      args.osVersion +
+      ' on BrowserStack'
+  }
+  const device =
+    args.browserVersion ??
+    (Array.isArray(args.deviceName) ? 'on any of ' + args.deviceName.join(', ') : args.deviceName)
+  makeName(device)
 
   let browser: WebDriver
   let pendingHeartBeat: NodeJS.Timeout | undefined
@@ -59,6 +66,7 @@ export function BrowserStackLauncher(
       return
     }, (config.browserStack?.idleTimeout ?? 10_000) * 0.9)
   }
+
   this.attempt = 0
 
   this.on('start', async (pageUrl: string) => {
@@ -68,7 +76,11 @@ export function BrowserStackLauncher(
       await browserStackSessionsManager.ensureQueue(this, log)
 
       log.debug('creating browser with attributes: ' + JSON.stringify(args))
-      browser = await browserStackSessionFactory.tryCreateBrowser(args, this.attempt++, log)
+      const [browserPromise, name] = browserStackSessionFactory.tryCreateBrowser(args, this.attempt++, log)
+      if (name) {
+        makeName(name)
+      }
+      browser = await browserPromise
       captureTimeout.onStart()
       const session = (await browser.getSession()).getId()
       log.debug(this.id + ' has webdriver SessionId: ' + session)

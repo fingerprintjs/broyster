@@ -5,6 +5,7 @@ import { Logger } from './karma_logger'
 import { OptionsBuilder } from './options_builder'
 import { WebDriverFactory } from './webdriver_factory'
 import { getBrowserStackUserName, getBrowserStackAccessKey } from './browserstack_helpers'
+import { ThenableWebDriver } from 'selenium-webdriver'
 
 export class BrowserStackSessionFactory {
   private _username: string
@@ -26,33 +27,29 @@ export class BrowserStackSessionFactory {
     this._capsFactory = new CapabilitiesFactory(this._username, this._accessKey)
   }
 
-  tryCreateBrowser(browsers: CustomLauncher, attempt: number, log: Logger) {
+  tryCreateBrowser(
+    browsers: CustomLauncher,
+    attempt: number,
+    log: Logger,
+  ): [driver: ThenableWebDriver, name: string | null] {
     if (Array.isArray(browsers.deviceName)) {
       const device = browsers.deviceName[attempt % browsers.deviceName.length]
-      return this.makeFromDevicesSet(browsers, device, log)
+      return [this.makeFromDevicesSet(browsers, device, log), device]
     }
-    return this.createBrowser(browsers, log)
+    return [this.createBrowser(browsers, log), null]
   }
 
   private makeFromDevicesSet(browsers: CustomLauncher, device: string, log: Logger) {
+    const name = browsers.browserName + ' on ' + device + ' for ' + browsers.platform + ' ' + browsers.osVersion
     try {
-      log.info(
-        'creating session for ' +
-          browsers.browserName +
-          ' on ' +
-          device +
-          ' for ' +
-          browsers.platform +
-          ' ' +
-          browsers.osVersion,
-      )
+      log.info('creating session for ' + name)
       const launcher = Object.assign({}, browsers)
       launcher.deviceName = device
       const browser = this.createBrowser(launcher, log)
-      log.info('created succesfully')
+      log.info(name + ' created succesfully')
       return browser
     } catch (err) {
-      log.error('could not create session, trying next configuration')
+      log.error('could not create session for ' + name + ', trying next configuration')
       throw err
     }
   }
