@@ -27,16 +27,23 @@ export function BrowserStackLauncher(
   const run = browserStackLocalManager.run(log)
   const captureTimeout = new CaptureTimeout(this, browserStackSessionsManager, config, log)
 
-  this.name =
-    args.browserName +
-    ' ' +
-    (args.browserVersion ??
-      (Array.isArray(args.deviceName) ? 'on any of ' + args.deviceName.join(', ') : args.deviceName)) +
-    ' for ' +
-    args.platform +
-    ' ' +
-    args.osVersion +
-    ' on BrowserStack'
+  const makeName = (device: string | undefined) => {
+    this.name =
+      args.browserName +
+      ' ' +
+      args.browserVersion +
+      ' ' +
+      device +
+      ' for ' +
+      args.platform +
+      ' ' +
+      args.osVersion +
+      ' on BrowserStack'
+  }
+  const device =
+    args.browserVersion ??
+    (Array.isArray(args.deviceName) ? 'on any of ' + args.deviceName.join(', ') : args.deviceName)
+  makeName(device)
 
   let browser: WebDriver
   let pendingHeartBeat: NodeJS.Timeout | undefined
@@ -54,6 +61,7 @@ export function BrowserStackLauncher(
       return
     }, (config.browserStack?.idleTimeout ?? 10_000) * 0.9)
   }
+
   this.attempt = 0
 
   this.on('start', async (pageUrl: string) => {
@@ -64,15 +72,10 @@ export function BrowserStackLauncher(
 
       log.debug('creating browser with attributes: ' + JSON.stringify(args))
       browser = await browserStackSessionFactory.tryCreateBrowser(args, this.attempt++, log)
-      this.name =
-        args.browserName +
-        ' ' +
-        (args.browserVersion ?? (Array.isArray(args.deviceName) ? args.deviceName.at(this.attempt) : args.deviceName)) +
-        ' for ' +
-        args.platform +
-        ' ' +
-        args.osVersion +
-        ' on BrowserStack'
+      const newName =
+        args.browserVersion ?? (Array.isArray(args.deviceName) ? args.deviceName.at(this.attempt) : args.deviceName)
+      makeName(newName)
+
       captureTimeout.onStart()
       const session = (await browser.getSession()).getId()
       log.debug(this.id + ' has webdriver SessionId: ' + session)
