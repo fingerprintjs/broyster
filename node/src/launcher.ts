@@ -71,11 +71,11 @@ export function BrowserStackLauncher(
       await captureTimeout.onQueue()
 
       log.debug('creating browser with attributes: ' + JSON.stringify(args))
-      browser = await browserStackSessionFactory.tryCreateBrowser(args, this.attempt++, log)
-      const newName =
-        args.browserVersion ?? (Array.isArray(args.deviceName) ? args.deviceName.at(this.attempt) : args.deviceName)
-      makeName(newName)
-
+      const [browserPromise, name] = browserStackSessionFactory.tryCreateBrowser(args, this.attempt++, log)
+      if (name) {
+        makeName(name)
+      }
+      browser = await browserPromise
       captureTimeout.onStart()
       const session = (await browser.getSession()).getId()
       log.debug(this.id + ' has webdriver SessionId: ' + session)
