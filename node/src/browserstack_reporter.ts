@@ -25,7 +25,7 @@ export function BrowserStackReporter(
   const browserstackClient = createBrowserStackClient()
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  this.on('runComplete', (browsers: { browsers: BrowserSession[] }) => {
+  this.onRunComplete = function (browsers: { browsers: BrowserSession[] }) {
     const browsersLaunched = browsers.browsers
     const browsersScheduled = Object.keys(config.customLaunchers ?? {})
     log.info('Executed ' + browsersLaunched.length + ' launchers out of ' + browsersScheduled.length)
@@ -40,9 +40,9 @@ export function BrowserStackReporter(
       )
       log.info('Browsers that were configured: ' + browsersScheduled.join(', '))
     }
-  })
+  }
 
-  this.on('browserComplete', (browser: BrowserSession) => {
+  this.onBrowserComplete = function (browser: BrowserSession) {
     const result: Result = browser.lastResult
 
     if (result.disconnected) {
@@ -72,11 +72,11 @@ export function BrowserStackReporter(
         },
       )
     }
-  })
+  }
 
   // Wait until all updates have been pushed to Browserstack
-  this.on('exit', (done: () => object) => {
+  this.onExit = function (done: () => object) {
     callWhenFinished = done
     exitIfAllFinished()
-  })
+  }
 }
