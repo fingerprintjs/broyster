@@ -14,8 +14,8 @@ export function BrowserStackReporter(
   const log = logger.create('Browserstack Reporter')
 
   let pendingUpdates = 0
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  let callWhenFinished = () => {}
+
+  let callWhenFinished = () => undefined
 
   const exitIfAllFinished = () => {
     if (pendingUpdates === 0) {
