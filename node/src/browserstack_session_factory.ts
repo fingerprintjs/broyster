@@ -29,23 +29,24 @@ export class BrowserStackSessionFactory {
 
   tryCreateBrowser(
     browsers: CustomLauncher,
+    id: string,
     attempt: number,
     log: Logger,
   ): [driver: ThenableWebDriver, name: string | null] {
     if (Array.isArray(browsers.deviceName)) {
       const device = browsers.deviceName[attempt % browsers.deviceName.length]
-      return [this.makeFromDevicesSet(browsers, device, log), device]
+      return [this.makeFromDevicesSet(browsers, id, device, log), device]
     }
-    return [this.createBrowser(browsers, log), null]
+    return [this.createBrowser(browsers, id, log), null]
   }
 
-  private makeFromDevicesSet(browsers: CustomLauncher, device: string, log: Logger) {
+  private makeFromDevicesSet(browsers: CustomLauncher, id: string, device: string, log: Logger): ThenableWebDriver {
     const name = browsers.browserName + ' on ' + device + ' for ' + browsers.platform + ' ' + browsers.osVersion
     try {
       log.info('creating session for ' + name)
       const launcher = Object.assign({}, browsers)
       launcher.deviceName = device
-      const browser = this.createBrowser(launcher, log)
+      const browser = this.createBrowser(launcher, id, log)
       log.info(name + ' created succesfully')
       return browser
     } catch (err) {
@@ -54,11 +55,11 @@ export class BrowserStackSessionFactory {
     }
   }
 
-  private createBrowser(browser: CustomLauncher, log: Logger) {
+  private createBrowser(browser: CustomLauncher, id: string, log: Logger): ThenableWebDriver {
     const caps = this._capsFactory.create(
       browser.browserName,
       this._build,
-      this._build,
+      id,
       this._project,
       browser.deviceName as string,
       browser.platform,
@@ -76,6 +77,6 @@ export class BrowserStackSessionFactory {
   }
 }
 
-export function makeBrowserStackSessionFactory(config: ConfigOptions) {
+export function makeBrowserStackSessionFactory(config: ConfigOptions): BrowserStackSessionFactory {
   return new BrowserStackSessionFactory(config)
 }

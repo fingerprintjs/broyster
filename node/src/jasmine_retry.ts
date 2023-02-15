@@ -1,6 +1,6 @@
 let hasBeenSetAlready = false
 
-export function retryFailedTests(retries: number, millisecondsBetweenRetries: number) {
+export function retryFailedTests(retries: number, millisecondsBetweenRetries: number): void {
   if (hasBeenSetAlready) {
     return
   }
