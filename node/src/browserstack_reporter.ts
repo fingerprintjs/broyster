@@ -17,7 +17,7 @@ export function BrowserStackReporter(
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   let callWhenFinished = () => {}
 
-  const exitIfAllFinished = function () {
+  const exitIfAllFinished = () => {
     if (pendingUpdates === 0) {
       callWhenFinished()
     }
@@ -25,7 +25,7 @@ export function BrowserStackReporter(
   const browserstackClient = createBrowserStackClient()
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  this.onRunComplete = function (browsers: { browsers: BrowserSession[] }) {
+  this.on('runComplete', (browsers: { browsers: BrowserSession[] }) => {
     const browsersLaunched = browsers.browsers
     const browsersScheduled = Object.keys(config.customLaunchers ?? {})
     log.info('Executed ' + browsersLaunched.length + ' launchers out of ' + browsersScheduled.length)
@@ -40,9 +40,9 @@ export function BrowserStackReporter(
       )
       log.info('Browsers that were configured: ' + browsersScheduled.join(', '))
     }
-  }
+  })
 
-  this.onBrowserComplete = function (browser: BrowserSession) {
+  this.on('browserComplete', (browser: BrowserSession) => {
     const result: Result = browser.lastResult
 
     if (result.disconnected) {
@@ -72,11 +72,11 @@ export function BrowserStackReporter(
         },
       )
     }
-  }
+  })
 
   // Wait until all updates have been pushed to Browserstack
-  this.onExit = function (done: () => object) {
+  this.on('exit', (done: () => object) => {
     callWhenFinished = done
     exitIfAllFinished()
-  }
+  })
 }

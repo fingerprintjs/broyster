@@ -76,7 +76,7 @@ export function BrowserStackLauncher(
       await browserStackSessionsManager.ensureQueue(this, log)
 
       log.debug('creating browser with attributes: ' + JSON.stringify(args))
-      const [browserPromise, name] = browserStackSessionFactory.tryCreateBrowser(args, this.attempt++, log)
+      const [browserPromise, name] = browserStackSessionFactory.tryCreateBrowser(args, this.id, this.attempt++, log)
       if (name) {
         makeName(name)
       }
@@ -129,7 +129,7 @@ export function BrowserStackLauncher(
   })
 }
 
-function makeUrl(karmaUrl: string, isHttps: boolean) {
+function makeUrl(karmaUrl: string, isHttps: boolean): string {
   const url = new URL(karmaUrl)
   url.protocol = isHttps ? 'https' : 'http'
   if (isHttps) {

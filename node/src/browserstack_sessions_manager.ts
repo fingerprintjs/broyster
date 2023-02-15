@@ -20,18 +20,18 @@ export class BrowserStackSessionsManager {
     this._state = QueueState.Pending
   }
 
-  async canNewSessionBeLaunched(log: Logger) {
+  async canNewSessionBeLaunched(log: Logger): Promise<boolean> {
     return await this.checkIfCanLaunchSessions(1, log)
   }
 
-  async ensureQueue(launcher: KarmaLauncher, log: Logger) {
+  async ensureQueue(launcher: KarmaLauncher, log: Logger): Promise<void> {
     const isAvailable = await this.getQueue(launcher, log)
     if (isAvailable) {
       await this.getNewLauncher(log)
     }
   }
 
-  private async getNewLauncher(log: Logger) {
+  private async getNewLauncher(log: Logger): Promise<void> {
     const timeout = Date.now() + this._queueTimeout
     while (!(await this.canNewSessionBeLaunched(log))) {
       if (Date.now() > timeout) {
@@ -43,7 +43,7 @@ export class BrowserStackSessionsManager {
     }
   }
 
-  private async getQueue(launcher: KarmaLauncher, log: Logger) {
+  private async getQueue(launcher: KarmaLauncher, log: Logger): Promise<boolean> {
     if (this._state === QueueState.Pending) {
       await this._lock.acquire('queueLock', async () => {
         return await this.waitForQueue(log)
@@ -57,7 +57,7 @@ export class BrowserStackSessionsManager {
     return true
   }
 
-  private async waitForQueue(log: Logger) {
+  private async waitForQueue(log: Logger): Promise<void> {
     log.debug('queue state is ' + this._state)
     if (this._state !== QueueState.Pending) {
       log.debug('returning')
@@ -88,17 +88,17 @@ export class BrowserStackSessionsManager {
     this._timeout = Date.now() - 60_000
   }
 
-  private checkIfNewSessionCanBeQueued(log: Logger) {
+  private checkIfNewSessionCanBeQueued(log: Logger): Promise<boolean> {
     return this.checkIfCanLaunchSessions(this._requiredSlots, log)
   }
 
-  private checkIfCanLaunchSessions(slots: number, log: Logger) {
-    return this._lock.acquire('sessionsLock', async function () {
+  private checkIfCanLaunchSessions(slots: number, log: Logger): Promise<boolean> {
+    return this._lock.acquire('sessionsLock', async () => {
       return await canNewBrowserBeQueued(slots, log)
     })
   }
 }
 
-export function makeBrowserStackSessionsManager(config: ConfigOptions) {
+export function makeBrowserStackSessionsManager(config: ConfigOptions): BrowserStackSessionsManager {
   return new BrowserStackSessionsManager(config)
 }

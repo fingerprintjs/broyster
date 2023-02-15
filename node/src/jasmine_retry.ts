@@ -1,6 +1,7 @@
 let hasBeenSetAlready = false
 
-export function retryFailedTests(retries: number, millisecondsBetweenRetries: number) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function retryFailedTests(retries: number, millisecondsBetweenRetries: number): any {
   if (hasBeenSetAlready) {
     return
   }
