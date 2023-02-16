@@ -228,7 +228,7 @@ function setupBrowserStack(config: Config) {
     retryLimit: 3,
     captureTimeout: 15_000,
     browserStack: {
-      project: 'FingerprintJS', // todo: Turn to "Broyster" when the repository is open-sourced
+      project: 'Broyster',
       // A build number is required to group testing sessions in the BrowserStack UI.
       // GitHub Actions will add a value for GITHUB_RUN_ID. More on the environment variables:
       // https://docs.github.com/en/free-pro-team@latest/actions/reference/environment-variables#default-environment-variables
