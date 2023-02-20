@@ -54,5 +54,7 @@ export function retryFailedTests(retries: number, millisecondsBetweenRetries: nu
     }
     return spec
   }
+  // returns the original message that Jasmine uses to identify pending specs
+  typelessJasmine.Spec.pendingSpecExceptionMessage = '=> marked Pending'
   hasBeenSetAlready = true
 }
