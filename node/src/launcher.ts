@@ -28,17 +28,7 @@ export function BrowserStackLauncher(
   const captureTimeout = new CaptureTimeout(this, config, log)
 
   const makeName = (device: string | undefined) => {
-    this.name =
-      args.browserName +
-      ' ' +
-      args.browserVersion +
-      ' ' +
-      device +
-      ' for ' +
-      args.platform +
-      ' ' +
-      args.osVersion +
-      ' on BrowserStack'
+    this.name = args.browserName + ' ' + device + ' for ' + args.platform + ' ' + args.osVersion + ' on BrowserStack'
   }
   const device =
     args.browserVersion ??
