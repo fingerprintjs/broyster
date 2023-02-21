@@ -63,9 +63,9 @@ export class BrowserStackSessionFactory {
       this._project,
       browser.deviceName as string,
       browser.platform,
+      this._idleTimeout,
       browser.osVersion,
       browser.browserVersion,
-      this._idleTimeout,
     )
     log.debug('created capabilities: ' + JSON.stringify(caps))
     const opts = OptionsBuilder.create(browser.browserName, browser.flags)

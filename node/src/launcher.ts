@@ -75,7 +75,7 @@ export function BrowserStackLauncher(
       const session = (await browser.getSession()).getId()
       log.debug(this.id + ' has webdriver SessionId: ' + session)
       browserMap.set(this.id, { browser, session })
-      pageUrl = makeUrl(pageUrl, args.useHttps)
+      pageUrl = makeUrl(pageUrl, args.useHttps ?? true)
       await browser.get(pageUrl)
       heartbeat()
     } catch (err) {
