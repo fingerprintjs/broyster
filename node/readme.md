@@ -21,17 +21,20 @@ The pacakge requires nodeResolution in `tsconfig.json` to *node16*.
 
 This package exports the following:
 
-- `@fpjs-incubator/broyster/browser`:
+- `@fpjs-incubator/broyster/node`:
     - `karmaPlugin` That can be used for launching and reporting tests.
     - `sslConfiguration` That provides a self-signed certificate for HTTPS testing on localhost.
     - `httpHttpsServer` That gives you a set of two servers - one with HTTP and one with HTTP capabilities.
         Newer versions of Safari do not work nor have workarounds for self-signed certificates, however their behavior is the same for both HTTP and HTTPS. Depending on your entry's *useHttps*, the launcher will redirect respectively.
         The HTTP server runs on the port provided by Karma, while the HTTPS port will run on +1 from that.
     - `setHttpsAndServerForKarma` That configures karma for HTTP and HTTPS testing without any additional work.
-- `@fpjs-incubator/broyster/node`:
-    - `retryFailedTests` That allows overriding the different behavior of Jasmine specs. The new behavior will retry a failed test up until the maximum specified in the first parameter, with a delay between each such attempt, indicated by the second parameters (in miliseconds). There is a safety mechanism to prevent recurring apply, however you may also use `helpers` in Jasmine.
+- `@fpjs-incubator/broyster/browser`:
+    - `retryFailedTests` That allows overriding the different behavior of Jasmine specs. The new behavior will retry a failed test up until the maximum specified in the first parameter, with a delay between each such attempt, indicated by the second parameter (in miliseconds). There is a safety mechanism to prevent recurring apply, however you may also place it in your `helpers` in Jasmine, otherwise the call to this function should be placed before your most top-level `describe` block.
 
-To use mixed HTTP/HTTPS testing, in your karma config file you need to:
+Use `node` exports when using Node.js contexts, like configuring Karma.
+Use `browser` exports when using browser contexts, like Jasmine.
+
+To use mixed HTTP/HTTPS testing, in your Karma config file you need to:
 Set the protocol to https
 
 ``` js
