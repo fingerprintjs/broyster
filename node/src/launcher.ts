@@ -75,7 +75,7 @@ export function BrowserStackLauncher(
       const session = (await browser.getSession()).getId()
       log.debug(this.id + ' has webdriver SessionId: ' + session)
       browserMap.set(this.id, { browser, session })
-      pageUrl = makeUrl(pageUrl, args.useHttps ?? true)
+      pageUrl = makeUrl(pageUrl, args.useHttps)
       await browser.get(pageUrl)
       heartbeat()
     } catch (err) {
@@ -119,7 +119,10 @@ export function BrowserStackLauncher(
   })
 }
 
-function makeUrl(karmaUrl: string, isHttps: boolean): string {
+function makeUrl(karmaUrl: string, isHttps?: boolean | undefined): string {
+  if (isHttps === undefined) {
+    return karmaUrl
+  }
   const url = new URL(karmaUrl)
   url.protocol = isHttps ? 'https' : 'http'
   if (isHttps) {
