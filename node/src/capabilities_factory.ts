@@ -16,9 +16,9 @@ export class CapabilitiesFactory {
     projectName: string,
     deviceName: string | undefined,
     os: string | undefined,
-    osVersion: string,
-    browserVersion: string | null | undefined,
     idleTimeout: number,
+    osVersion?: string | undefined,
+    browserVersion?: string | null | undefined,
   ): SessionCapabilities {
     return {
       'bstack:options': {
@@ -33,7 +33,7 @@ export class CapabilitiesFactory {
         accessKey: this._accessKey,
         idleTimeout: idleTimeout,
       },
-      browserName: browserName?.toLowerCase() ?? '',
+      browserName: browserName?.toLowerCase(),
       browserVersion: browserVersion || 'latest',
       acceptInsecureCerts: true,
     }

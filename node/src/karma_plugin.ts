@@ -26,13 +26,13 @@ declare module 'karma' {
   }
 
   interface CustomLauncher {
-    name: string
-    osVersion: string
+    name?: string | undefined
+    osVersion?: string | undefined
     deviceName?: string | string[] | undefined
     browserVersion?: string | null | undefined
     firefoxCapabilities?: Array<[string, string | number | boolean]>
-    useHttps: boolean
-    //extraSettings: string[]; //TODO things like timezone, locale
+    useHttps?: boolean | undefined
+    //extraSettings?: string[] | undefined; //TODO things like timezone, locale
   }
 }
 

@@ -119,7 +119,10 @@ export function BrowserStackLauncher(
   })
 }
 
-function makeUrl(karmaUrl: string, isHttps: boolean): string {
+function makeUrl(karmaUrl: string, isHttps?: boolean | undefined): string {
+  if (isHttps === undefined) {
+    return karmaUrl
+  }
   const url = new URL(karmaUrl)
   url.protocol = isHttps ? 'https' : 'http'
   if (isHttps) {

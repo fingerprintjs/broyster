@@ -1,7 +1,7 @@
 export interface BstackOptions {
   os: string | undefined
-  osVersion: string
-  deviceName: string | undefined
+  osVersion?: string | undefined
+  deviceName?: string | undefined
   projectName: string
   buildName: string
   sessionName: string
