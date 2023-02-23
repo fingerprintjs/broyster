@@ -45,7 +45,12 @@ export function BrowserStackReporter(
     const result: Result = browser.lastResult
 
     if (result.disconnected) {
-      log.error('Test disconnected')
+      if (result.success + result.failed + result.skipped < result.total) {
+        log.error('Test disconnected')
+      } else {
+        result.disconnected = false
+        log.warn('Test reported as disconnected, but actually all tests executed')
+      }
     }
 
     if (result.error) {
