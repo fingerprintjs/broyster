@@ -72,9 +72,6 @@ If you face `Error: spawn Unknown system error -86` on macOS, try installing Ros
 softwareupdate --install-rosetta
 ```
 
-Alternatively, make a PR to this repository, the test will run on BrowserStack automatically.
-But the test won't run when the PR is made from a fork repository, in this case a member will run the tests manually.
-
 ### How to publish
 
 This section is for repository maintainers.
