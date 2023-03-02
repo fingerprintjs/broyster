@@ -8,7 +8,7 @@ Make sure you have [Yarn](https://yarnpkg.com) installed.
 
 The project is self-working.
 It is a [Karma](https://karma-runner.github.io) plugin that provides a launcher that uses Selenium WebDriver and BrowserStack for tests as well as a reporter, and a retry metchanism for [Jasmine](https://jasmine.github.io) tests.
-The project comes with am example project with tests aimed at thesting the essential features, but feel free to add your own as you see fit.
+The project comes with am example project with tests aimed at testing the essential features, but feel free to add your own as you see fit.
 
 ### Code style
 
