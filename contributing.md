@@ -31,7 +31,8 @@ yarn lint:fix
 To build the distribution files of the library, run:
 
 ```bash
-yarn build
+yarn install
+yarn --cwd node build:watch
 ```
 
 The results will be placed in the `dist` folder by default.
