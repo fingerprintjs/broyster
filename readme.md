@@ -4,7 +4,7 @@
 
 <p align="center">
   <a href="https://github.com/fingerprintjs/broyster/actions/workflows/test.yml">
-    <img src="hhttps://github.com/fingerprintjs/broyster/actions/workflows/test.yml/badge.svg" alt="Build status">
+    <img src="https://github.com/fingerprintjs/broyster/actions/workflows/test.yml/badge.svg" alt="Build status">
   </a>
   <a href="https://www.npmjs.com/package/@fpjs-incubator/broyster">
     <img src="https://img.shields.io/npm/v/@fpjs-incubator/broyster.svg" alt="Current NPM version">
