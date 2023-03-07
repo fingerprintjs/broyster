@@ -74,21 +74,3 @@ softwareupdate --install-rosetta
 
 Alternatively, make a PR to this repository, the test will run on BrowserStack automatically.
 But the test won't run when the PR is made from a fork repository, in this case a member will run the tests manually.
-
-### How to publish
-
-This section is for repository maintainers.
-
-1. Bump the version. Search the current version number in the code to know where to change it.
-2. Build and test the project.
-3. See what will get into the NPM package, make sure it contains the distributive files and no excess files.
-    To see, run `yarn pack`, an archive will appear nearby, open it with any archive browser.
-4. Run
-
-    ```bash
-    # Add '--tag beta' (without the quotes) if you release a beta version
-    # Add '--tag dev' if you release a development version (which is expected to get new features)
-    yarn publish --access public
-    ```
-
-5. Push the changes to the repository, and a version tag like `v1.3.4` to the commit.
