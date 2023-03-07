@@ -6,9 +6,9 @@ Make sure you have [Yarn](https://yarnpkg.com) installed.
 
 ### Development
 
-The project is self-working.
+The project requires little start-up efforts and verification of most enhancement work.
 It is a [Karma](https://karma-runner.github.io) plugin that provides a launcher that uses Selenium WebDriver and BrowserStack for tests as well as a reporter, and a retry metchanism for [Jasmine](https://jasmine.github.io) tests.
-The project comes with am example project with tests aimed at testing the essential features, but feel free to add your own as you see fit.
+Broyster comes with am example project including tests aimed at testing the essential features, but feel free to add your own as you see fit.
 
 ### Code style
 
@@ -20,7 +20,7 @@ yarn lint
 ```
 
 You aren't required to run the check manually, the CI will do it.
-Run to fix code style mistakes (not all mistakes can be fixed automatically):
+Run this to fix code style mistakes (not all mistakes can be fixed automatically):
 
 ```bash
 yarn lint:fix
@@ -39,7 +39,7 @@ The results will be placed in the `dist` folder by default.
 
 ### Pitfalls
 
-Working with Karma and Jasmine, which means not everything is in our control.
+The project uses Karma and Jasmine, which means not everything is in our control.
 For some problems you will need to dig into Karma or Jasmine to figure out if and how you can work around it.
 
 ### How to test

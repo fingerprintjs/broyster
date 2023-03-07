@@ -11,7 +11,7 @@
   </a>
 </p>
 
-A monorepo of testing tools
+A monorepo of testing tools for Karma with advanced usage of Browserstack and a Jasmine retry mechanism.
 
 Project structure:
 
