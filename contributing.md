@@ -8,7 +8,7 @@ Make sure you have [Yarn](https://yarnpkg.com) installed.
 
 The project requires little start-up efforts and verification of most enhancement work.
 It is a [Karma](https://karma-runner.github.io) plugin that provides a launcher that uses Selenium WebDriver and BrowserStack for tests as well as a reporter, and a retry metchanism for [Jasmine](https://jasmine.github.io) tests.
-Broyster comes with am example project including tests aimed at testing the essential features, but feel free to add your own as you see fit.
+Broyster comes with an example project including tests aimed at testing the essential features, but feel free to add your own as you see fit.
 
 ### Code style
 

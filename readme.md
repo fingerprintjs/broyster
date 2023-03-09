@@ -11,7 +11,8 @@
   </a>
 </p>
 
-A monorepo of testing tools for Karma with advanced usage of Browserstack and a Jasmine retry mechanism.
+Broyster gives you the ability to run your Karma tests in Browserstack using Selenium WebDriver as the means to execute the tests, as opposed to the regular tunnel for JS testing, giving you more flexibility in creating your test setup.
+It also comes with a Jasmine retry mechanism to help you combat flaky tests so that you can rely on your tests more.
 
 Project structure:
 
