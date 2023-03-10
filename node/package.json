@@ -31,7 +31,9 @@
   "sideEffects": false,
   "files": [
     "dist",
+    "browser.d.ts",
     "browser.js",
+    "node.d.ts",
     "node.js"
   ],
   "scripts": {
