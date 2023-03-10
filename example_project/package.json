@@ -1,0 +1,27 @@
+{
+  "private": true,
+  "name": "example_project",
+  "version": "0.0.1",
+  "scripts": {
+    "test:local": "karma start --preset local --single-run",
+    "test:browserstack": "karma start --preset browserstack --single-run"
+  },
+  "devDependencies": {
+    "@fpjs-incubator/broyster": "*",
+    "@types/jasmine": "^3.10.7",
+    "@types/karma": "^6.3.3",
+    "@types/karma-spec-reporter": "^0.0.3",
+    "@types/karma-summary-reporter": "^3.1.0",
+    "@types/ua-parser-js": "^0.7.36",
+    "karma": "^6.4.1",
+    "karma-chrome-launcher": "^3.1.1",
+    "karma-firefox-launcher": "^2.1.2",
+    "karma-jasmine": "^4.0.2",
+    "karma-spec-reporter": "^0.0.35",
+    "karma-summary-reporter": "^3.1.1",
+    "karma-typescript": "^5.5.3"
+  },
+  "dependencies": {
+    "ua-parser-js": "^1.0.33"
+  }
+}

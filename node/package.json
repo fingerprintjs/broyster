@@ -1,0 +1,52 @@
+{
+  "name": "@fpjs-incubator/broyster",
+  "description": "Test tools",
+  "version": "0.1.2",
+  "keywords": [
+    "test",
+    "tools",
+    "karma",
+    "browserstack"
+  ],
+  "author": "FingerprintJS, Inc (https://fingerprint.com)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fingerprintjs/broyster.git"
+  },
+  "bugs": {
+    "url": "https://github.com/fingerprintjs/broyster/issues"
+  },
+  "homepage": "https://github.com/fingerprintjs/broyster",
+  "exports": {
+    "./browser": {
+      "require": "./dist/index_browser.js",
+      "types": "./dist/index_browser.d.ts"
+    },
+    "./node": {
+      "require": "./dist/index_node.js",
+      "types": "./dist/index_node.d.ts"
+    }
+  },
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "browser.js",
+    "node.js"
+  ],
+  "scripts": {
+    "prepack": "cp ../LICENSE LICENSE",
+    "build": "rimraf dist && tsc",
+    "build:watch": "yarn build --watch"
+  },
+  "engines": {
+    "node": ">= 16"
+  },
+  "dependencies": {
+    "tslib": "^2.4.1",
+    "selenium-webdriver": "^4.7.0",
+    "browserstack-local": "^1.5.1",
+    "browserstack": "~1.5.1",
+    "async-lock": "^1.4.0"
+  }
+}

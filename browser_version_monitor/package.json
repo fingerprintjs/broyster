@@ -1,0 +1,34 @@
+{
+    "name": "browser-version-checker",
+    "version": "0.0.1",
+    "description": "Set of tests to ensure new browsers do not cause issues",
+    "scripts": {
+        "test": "ts-node node_modules/.bin/jasmine --config=jasmine.json",
+        "build": "rollup -c rollup/rollup.config.js --bundleConfigAsCjs",
+        "get:agent": "npx ts-node ./fetch_agent/draw_random.ts",
+        "get:random": "npx ts-node --esm ./rollup/makeversion.ts"
+    },
+    "devDependencies": {
+        "@rollup/plugin-html": "^1.0.2",
+        "@rollup/plugin-node-resolve": "^15.0.1",
+        "@rollup/plugin-virtual": "^3.0.1",
+        "@types/detect-port": "^1.3.2",
+        "@types/jasmine": "^4.0.3",
+        "@types/node": "^18.15.0",
+        "@types/node-static": "^0.7.7",
+        "@types/tar": "^6.1.4",
+        "@web/rollup-plugin-html": "^1.11.0",
+        "browserstack": "~1.5.1",
+        "browserstack-local": "^1.5.1",
+        "detect-port": "^1.5.1",
+        "http-server": "^14.1.1",
+        "jasmine": "^4.5.0",
+        "jasmine-ts": "^0.4.0",
+        "node-static": "^0.7.11",
+        "rollup": "^3.18.0",
+        "tar": "^6.1.13",
+        "ts-node": "^10.9.1",
+        "tslib": "^2.5.0",
+        "typescript": "^4.9.5"
+    }
+}

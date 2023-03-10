@@ -1,0 +1,14 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "importHelpers": true,
+    "outDir": "./dist",
+  },
+  "include": [
+    "src/index_browser.ts",
+    "src/index_node.ts",
+    "src/**/*.d.ts"
+  ]
+}
