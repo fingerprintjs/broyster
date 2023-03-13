@@ -3,11 +3,9 @@ import { FingerprintPro } from './fingerprint_pro'
 
 export class BrowserObject {
   private fingerprintResult: FingerprintPro
-  private loadFingerprintTime: number
   private getFingerprintTime: number
   constructor(private driver: WebDriver) {
     this.fingerprintResult = new Object() as FingerprintPro
-    this.loadFingerprintTime = 0
     this.getFingerprintTime = 0
   }
 
@@ -22,7 +20,6 @@ export class BrowserObject {
       return result > 0
     })
     this.fingerprintResult = JSON.parse(await this.driver.findElement(By.id('Fingerprint-result')).getText())
-    this.loadFingerprintTime = parseFloat(await this.driver.findElement(By.id('Fingerprint-loadTime')).getText())
     this.getFingerprintTime = parseFloat(await this.driver.findElement(By.id('Fingerprint-getTime')).getText())
   }
 
@@ -36,10 +33,6 @@ export class BrowserObject {
 
   getRequestId(): string {
     return this.fingerprintResult.requestId
-  }
-
-  getLoadTime(): number {
-    return this.loadFingerprintTime
   }
 
   getGetTime(): number {
