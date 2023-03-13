@@ -3,7 +3,7 @@ import rollupVirtual from '@rollup/plugin-virtual'
 import { nodeResolve as rollupNodeResolve } from '@rollup/plugin-node-resolve'
 import { spawn, SpawnOptions } from 'child_process'
 import html from '@rollup/plugin-html'
-import { readFileSync } from 'fs'
+import { readFileSync, writeFileSync } from 'fs'
 //import { drawRandom } from '../fetch_agent/draw_random'
 import { code } from './3.6'
 
@@ -37,22 +37,20 @@ export async function createBundle(): Promise<void> {
   })
 
   const { output } = await bundle.generate({
-    dir: './resources',
     name: 'FingerprintJS',
-    //file: 'fp.min.js',
-    format: 'esm',
+    file: 'fp.min.js',
+    format: 'iife',
   })
 
-  const x = output[0].code
-  console.log(x)
-  console.log('==============')
-  console.log(output)
+  const outputCode = output[0].code
+
+  writeFileSync('./rollup/app.js', outputCode)
   // Inject `code` into the browser or serve as a JS file by your HTTP(S) server
 }
 
-async function installAgentVersion(version: string, _contextDirectory: string): Promise<void> {
+async function installAgentVersion(version: string, contextDirectory: string): Promise<void> {
   const dependencyName = '@fingerprintjs/fingerprintjs-pro'
-  await runCommand(`yarn add ${dependencyName}@${version} -ED`, {  })
+  await runCommand(`yarn add ${dependencyName}@${version} -ED`, { cwd: contextDirectory })
 }
 
 export function runCommand(command: string, options: SpawnOptions = {}): Promise<void> {
