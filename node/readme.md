@@ -17,8 +17,6 @@ import * as broysterForNode from '@fpjs-incubator/broyster/node'
 
 ## Usage
 
-The pacakge requires nodeResolution in `tsconfig.json` to *node16*.
-
 This package exports the following:
 
 - `@fpjs-incubator/broyster/node`:

@@ -7,9 +7,8 @@ declare module 'karma' {
     karmaTypescriptConfig?: KarmaTypescriptConfig | undefined
   }
 
-  interface Config {
+  interface Config extends ConfigOptions {
     preset?: string
-    reporters: string[]
   }
 }
 
@@ -220,11 +219,11 @@ function setupBrowserStack(config: Config) {
   }
 
   config.set({
-    reporters: [...config.reporters, 'BrowserStack'],
+    reporters: [...(config.reporters || []), 'BrowserStack'],
     browsers: Object.keys(customLaunchers),
     customLaunchers,
     concurrency: 5,
-    plugins: [karmaPlugin, 'karma-*'],
+    plugins: [...(config.plugins || []), karmaPlugin],
     retryLimit: 3,
     captureTimeout: 15_000,
     browserStack: {
