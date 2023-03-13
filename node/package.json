@@ -18,16 +18,6 @@
     "url": "https://github.com/fingerprintjs/broyster/issues"
   },
   "homepage": "https://github.com/fingerprintjs/broyster",
-  "exports": {
-    "./browser": {
-      "require": "./dist/index_browser.js",
-      "types": "./dist/index_browser.d.ts"
-    },
-    "./node": {
-      "require": "./dist/index_node.js",
-      "types": "./dist/index_node.d.ts"
-    }
-  },
   "sideEffects": false,
   "files": [
     "dist",

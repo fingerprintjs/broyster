@@ -4,7 +4,7 @@
  *
  * TypeScript supports this field if the `moduleResolution` compiler option is set to `node16`,
  * which is not always possible.
- * When the default TypeScript configuration supports `node16`, this file should be removed.
+ * When the default TypeScript configuration supports `node16`, this file should be removed in favor of `exports`.
  */
 
 export * from './dist/index_browser'
