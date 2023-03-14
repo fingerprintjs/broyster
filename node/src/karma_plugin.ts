@@ -5,6 +5,7 @@ import { makeBrowserStackSessionsManager } from './browserstack_sessions_manager
 import { BrowserStackLauncher } from './launcher'
 import { InlinePluginDef } from 'karma'
 import { BrowserStackReporter } from './browserstack_reporter'
+import type { FirefoxProfile } from './webdriver_factory';
 
 const karmaPlugin: InlinePluginDef = {
   'launcher:BrowserStack': ['type', BrowserStackLauncher],
@@ -28,9 +29,9 @@ declare module 'karma' {
   interface CustomLauncher {
     name?: string | undefined
     osVersion?: string | undefined
-    deviceName?: string | string[] | undefined
+    deviceName?: string | readonly string[] | undefined
     browserVersion?: string | null | undefined
-    firefoxCapabilities?: Array<[string, string | number | boolean]>
+    firefoxCapabilities?: FirefoxProfile
     useHttps?: boolean | undefined
     //extraSettings?: string[] | undefined; //TODO things like timezone, locale
   }
