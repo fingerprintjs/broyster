@@ -5,7 +5,7 @@ import { makeBrowserStackSessionsManager } from './browserstack_sessions_manager
 import { BrowserStackLauncher } from './launcher'
 import { InlinePluginDef } from 'karma'
 import { BrowserStackReporter } from './browserstack_reporter'
-import type { FirefoxProfile } from './webdriver_factory';
+import type { FirefoxProfile } from './webdriver_factory'
 
 const karmaPlugin: InlinePluginDef = {
   'launcher:BrowserStack': ['type', BrowserStackLauncher],
