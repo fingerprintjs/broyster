@@ -1,7 +1,5 @@
 # Broyster Node.js tools
 
-This file will be published to NPM
-
 ```bash
 npm install --save-dev @fpjs-incubator/broyster
 # or
