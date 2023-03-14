@@ -5,13 +5,15 @@ import * as chrome from 'selenium-webdriver/chrome'
 import * as webdriver from 'selenium-webdriver'
 import { SessionCapabilities } from './session_capabilities'
 
+export type FirefoxProfile = ReadonlyArray<readonly [string, string | number | boolean]>
+
 export class WebDriverFactory {
   private static url = 'https://hub-cloud.browserstack.com/wd/hub'
 
   static createFromOptions(
     options: chrome.Options | firefox.Options | safari.Options | edge.Options,
     browserStack: SessionCapabilities,
-    firefoxProfile?: Array<[string, string | number | boolean]>,
+    firefoxProfile?: FirefoxProfile,
   ) {
     const builder = new webdriver.Builder().usingServer(this.url)
     switch (options.getBrowserName()?.toLowerCase()) {

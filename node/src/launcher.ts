@@ -32,7 +32,7 @@ export function BrowserStackLauncher(
   }
   const device =
     args.browserVersion ??
-    (Array.isArray(args.deviceName) ? 'on any of ' + args.deviceName.join(', ') : args.deviceName)
+    (args.deviceName instanceof Array ? 'on any of ' + args.deviceName.join(', ') : args.deviceName)
   makeName(device)
 
   let browser: WebDriver
