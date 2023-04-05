@@ -175,7 +175,7 @@ function makeBuildNumber() {
 }
 
 function setupLocal(config: Config) {
-  const files = ['src/**/*.ts']
+  const files = ['karma_global_setup.ts', 'src/**/*.ts']
   config.set({
     frameworks: ['jasmine', 'karma-typescript'],
     files,

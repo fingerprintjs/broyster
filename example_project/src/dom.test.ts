@@ -1,8 +1,6 @@
 import { createButton } from './dom'
-import { retryFailedTests } from '@fpjs-incubator/broyster/browser'
 import * as UAParser from 'ua-parser-js'
 
-retryFailedTests(3, 100)
 describe('DOM', () => {
   describe('createButton', () => {
     it('creates a button', () => {

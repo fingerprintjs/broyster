@@ -25,7 +25,7 @@ This package exports the following:
         The HTTP server runs on the port provided by Karma, while the HTTPS port will run on +1 from that.
     - `setHttpsAndServerForKarma` That configures karma for HTTP and HTTPS testing without any additional work.
 - `@fpjs-incubator/broyster/browser`:
-    - `retryFailedTests` That allows overriding the different behavior of Jasmine specs. The new behavior will retry a failed test up until the maximum specified in the first parameter, with a delay between each such attempt, indicated by the second parameter (in miliseconds). Call this function in the root of any executable file, involved in your testing code, for example, in a Jasmine helper file. Once called, it affects all tests Jasmine runs, even in the other files.
+    - `retryFailedTests` That allows overriding the different behavior of Jasmine specs. The new behavior will retry a failed test up until the maximum specified in the first parameter, with a delay between each such attempt, indicated by the second parameter (in miliseconds). Call this function in the root of any executable file, involved in your testing code, for example, in a Jasmine helper file. Once called, it affects all tests Jasmine runs, even in the other files. For Karma, you can add a file that contains the invocation and point it in your `files`, that way you will not have it tied to one specific test file.
 
 Use `node` exports when using Node.js contexts, like configuring Karma.
 Use `browser` exports when using browser contexts, like Jasmine.

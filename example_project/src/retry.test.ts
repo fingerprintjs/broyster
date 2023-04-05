@@ -1,7 +1,3 @@
-import { retryFailedTests } from '@fpjs-incubator/broyster/browser'
-
-retryFailedTests(3, 100)
-
 let number = 0
 describe('Running', () => {
   describe('a failing test', () => {
