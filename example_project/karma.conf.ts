@@ -175,7 +175,7 @@ function makeBuildNumber() {
 }
 
 function setupLocal(config: Config) {
-  const files = ['src/**/*.ts']
+  const files = ['test_utils.ts', 'src/**/*.ts']
   config.set({
     frameworks: ['jasmine', 'karma-typescript'],
     files,
