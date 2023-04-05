@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
+      - name: Show the environment variables
+        run: printenv
       - name: Checkout
         uses: actions/checkout@v3
       - name: Cache
