@@ -28,10 +28,8 @@ jobs:
         run: yarn lint
       - name: Build the Node.js tools
         run: yarn --cwd node build
-      - name: Debug an environment variable
-        run: echo "${{ vars.GITHUB_RUN_ATTEMPT }}" && echo "${{ vars.GITHUB_RUN_ATTEMPT == '1' && 'str' || vars.GITHUB_RUN_ATTEMPT == 1 && 'digit' || 'nothing' }}"
       - name: Test the example project on BrowserStack
-        run: "yarn --cwd example_project test:browserstack --log-level ${{ vars.GITHUB_RUN_ATTEMPT == '1' && 'info' || 'debug' }}"
+        run: "yarn --cwd example_project test:browserstack --log-level ${{ github.run_attempt == 1 && 'info' || 'debug' }}"
         env:
           BROWSERSTACK_USERNAME: ${{secrets.BROWSERSTACK_USERNAME}}
           BROWSERSTACK_ACCESS_KEY: ${{secrets.BROWSERSTACK_ACCESS_KEY}}
