@@ -226,6 +226,7 @@ function setupBrowserStack(config: Config) {
     plugins: [...(config.plugins || []), karmaPlugin],
     retryLimit: 3,
     captureTimeout: 15_000,
+    browserDisconnectTolerance: 1,
     browserStack: {
       project: 'Broyster',
       // A build number is required to group testing sessions in the BrowserStack UI.
