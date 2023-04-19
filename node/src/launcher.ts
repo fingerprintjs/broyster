@@ -28,6 +28,7 @@ export function BrowserStackLauncher(
   const identifier = env.HELLO ?? env.hello
   const log = logger.create('Browserstack ' + this.id)
   const run = browserStackLocalManager.run(log, identifier)
+  log.error(identifier ?? 'could not get hello')
   const captureTimeout = new CaptureTimeout(this, config, log)
 
   const makeName = (device: string | undefined) => {
