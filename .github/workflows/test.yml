@@ -5,11 +5,18 @@ on:
     branches:
       - main
   pull_request:
+
+env:
+  BROWSERSTACK_USERNAME: ${{secrets.BROWSERSTACK_USERNAME}}
+  BROWSERSTACK_ACCESS_KEY: ${{secrets.BROWSERSTACK_ACCESS_KEY}}
 jobs:
   build:
     name: Lint, build and test
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    strategy:
+      matrix:
+        hello: ['one', 'two']
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -26,12 +33,19 @@ jobs:
         run: yarn lint
       - name: Build the Node.js tools
         run: yarn --cwd node build
+      - name: 'BrowserStackLocal Setup'
+        uses: 'browserstack/github-actions/setup-local@master'
+        with:
+          local-testing: start
+          local-identifier: testidentifier
+          local-args: --force-local --force
       - name: Test the example project on BrowserStack
         run: yarn --cwd example_project test:browserstack --log-level debug
-        env:
-          BROWSERSTACK_USERNAME: ${{secrets.BROWSERSTACK_USERNAME}}
-          BROWSERSTACK_ACCESS_KEY: ${{secrets.BROWSERSTACK_ACCESS_KEY}}
-
+      - name: 'BrowserStackLocal Setup'
+        uses: 'browserstack/github-actions/setup-local@master'
+        with:
+          local-testing: stop
+        if: ${{ always() }}
       # The following steps will be replaced with automatic publishing
       - name: Pack the Node.js tools
         run: yarn --cwd node pack

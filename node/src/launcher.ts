@@ -7,6 +7,7 @@ import { calculateHttpsPort } from './custom_servers'
 import { BrowserStackSessionsManager } from './browserstack_sessions_manager'
 import { CustomLauncher, ConfigOptions } from 'karma'
 import { CaptureTimeout } from './capture_timeout_handler'
+import { env } from 'process'
 
 export function BrowserStackLauncher(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -24,7 +25,9 @@ export function BrowserStackLauncher(
   baseLauncherDecorator(this)
   retryLauncherDecorator(this)
   const log = logger.create('Browserstack ' + this.id)
-  const run = browserStackLocalManager.run(log)
+  console.log(env.HELLO)
+  console.log(env.hello)
+  //const run = browserStackLocalManager.run(log)
   const captureTimeout = new CaptureTimeout(this, config, log)
 
   const makeName = (device: string | undefined) => {
