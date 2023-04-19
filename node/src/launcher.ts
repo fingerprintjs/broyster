@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { WebDriver } from 'selenium-webdriver'
 import { BrowserMap } from './browser_map'
 import { BrowserStackLocalManager } from './browserstack_local_manager'
@@ -25,8 +26,8 @@ export function BrowserStackLauncher(
   baseLauncherDecorator(this)
   retryLauncherDecorator(this)
   const log = logger.create('Browserstack ' + this.id)
-  console.log(env.HELLO)
-  console.log(env.hello)
+  log.error(env.HELLO ?? '')
+  log.error(env.hello ?? '')
   //const run = browserStackLocalManager.run(log)
   const captureTimeout = new CaptureTimeout(this, config, log)
 
@@ -64,8 +65,6 @@ export function BrowserStackLauncher(
 
   this.on('start', async (pageUrl: string) => {
     try {
-      await run
-
       await browserStackSessionsManager.ensureQueue(this, log)
 
       log.debug('creating browser with attributes: ' + JSON.stringify(args))
