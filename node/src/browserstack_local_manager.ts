@@ -8,13 +8,13 @@ export class BrowserStackLocalManager {
   bsLocal: browserStack.Local = new browserStack.Local()
   switchPromise = Promise.resolve()
 
-  run(logger: Logger): Promise<void> {
+  run(logger: Logger, localIdentifier?: string | undefined): Promise<void> {
     if (!this.isRunning) {
       this.isRunning = true
       const bsAccesskey = getBrowserStackAccessKey()
       const bsLocalArgs = {
         key: bsAccesskey,
-        localIdentifier: undefined,
+        localIdentifier: localIdentifier,
         forceLocal: true,
         force: true,
       }
