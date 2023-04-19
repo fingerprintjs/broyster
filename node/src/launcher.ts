@@ -25,10 +25,9 @@ export function BrowserStackLauncher(
 ) {
   baseLauncherDecorator(this)
   retryLauncherDecorator(this)
+  const identifier = env.HELLO ?? env.hello
   const log = logger.create('Browserstack ' + this.id)
-  log.error(env.HELLO ?? 'should have been HELLO')
-  log.error(env.hello ?? 'should have been hello')
-  //const run = browserStackLocalManager.run(log)
+  const run = browserStackLocalManager.run(log, identifier)
   const captureTimeout = new CaptureTimeout(this, config, log)
 
   const makeName = (device: string | undefined) => {
@@ -65,6 +64,7 @@ export function BrowserStackLauncher(
 
   this.on('start', async (pageUrl: string) => {
     try {
+      await run
       await browserStackSessionsManager.ensureQueue(this, log)
 
       log.debug('creating browser with attributes: ' + JSON.stringify(args))

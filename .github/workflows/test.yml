@@ -34,14 +34,9 @@ jobs:
         run: yarn lint
       - name: Build the Node.js tools
         run: yarn --cwd node build
-      - name: 'BrowserStackLocal Setup'
-        uses: 'browserstack/github-actions/setup-local@master'
-        with:
-          local-testing: start
-          local-identifier: testidentifier
-          local-args: --force-local --force
+
       - name: Test the example project on BrowserStack
-        run: yarn --cwd example_project test:browserstack --log-level debug
+        run: HELLO=${{ matrix.hello }} yarn --cwd example_project test:browserstack --log-level debug
       - name: 'BrowserStackLocal off'
         uses: 'browserstack/github-actions/setup-local@master'
         with:

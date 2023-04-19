@@ -18,6 +18,7 @@ export class BrowserStackLocalManager {
         forceLocal: true,
         force: true,
       }
+      logger.error(JSON.stringify(bsLocalArgs))
       logger.debug('Starting BrowserStackLocal')
       this.switchPromise = promisify(this.bsLocal.start)
         .bind(this.bsLocal)(bsLocalArgs)

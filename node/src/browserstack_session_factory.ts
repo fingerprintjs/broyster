@@ -66,9 +66,9 @@ export class BrowserStackSessionFactory {
       this._idleTimeout,
       browser.osVersion,
       browser.browserVersion,
-      'testidentifier',
+      id,
     )
-    log.debug('created capabilities: ' + JSON.stringify(caps))
+    log.error('created capabilities: ' + JSON.stringify(caps))
     const opts = OptionsBuilder.create(browser.browserName, browser.flags)
     log.debug('created options: ' + JSON.stringify(opts))
     if (browser.firefoxCapabilities) {
