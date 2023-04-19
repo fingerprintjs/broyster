@@ -23,6 +23,7 @@ declare module 'karma' {
       build: string | number
       idleTimeout?: number
       queueTimeout?: number
+      localIdentifier?: string | undefined
     }
   }
 

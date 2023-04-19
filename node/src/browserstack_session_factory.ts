@@ -14,6 +14,7 @@ export class BrowserStackSessionFactory {
   private _build: string
   private _capsFactory: CapabilitiesFactory
   private _idleTimeout: number
+  private _localIdentifier: string | undefined
 
   constructor(config: ConfigOptions) {
     if (!config.browserStack) {
@@ -21,6 +22,7 @@ export class BrowserStackSessionFactory {
     }
     this._username = getBrowserStackUserName()
     this._accessKey = getBrowserStackAccessKey()
+    this._localIdentifier = config.browserStack.localIdentifier
     this._project = config.browserStack.project
     this._build = config.browserStack.build.toString()
     this._idleTimeout = config.browserStack.idleTimeout ?? 60_000
@@ -66,6 +68,7 @@ export class BrowserStackSessionFactory {
       this._idleTimeout,
       browser.osVersion,
       browser.browserVersion,
+      this._localIdentifier,
     )
     log.debug('created capabilities: ' + JSON.stringify(caps))
     const opts = OptionsBuilder.create(browser.browserName, browser.flags)
