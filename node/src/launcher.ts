@@ -26,8 +26,8 @@ export function BrowserStackLauncher(
   baseLauncherDecorator(this)
   retryLauncherDecorator(this)
   const log = logger.create('Browserstack ' + this.id)
-  log.error(env.HELLO ?? '')
-  log.error(env.hello ?? '')
+  log.error(env.HELLO ?? 'should have been HELLO')
+  log.error(env.hello ?? 'should have been hello')
   //const run = browserStackLocalManager.run(log)
   const captureTimeout = new CaptureTimeout(this, config, log)
 
