@@ -23,6 +23,11 @@ jobs:
             **/node_modules
           key: nodemodules-${{ hashFiles('**/yarn.lock') }}
           restore-keys: nodemodules-
+      - name: 'BrowserStackLocal stop'
+        uses: 'browserstack/github-actions/setup-local@master'
+        with:
+          local-testing: stop
+        if: ${{ always() }}
       - name: Install Node packages
         run: yarn install
       - name: Lint
@@ -37,7 +42,7 @@ jobs:
           local-args: --force-local --force
       - name: Test the example project on BrowserStack
         run: yarn --cwd example_project test:browserstack --log-level debug
-      - name: 'BrowserStackLocal Setup'
+      - name: 'BrowserStackLocal off'
         uses: 'browserstack/github-actions/setup-local@master'
         with:
           local-testing: stop
