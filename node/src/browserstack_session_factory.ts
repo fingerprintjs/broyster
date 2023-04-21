@@ -6,6 +6,7 @@ import { OptionsBuilder } from './options_builder'
 import { WebDriverFactory } from './webdriver_factory'
 import { getBrowserStackUserName, getBrowserStackAccessKey } from './browserstack_helpers'
 import { ThenableWebDriver } from 'selenium-webdriver'
+import { env } from 'process'
 
 export class BrowserStackSessionFactory {
   private _username: string
