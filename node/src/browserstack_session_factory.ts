@@ -22,6 +22,9 @@ export class BrowserStackSessionFactory {
     }
     this._username = getBrowserStackUserName()
     this._accessKey = getBrowserStackAccessKey()
+    if (!config.browserStack.localIdentifier) {
+      config.browserStack.localIdentifier = Date.now().toString()
+    }
     this._localIdentifier = config.browserStack.localIdentifier
     this._project = config.browserStack.project
     this._build = config.browserStack.build.toString()
