@@ -6,7 +6,6 @@ import { OptionsBuilder } from './options_builder'
 import { WebDriverFactory } from './webdriver_factory'
 import { getBrowserStackUserName, getBrowserStackAccessKey } from './browserstack_helpers'
 import { ThenableWebDriver } from 'selenium-webdriver'
-import { env } from 'process'
 
 export class BrowserStackSessionFactory {
   private _username: string
@@ -67,7 +66,7 @@ export class BrowserStackSessionFactory {
       this._idleTimeout,
       browser.osVersion,
       browser.browserVersion,
-      env.HELLO ?? env.hello,
+      'whatever',
     )
     log.error('created capabilities: ' + JSON.stringify(caps))
     const opts = OptionsBuilder.create(browser.browserName, browser.flags)
