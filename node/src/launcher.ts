@@ -24,7 +24,7 @@ export function BrowserStackLauncher(
   baseLauncherDecorator(this)
   retryLauncherDecorator(this)
   const log = logger.create('Browserstack ' + this.id)
-  const run = browserStackLocalManager.run(log)
+  const run = browserStackLocalManager.run(log, config.browserStack?.localIdentifier)
   const captureTimeout = new CaptureTimeout(this, config, log)
 
   const makeName = (device: string | undefined) => {
