@@ -71,7 +71,12 @@ export function BrowserStackLauncher(
       await browserStackSessionsManager.ensureQueue(this, log)
 
       log.debug('creating browser with attributes: ' + JSON.stringify(args))
-      const [browserPromise, name] = browserStackSessionFactory.tryCreateBrowser(args, this.id, this.attempt++, log)
+      const [browserPromise, name] = browserStackSessionFactory.tryCreateBrowser(
+        args,
+        identifier + '-' + this.id,
+        this.attempt++,
+        log,
+      )
       if (name) {
         makeName(name)
       }
