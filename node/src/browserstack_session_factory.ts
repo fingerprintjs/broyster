@@ -66,7 +66,7 @@ export class BrowserStackSessionFactory {
       this._idleTimeout,
       browser.osVersion,
       browser.browserVersion,
-      'whatever',
+      env.HELLO ?? env.hello,
     )
     log.error('created capabilities: ' + JSON.stringify(caps))
     const opts = OptionsBuilder.create(browser.browserName, browser.flags)
