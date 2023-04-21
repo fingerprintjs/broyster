@@ -27,7 +27,7 @@ export function BrowserStackLauncher(
   retryLauncherDecorator(this)
   const identifier = env.HELLO ?? env.hello
   const log = logger.create('Browserstack ' + this.id)
-  const run = browserStackLocalManager.run(log, 'whatever')
+  const run = browserStackLocalManager.run(log, identifier)
 
   log.error('this is the identifier')
   log.error(identifier ?? 'could not get hello')
