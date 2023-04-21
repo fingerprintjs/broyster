@@ -222,7 +222,7 @@ function setupBrowserStack(config: Config) {
     reporters: [...(config.reporters || []), 'BrowserStack'],
     browsers: Object.keys(customLaunchers),
     customLaunchers,
-    concurrency: 5,
+    concurrency: 2,
     plugins: [...(config.plugins || []), karmaPlugin],
     retryLimit: 3,
     captureTimeout: 15_000,
