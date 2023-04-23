@@ -86,8 +86,8 @@ export function makeBrowserStackSessionFactory(
     throw new Error('BrowserStack options are not set')
   }
 
-  username = username ?? getBrowserStackUserName()
-  accessKey = accessKey ?? getBrowserStackAccessKey()
+  username = username || getBrowserStackUserName()
+  accessKey = accessKey || getBrowserStackAccessKey()
 
   const capabilitiesFactory = makeCapabilitiesFactory(username, accessKey, true)
 
