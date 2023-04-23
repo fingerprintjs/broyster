@@ -3,10 +3,12 @@ import { SessionCapabilities } from './session_capabilities'
 export class CapabilitiesFactory {
   _username: string
   _accessKey: string
+  _local: boolean
 
-  constructor(username: string, accessKey: string) {
+  constructor(username: string, accessKey: string, local = true) {
     this._username = username
     this._accessKey = accessKey
+    this._local = local
   }
 
   create(
@@ -28,7 +30,7 @@ export class CapabilitiesFactory {
         projectName: projectName,
         sessionName: sessionName,
         buildName: buildName,
-        local: true,
+        local: this._local,
         userName: this._username,
         accessKey: this._accessKey,
         idleTimeout: idleTimeout,
@@ -38,4 +40,8 @@ export class CapabilitiesFactory {
       acceptInsecureCerts: true,
     }
   }
+}
+
+export const makeCapabilitiesFactory = (username: string, accessKey: string, local = true) => {
+  return new CapabilitiesFactory(username, accessKey, local)
 }

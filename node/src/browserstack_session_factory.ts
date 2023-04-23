@@ -1,30 +1,30 @@
 import { ConfigOptions } from 'karma'
-import { CapabilitiesFactory } from './capabilities_factory'
+import { CapabilitiesFactory, makeCapabilitiesFactory } from './capabilities_factory'
 import { CustomLauncher } from 'karma'
 import { Logger } from './karma_logger'
 import { OptionsBuilder } from './options_builder'
 import { WebDriverFactory } from './webdriver_factory'
-import { getBrowserStackUserName, getBrowserStackAccessKey } from './browserstack_helpers'
 import { ThenableWebDriver } from 'selenium-webdriver'
+import { getBrowserStackAccessKey, getBrowserStackUserName } from './browserstack_helpers'
+
+export interface BrowserStackSessionFactoryConfig {
+  project: string
+  build: string
+  idleTimeout?: number
+  capabilitiesFactory: CapabilitiesFactory
+}
 
 export class BrowserStackSessionFactory {
-  private _username: string
-  private _accessKey: string
   private _project: string
   private _build: string
   private _capsFactory: CapabilitiesFactory
   private _idleTimeout: number
 
-  constructor(config: ConfigOptions) {
-    if (!config.browserStack) {
-      throw new Error('BrowserStack options are not set')
-    }
-    this._username = getBrowserStackUserName()
-    this._accessKey = getBrowserStackAccessKey()
-    this._project = config.browserStack.project
-    this._build = config.browserStack.build.toString()
-    this._idleTimeout = config.browserStack.idleTimeout ?? 60_000
-    this._capsFactory = new CapabilitiesFactory(this._username, this._accessKey)
+  constructor(config: BrowserStackSessionFactoryConfig) {
+    this._project = config.project
+    this._build = config.build
+    this._idleTimeout = config.idleTimeout ?? 60_000
+    this._capsFactory = config.capabilitiesFactory
   }
 
   tryCreateBrowser(
@@ -77,6 +77,28 @@ export class BrowserStackSessionFactory {
   }
 }
 
-export function makeBrowserStackSessionFactory(config: ConfigOptions): BrowserStackSessionFactory {
-  return new BrowserStackSessionFactory(config)
+export function makeBrowserStackSessionFactory(
+  username: string,
+  accessKey: string,
+  config: ConfigOptions,
+): BrowserStackSessionFactory {
+  if (!config.browserStack) {
+    throw new Error('BrowserStack options are not set')
+  }
+
+  const capabilitiesFactory = makeCapabilitiesFactory(username, accessKey, true)
+
+  return new BrowserStackSessionFactory({
+    capabilitiesFactory,
+    project: config.browserStack.project,
+    build: config.browserStack.build.toString(),
+    idleTimeout: config.browserStack.idleTimeout,
+  })
+}
+
+export function makeKarmaBrowserStackSessionFactory(config: ConfigOptions): BrowserStackSessionFactory {
+  const username = getBrowserStackUserName()
+  const accessKey = getBrowserStackAccessKey()
+
+  return makeBrowserStackSessionFactory(username, accessKey, config)
 }

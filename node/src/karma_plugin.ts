@@ -1,6 +1,6 @@
 import { makeBrowserMapFactory } from './browser_map'
 import { makeBrowserStackLocalManagerFactory } from './browserstack_local_manager'
-import { makeBrowserStackSessionFactory } from './browserstack_session_factory'
+import { makeKarmaBrowserStackSessionFactory } from './browserstack_session_factory'
 import { makeBrowserStackSessionsManager } from './browserstack_sessions_manager'
 import { BrowserStackLauncher } from './launcher'
 import { InlinePluginDef } from 'karma'
@@ -10,7 +10,7 @@ import type { FirefoxProfile } from './webdriver_factory'
 const karmaPlugin: InlinePluginDef = {
   'launcher:BrowserStack': ['type', BrowserStackLauncher],
   'reporter:BrowserStack': ['type', BrowserStackReporter],
-  browserStackSessionFactory: ['factory', makeBrowserStackSessionFactory],
+  browserStackSessionFactory: ['factory', makeKarmaBrowserStackSessionFactory],
   browserStackLocalManager: ['factory', makeBrowserStackLocalManagerFactory],
   browserStackSessionsManager: ['factory', makeBrowserStackSessionsManager],
   browserMap: ['factory', makeBrowserMapFactory],
