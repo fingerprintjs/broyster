@@ -78,13 +78,16 @@ export class BrowserStackSessionFactory {
 }
 
 export function makeBrowserStackSessionFactory(
-  username: string,
-  accessKey: string,
   config: ConfigOptions,
+  username?: string,
+  accessKey?: string,
 ): BrowserStackSessionFactory {
   if (!config.browserStack) {
     throw new Error('BrowserStack options are not set')
   }
+
+  username = username ?? getBrowserStackUserName()
+  accessKey = accessKey ?? getBrowserStackAccessKey()
 
   const capabilitiesFactory = makeCapabilitiesFactory(username, accessKey, true)
 
@@ -94,11 +97,4 @@ export function makeBrowserStackSessionFactory(
     build: config.browserStack.build.toString(),
     idleTimeout: config.browserStack.idleTimeout,
   })
-}
-
-export function makeKarmaBrowserStackSessionFactory(config: ConfigOptions): BrowserStackSessionFactory {
-  const username = getBrowserStackUserName()
-  const accessKey = getBrowserStackAccessKey()
-
-  return makeBrowserStackSessionFactory(username, accessKey, config)
 }
