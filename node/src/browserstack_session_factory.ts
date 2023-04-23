@@ -77,17 +77,13 @@ export class BrowserStackSessionFactory {
   }
 }
 
-export function makeBrowserStackSessionFactory(
-  config: ConfigOptions,
-  username?: string,
-  accessKey?: string,
-): BrowserStackSessionFactory {
+export function makeBrowserStackSessionFactory(config: ConfigOptions): BrowserStackSessionFactory {
   if (!config.browserStack) {
     throw new Error('BrowserStack options are not set')
   }
 
-  username = username || getBrowserStackUserName()
-  accessKey = accessKey || getBrowserStackAccessKey()
+  const username = getBrowserStackUserName()
+  const accessKey = getBrowserStackAccessKey()
 
   const capabilitiesFactory = makeCapabilitiesFactory(username, accessKey, true)
 
