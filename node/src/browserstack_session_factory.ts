@@ -71,7 +71,7 @@ export class BrowserStackSessionFactory {
       browser.browserVersion,
       this._localIdentifier,
     )
-    log.error('created capabilities: ' + JSON.stringify(caps))
+    log.debug('created capabilities: ' + JSON.stringify(caps))
     const opts = OptionsBuilder.create(browser.browserName, browser.flags)
     log.debug('created options: ' + JSON.stringify(opts))
     if (browser.firefoxCapabilities) {
