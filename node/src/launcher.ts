@@ -1,6 +1,6 @@
 import { WebDriver } from 'selenium-webdriver'
 import { BrowserMap } from './browser_map'
-import { BrowserStackLocalManager } from './browserstack_local_manager'
+import { BrowserStackLocalManager, LocalIdentifier } from './browserstack_local_manager'
 import { BrowserStackSessionFactory } from './browserstack_session_factory'
 import { LoggerFactory } from './karma_logger'
 import { calculateHttpsPort } from './custom_servers'
@@ -15,6 +15,7 @@ export function BrowserStackLauncher(
   browserMap: BrowserMap,
   logger: LoggerFactory,
   config: ConfigOptions,
+  localIdentifier: LocalIdentifier,
   baseLauncherDecorator: (arg: object) => void,
   retryLauncherDecorator: (arg: object) => void,
   browserStackSessionFactory: BrowserStackSessionFactory,
@@ -24,7 +25,7 @@ export function BrowserStackLauncher(
   baseLauncherDecorator(this)
   retryLauncherDecorator(this)
   const log = logger.create('Browserstack ' + this.id)
-  const run = browserStackLocalManager.run(log, config.browserStack?.localIdentifier)
+  const run = browserStackLocalManager.run(log, localIdentifier)
   const captureTimeout = new CaptureTimeout(this, config, log)
 
   const makeName = (device: string | undefined) => {

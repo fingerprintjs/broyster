@@ -6,6 +6,7 @@ import { OptionsBuilder } from './options_builder'
 import { WebDriverFactory } from './webdriver_factory'
 import { getBrowserStackUserName, getBrowserStackAccessKey } from './browserstack_helpers'
 import { ThenableWebDriver } from 'selenium-webdriver'
+import { LocalIdentifier } from './browserstack_local_manager'
 
 export class BrowserStackSessionFactory {
   private _username: string
@@ -16,16 +17,13 @@ export class BrowserStackSessionFactory {
   private _idleTimeout: number
   private _localIdentifier: string | undefined
 
-  constructor(config: ConfigOptions) {
+  constructor(config: ConfigOptions, localIdentifier: LocalIdentifier) {
     if (!config.browserStack) {
       throw new Error('BrowserStack options are not set')
     }
     this._username = getBrowserStackUserName()
     this._accessKey = getBrowserStackAccessKey()
-    if (!config.browserStack.localIdentifier) {
-      config.browserStack.localIdentifier = Date.now().toString()
-    }
-    this._localIdentifier = config.browserStack.localIdentifier
+    this._localIdentifier = localIdentifier
     this._project = config.browserStack.project
     this._build = config.browserStack.build.toString()
     this._idleTimeout = config.browserStack.idleTimeout ?? 60_000
@@ -73,7 +71,7 @@ export class BrowserStackSessionFactory {
       browser.browserVersion,
       this._localIdentifier,
     )
-    log.debug('created capabilities: ' + JSON.stringify(caps))
+    log.error('created capabilities: ' + JSON.stringify(caps))
     const opts = OptionsBuilder.create(browser.browserName, browser.flags)
     log.debug('created options: ' + JSON.stringify(opts))
     if (browser.firefoxCapabilities) {
@@ -83,6 +81,9 @@ export class BrowserStackSessionFactory {
   }
 }
 
-export function makeBrowserStackSessionFactory(config: ConfigOptions): BrowserStackSessionFactory {
-  return new BrowserStackSessionFactory(config)
+export function makeBrowserStackSessionFactory(
+  config: ConfigOptions,
+  localIdentifier: LocalIdentifier,
+): BrowserStackSessionFactory {
+  return new BrowserStackSessionFactory(config, localIdentifier)
 }
