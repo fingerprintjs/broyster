@@ -122,6 +122,7 @@ const browsers = {
     osVersion: '12',
     browserName: 'Safari',
     useHttps: true,
+    flags: ['mobileuseragent'],
   },
   iOS13_Safari: {
     deviceName: ['iPhone 11 Pro', 'iPhone 8', 'iPhone XS'],
@@ -129,6 +130,7 @@ const browsers = {
     osVersion: '13',
     browserName: 'Safari',
     useHttps: true,
+    flags: ['mobileuseragent'],
   },
   iOS14_Safari: {
     deviceName: ['iPhone 11', 'iPhone XS', 'iPhone 12 Pro'],
@@ -136,6 +138,7 @@ const browsers = {
     osVersion: '14',
     browserName: 'Safari',
     useHttps: true,
+    flags: ['mobileuseragent'],
   },
   iOS15_Safari: {
     deviceName: [
@@ -151,6 +154,7 @@ const browsers = {
     osVersion: '15',
     browserName: 'Safari',
     useHttps: true,
+    flags: ['mobileuseragent'],
   },
   iOS16_Safari: {
     deviceName: [
@@ -167,6 +171,7 @@ const browsers = {
     osVersion: '16',
     browserName: 'Safari',
     useHttps: true,
+    flags: ['mobileuseragent'],
   },
 }
 

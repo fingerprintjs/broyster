@@ -5,4 +5,5 @@ export interface SessionCapabilities {
   browserName?: string | undefined
   browserVersion?: string | undefined
   acceptInsecureCerts: boolean
+  safariOptions?: string[]
 }
