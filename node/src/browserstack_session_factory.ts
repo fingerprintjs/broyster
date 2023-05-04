@@ -71,6 +71,9 @@ export class BrowserStackSessionFactory {
       browser.browserVersion,
       this._localIdentifier,
     )
+    if (browser.browserName?.toLowerCase().includes('safari') && browser.flags) {
+      caps.safariOptions = OptionsBuilder.createSafariArguments(browser.flags)
+    }
     log.debug('created capabilities: ' + JSON.stringify(caps))
     const opts = OptionsBuilder.create(browser.browserName, browser.flags)
     log.debug('created options: ' + JSON.stringify(opts))
