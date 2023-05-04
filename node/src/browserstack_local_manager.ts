@@ -50,5 +50,5 @@ export function makeBrowserStackLocalManagerFactory(): BrowserStackLocalManager 
 export type LocalIdentifier = string
 
 export function makeLocalIdentifier(config: ConfigOptions): LocalIdentifier {
-  return config.browserStack?.localIdentifier ?? Date.now().toString()
+  return config.browserStack?.localIdentifier ?? Math.random().toString(36).slice(2)
 }
