@@ -3,21 +3,20 @@ import { Logger } from './karma_logger'
 import { QueueState } from './queue_state'
 import { QueueError } from './queue_error'
 import { KarmaLauncher } from './karma_launcher'
-import { canNewBrowserBeQueued } from './browserstack_helpers'
+import { BrowserStackCredentials, canNewBrowserBeQueued } from './browserstack_helpers'
 import { ConfigOptions } from 'karma'
 
 export class BrowserStackSessionsManager {
   private _lock = new AsyncLock()
   private _timeout: number
-  private _state: QueueState
+  private _state = QueueState.Pending
   private _requiredSlots: number
   private _queueTimeout: number
 
-  constructor(config: ConfigOptions) {
+  constructor(config: ConfigOptions, private _credentials: BrowserStackCredentials) {
     this._queueTimeout = config.browserStack?.queueTimeout ?? 300_000
     this._timeout = Date.now() + this._queueTimeout
     this._requiredSlots = config.concurrency ?? 1
-    this._state = QueueState.Pending
   }
 
   async canNewSessionBeLaunched(log: Logger): Promise<boolean> {
@@ -94,11 +93,14 @@ export class BrowserStackSessionsManager {
 
   private checkIfCanLaunchSessions(slots: number, log: Logger): Promise<boolean> {
     return this._lock.acquire('sessionsLock', async () => {
-      return await canNewBrowserBeQueued(slots, log)
+      return await canNewBrowserBeQueued(this._credentials, slots, log)
     })
   }
 }
 
-export function makeBrowserStackSessionsManager(config: ConfigOptions): BrowserStackSessionsManager {
-  return new BrowserStackSessionsManager(config)
+export function makeBrowserStackSessionsManager(
+  config: ConfigOptions,
+  browserStackCredentials: BrowserStackCredentials,
+): BrowserStackSessionsManager {
+  return new BrowserStackSessionsManager(config, browserStackCredentials)
 }

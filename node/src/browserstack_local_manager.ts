@@ -1,6 +1,6 @@
 import * as browserStack from 'browserstack-local'
 import { promisify } from 'util'
-import { getBrowserStackAccessKey } from './browserstack_helpers'
+import { BrowserStackCredentials } from './browserstack_helpers'
 import { Logger } from './karma_logger'
 
 export class BrowserStackLocalManager {
@@ -8,12 +8,13 @@ export class BrowserStackLocalManager {
   bsLocal: browserStack.Local = new browserStack.Local()
   switchPromise = Promise.resolve()
 
+  constructor(private credentials: BrowserStackCredentials) {}
+
   run(logger: Logger): Promise<void> {
     if (!this.isRunning) {
       this.isRunning = true
-      const bsAccesskey = getBrowserStackAccessKey()
       const bsLocalArgs = {
-        key: bsAccesskey,
+        key: this.credentials.accessKey,
         localIdentifier: undefined,
         forceLocal: true,
         force: true,
@@ -42,6 +43,8 @@ export class BrowserStackLocalManager {
   }
 }
 
-export function makeBrowserStackLocalManagerFactory(): BrowserStackLocalManager {
-  return new BrowserStackLocalManager()
+export function makeBrowserStackLocalManagerFactory(
+  browserStackCredentials: BrowserStackCredentials,
+): BrowserStackLocalManager {
+  return new BrowserStackLocalManager(browserStackCredentials)
 }

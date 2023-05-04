@@ -1,11 +1,11 @@
 import { ConfigOptions } from 'karma'
-import { CapabilitiesFactory, makeCapabilitiesFactory } from './capabilities_factory'
+import { CapabilitiesFactory } from './capabilities_factory'
 import { CustomLauncher } from 'karma'
 import { Logger } from './karma_logger'
 import { OptionsBuilder } from './options_builder'
 import { WebDriverFactory } from './webdriver_factory'
+import { BrowserStackCredentials } from './browserstack_helpers'
 import { ThenableWebDriver } from 'selenium-webdriver'
-import { getBrowserStackAccessKey, getBrowserStackUserName } from './browserstack_helpers'
 
 export interface BrowserStackSessionFactoryConfig {
   project: string
@@ -77,18 +77,16 @@ export class BrowserStackSessionFactory {
   }
 }
 
-export function makeBrowserStackSessionFactory(config: ConfigOptions): BrowserStackSessionFactory {
+export function makeBrowserStackSessionFactory(
+  config: ConfigOptions,
+  browserStackCredentials: BrowserStackCredentials,
+): BrowserStackSessionFactory {
   if (!config.browserStack) {
     throw new Error('BrowserStack options are not set')
   }
 
-  const username = getBrowserStackUserName()
-  const accessKey = getBrowserStackAccessKey()
-
-  const capabilitiesFactory = makeCapabilitiesFactory(username, accessKey, true)
-
   return new BrowserStackSessionFactory({
-    capabilitiesFactory,
+    capabilitiesFactory: new CapabilitiesFactory(browserStackCredentials, true),
     project: config.browserStack.project,
     build: config.browserStack.build.toString(),
     idleTimeout: config.browserStack.idleTimeout,

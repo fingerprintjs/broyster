@@ -1,15 +1,8 @@
 import { SessionCapabilities } from './session_capabilities'
+import { BrowserStackCredentials } from './browserstack_helpers'
 
 export class CapabilitiesFactory {
-  _username: string
-  _accessKey: string
-  _local: boolean
-
-  constructor(username: string, accessKey: string, local = true) {
-    this._username = username
-    this._accessKey = accessKey
-    this._local = local
-  }
+  constructor(private _credentials: BrowserStackCredentials, private _local = true) {}
 
   create(
     browserName: string | undefined,
@@ -31,8 +24,8 @@ export class CapabilitiesFactory {
         sessionName: sessionName,
         buildName: buildName,
         local: this._local,
-        userName: this._username,
-        accessKey: this._accessKey,
+        userName: this._credentials.username,
+        accessKey: this._credentials.accessKey,
         idleTimeout: idleTimeout,
       },
       browserName: browserName?.toLowerCase(),
@@ -40,8 +33,4 @@ export class CapabilitiesFactory {
       acceptInsecureCerts: true,
     }
   }
-}
-
-export const makeCapabilitiesFactory = (username: string, accessKey: string, local = true) => {
-  return new CapabilitiesFactory(username, accessKey, local)
 }

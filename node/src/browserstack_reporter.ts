@@ -2,12 +2,13 @@ import { LoggerFactory } from './karma_logger'
 import { ConfigOptions } from 'karma'
 import { BrowserSession, Result } from './browser_session'
 import { BrowserMap } from './browser_map'
-import { createBrowserStackClient } from './browserstack_helpers'
+import { BrowserStackCredentials, createBrowserStackClient } from './browserstack_helpers'
 
 export function BrowserStackReporter(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   this: any,
   config: ConfigOptions,
+  browserStackCredentials: BrowserStackCredentials,
   logger: LoggerFactory,
   browserMap: BrowserMap,
 ) {
@@ -22,7 +23,7 @@ export function BrowserStackReporter(
       callWhenFinished()
     }
   }
-  const browserstackClient = createBrowserStackClient()
+  const browserstackClient = createBrowserStackClient(browserStackCredentials)
 
   this.onRunComplete = function (browsers: { browsers: BrowserSession[] }): void {
     const browsersLaunched = browsers.browsers
