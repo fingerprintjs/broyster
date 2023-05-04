@@ -1,6 +1,6 @@
 import { Config, CustomLauncher } from 'karma'
 import { KarmaTypescriptConfig } from 'karma-typescript'
-import { karmaPlugin, setHttpsAndServerForKarma } from '@fpjs-incubator/broyster/node'
+import { karmaPlugin, setHttpsAndServerForKarma, BrowserFlags } from '@fpjs-incubator/broyster/node'
 
 declare module 'karma' {
   interface ConfigOptions {
@@ -122,7 +122,7 @@ const browsers = {
     osVersion: '12',
     browserName: 'Safari',
     useHttps: true,
-    flags: ['mobileuseragent'],
+    flags: [BrowserFlags.Arguments.MobileUserAgent],
   },
   iOS13_Safari: {
     deviceName: ['iPhone 11 Pro', 'iPhone 8', 'iPhone XS'],
@@ -130,7 +130,7 @@ const browsers = {
     osVersion: '13',
     browserName: 'Safari',
     useHttps: true,
-    flags: ['mobileuseragent'],
+    flags: [BrowserFlags.Arguments.MobileUserAgent],
   },
   iOS14_Safari: {
     deviceName: ['iPhone 11', 'iPhone XS', 'iPhone 12 Pro'],
@@ -138,7 +138,7 @@ const browsers = {
     osVersion: '14',
     browserName: 'Safari',
     useHttps: true,
-    flags: ['mobileuseragent'],
+    flags: [BrowserFlags.Arguments.MobileUserAgent],
   },
   iOS15_Safari: {
     deviceName: [
@@ -154,7 +154,7 @@ const browsers = {
     osVersion: '15',
     browserName: 'Safari',
     useHttps: true,
-    flags: ['mobileuseragent'],
+    flags: [BrowserFlags.Arguments.MobileUserAgent],
   },
   iOS16_Safari: {
     deviceName: [
@@ -171,7 +171,7 @@ const browsers = {
     osVersion: '16',
     browserName: 'Safari',
     useHttps: true,
-    flags: ['mobileuseragent'],
+    flags: [BrowserFlags.Arguments.MobileUserAgent],
   },
 }
 
