@@ -9,4 +9,5 @@ export interface BstackOptions {
   userName: string
   accessKey: string
   idleTimeout: number
+  localIdentifier?: string | undefined
 }
