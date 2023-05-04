@@ -56,6 +56,10 @@ export class OptionsBuilder {
     throw new Error(`Unknown or unsupported browser: ${browserName}`)
   }
 
+  static createSafariArguments(args: string[]): string[] {
+    return this.mapArguments('safari', args)
+  }
+
   private static mapArguments(browserName: string, args: string[]) {
     const newArgs = new Array<string>()
     for (let arg of args) {
@@ -76,6 +80,12 @@ export class OptionsBuilder {
           continue
         }
         case 'safari':
+          {
+            const newArg = this.safariArgs.get(arg)
+            if (newArg) {
+              newArgs.push(newArg)
+            }
+          }
           continue
         case 'edge': {
           const newArg = this.edgeArgs.get(arg)
@@ -90,17 +100,22 @@ export class OptionsBuilder {
   }
 
   private static chromeArgs = new Map<string, string>([
+    [Arguments.MobileUserAgent, '-use-mobile-user-agent'],
     [Arguments.Incognito, '--incognito'],
     [Arguments.Headless, 'headless'],
   ])
 
   private static firefoxArgs = new Map<string, string>([
+    [Arguments.MobileUserAgent, '-use-mobile-user-agent'],
     [Arguments.Incognito, '-private'],
     [Arguments.Headless, 'headless'],
   ])
 
   private static edgeArgs = new Map<string, string>([
+    [Arguments.MobileUserAgent, '-use-mobile-user-agent'],
     [Arguments.Incognito, '--incognito'],
     [Arguments.Headless, 'headless'],
   ])
+
+  private static safariArgs = new Map<string, string>([[Arguments.MobileUserAgent, '-use-mobile-user-agent']])
 }

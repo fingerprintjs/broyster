@@ -1,5 +1,5 @@
 import { makeBrowserMapFactory } from './browser_map'
-import { makeBrowserStackLocalManagerFactory } from './browserstack_local_manager'
+import { makeBrowserStackLocalManagerFactory, makeLocalIdentifier } from './browserstack_local_manager'
 import { makeBrowserStackSessionFactory } from './browserstack_session_factory'
 import { makeBrowserStackSessionsManager } from './browserstack_sessions_manager'
 import { getBrowserStackCredentials } from './browserstack_helpers'
@@ -16,6 +16,7 @@ const karmaPlugin: InlinePluginDef = {
   browserStackSessionsManager: ['factory', makeBrowserStackSessionsManager],
   browserStackCredentials: ['factory', getBrowserStackCredentials],
   browserMap: ['factory', makeBrowserMapFactory],
+  localIdentifier: ['factory', makeLocalIdentifier],
 }
 
 declare module 'karma' {
@@ -25,6 +26,7 @@ declare module 'karma' {
       build: string | number
       idleTimeout?: number
       queueTimeout?: number
+      localIdentifier?: string | undefined
     }
   }
 

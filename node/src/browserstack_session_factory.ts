@@ -6,12 +6,14 @@ import { OptionsBuilder } from './options_builder'
 import { WebDriverFactory } from './webdriver_factory'
 import { BrowserStackCredentials } from './browserstack_helpers'
 import { ThenableWebDriver } from 'selenium-webdriver'
+import { LocalIdentifier } from './browserstack_local_manager'
 
 export interface BrowserStackSessionFactoryConfig {
   project: string
   build: string
   idleTimeout?: number
   capabilitiesFactory: CapabilitiesFactory
+  localIdentifier?: LocalIdentifier
 }
 
 export class BrowserStackSessionFactory {
@@ -19,12 +21,14 @@ export class BrowserStackSessionFactory {
   private _build: string
   private _capsFactory: CapabilitiesFactory
   private _idleTimeout: number
+  private _localIdentifier: LocalIdentifier | undefined
 
   constructor(config: BrowserStackSessionFactoryConfig) {
     this._project = config.project
     this._build = config.build
     this._idleTimeout = config.idleTimeout ?? 60_000
     this._capsFactory = config.capabilitiesFactory
+    this._localIdentifier = config.localIdentifier
   }
 
   tryCreateBrowser(
@@ -66,7 +70,11 @@ export class BrowserStackSessionFactory {
       this._idleTimeout,
       browser.osVersion,
       browser.browserVersion,
+      this._localIdentifier,
     )
+    if (browser.browserName?.toLowerCase().includes('safari') && browser.flags) {
+      caps.safariOptions = OptionsBuilder.createSafariArguments(browser.flags)
+    }
     log.debug('created capabilities: ' + JSON.stringify(caps))
     const opts = OptionsBuilder.create(browser.browserName, browser.flags)
     log.debug('created options: ' + JSON.stringify(opts))
@@ -80,6 +88,7 @@ export class BrowserStackSessionFactory {
 export function makeBrowserStackSessionFactory(
   config: ConfigOptions,
   browserStackCredentials: BrowserStackCredentials,
+  localIdentifier?: LocalIdentifier,
 ): BrowserStackSessionFactory {
   if (!config.browserStack) {
     throw new Error('BrowserStack options are not set')
@@ -90,5 +99,6 @@ export function makeBrowserStackSessionFactory(
     project: config.browserStack.project,
     build: config.browserStack.build.toString(),
     idleTimeout: config.browserStack.idleTimeout,
+    localIdentifier,
   })
 }
