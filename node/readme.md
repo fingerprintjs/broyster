@@ -24,6 +24,8 @@ This package exports the following:
         Newer versions of Safari do not work nor have workarounds for self-signed certificates, however their behavior is the same for both HTTP and HTTPS. Depending on your entry's *useHttps*, the launcher will redirect respectively.
         The HTTP server runs on the port provided by Karma, while the HTTPS port will run on +1 from that.
     - `setHttpsAndServerForKarma` That configures karma for HTTP and HTTPS testing without any additional work.
+    - `BrowserFlags` Is a collection of currently supported browser arguments that are uniformed for convenience (for
+        example: Incognito will add launching the browser in incognito mode for Chrome and Edge, but private mode for Firefox).
 - `@fpjs-incubator/broyster/browser`:
     - `retryFailedTests` That allows overriding the different behavior of Jasmine specs. The new behavior will retry a failed test up until the maximum specified in the first parameter, with a delay between each such attempt, indicated by the second parameter (in miliseconds). Call this function in the root of any executable file, involved in your testing code, for example, in a Jasmine helper file. Once called, it affects all tests Jasmine runs, even in the other files. For Karma, you can add a file that contains the invocation and point it in your `files`, that way you will not have it tied to one specific test file.
 
@@ -130,17 +132,19 @@ The following config options are available inside the browserStack section of th
 The following config options are available inside the browserStack section of the config:
 
 - `queueTimeout`: expressed in miliseconds, specifies the maximum amount of time to wait for a the BrowserStack queue to free up a slot.
-- `flags`: a unified set of extra arguments that will be passed to the browser. For example passing *incognito' will apply the relevant seting to the browsers for which the flags were specified (incongnito in Chrome, private mode in Firefox or nothing in the case of Safari):
+- `flags`: a unified set of extra arguments that will be passed to the browser. For example passing *incognito* will apply the relevant seting to the browsers for which the flags were specified (incongnito in Chrome, private mode in Firefox or nothing in the case of Safari). Currently supported flags can be found under the BrowserFlags export. Example:
 
 ``` js
+  import { BrowserFlags } from '@fpjs-incubator/broyster/node'
+
+  ...
+
   Incognito_Chrome: {
     platform: 'Windows',
     osVersion: '10',
     browserName: 'Chrome',
     browserVersion: '57',
     useHttps: true,
-    flags: ['incognito']
+    flags: [BrowserFlags.Incognito],
   },
 ```
-
-Currently supported flags: Incognito, Headless (case insensitive). Multiword flags will be stripped of dashes.
