@@ -24,6 +24,8 @@ This package exports the following:
         Newer versions of Safari do not work nor have workarounds for self-signed certificates, however their behavior is the same for both HTTP and HTTPS. Depending on your entry's _useHttps_, the launcher will redirect respectively.
         The HTTP server runs on the port provided by Karma, while the HTTPS port will run on +1 from that.
     -   `setHttpsAndServerForKarma` That configures karma for HTTP and HTTPS testing without any additional work.
+    -   `BrowserFlags` Is a collection of currently supported browser arguments that are uniformed for convenience (for
+        example: Incognito will add launching the browser in incognito mode for Chrome and Edge, but private mode for Firefox).
     -   `CapabilitiesFactory` Stores credentials for BrowserStack
     -   `BrowserStackSessionFactory` Creates a Selenium webdriver that connects to BrowserStack
 -   `@fpjs-incubator/broyster/browser`:
@@ -132,20 +134,22 @@ The following config options are available inside the browserStack section of th
 The following config options are available inside the browserStack section of the config:
 
 -   `queueTimeout`: expressed in miliseconds, specifies the maximum amount of time to wait for a the BrowserStack queue to free up a slot.
--   `flags`: a unified set of extra arguments that will be passed to the browser. For example passing \*incognito' will apply the relevant seting to the browsers for which the flags were specified (incongnito in Chrome, private mode in Firefox or nothing in the case of Safari):
+-   `flags`: a unified set of extra arguments that will be passed to the browser. For example passing _incognito_ will apply the relevant seting to the browsers for which the flags were specified (incongnito in Chrome, private mode in Firefox or nothing in the case of Safari). Currently supported flags can be found under the BrowserFlags export. Example:
 
 ```js
+  import { BrowserFlags } from '@fpjs-incubator/broyster/node'
+
+  ...
+
   Incognito_Chrome: {
     platform: 'Windows',
     osVersion: '10',
     browserName: 'Chrome',
     browserVersion: '57',
     useHttps: true,
-    flags: ['incognito']
+    flags: [BrowserFlags.Incognito],
   },
 ```
-
-Currently supported flags: Incognito, Headless (case insensitive). Multiword flags will be stripped of dashes.
 
 ### Using Selenium directly
 
