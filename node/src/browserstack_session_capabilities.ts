@@ -1,6 +1,6 @@
 import { BstackOptions } from './bstack_options'
 
-export interface SessionCapabilities {
+export interface BrowserStackSessionCapabilities {
   'bstack:options': BstackOptions
   browserName?: string | undefined
   browserVersion?: string | undefined

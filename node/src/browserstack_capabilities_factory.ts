@@ -1,7 +1,7 @@
-import { SessionCapabilities } from './session_capabilities'
+import { BrowserStackSessionCapabilities } from './browserstack_session_capabilities'
 import { BrowserStackCredentials } from './browserstack_helpers'
 
-export class CapabilitiesFactory {
+export class BrowserStackCapabilitiesFactory {
   constructor(private _credentials: BrowserStackCredentials, private _local = true) {}
 
   create(
@@ -15,7 +15,7 @@ export class CapabilitiesFactory {
     osVersion?: string | undefined,
     browserVersion?: string | null | undefined,
     localIdentifier?: string | undefined,
-  ): SessionCapabilities {
+  ): BrowserStackSessionCapabilities {
     return {
       'bstack:options': {
         os: os,
