@@ -12,5 +12,3 @@ local.log
 .idea/
 .vscode/
 yarn-error.log
-
-.env
