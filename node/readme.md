@@ -28,6 +28,9 @@ This package exports the following:
         example: Incognito will add launching the browser in incognito mode for Chrome and Edge, but private mode for Firefox).
     -   `CapabilitiesFactory` Stores credentials for BrowserStack
     -   `BrowserStackSessionFactory` Creates a Selenium webdriver that connects to BrowserStack
+    -   `BrowserStackLocalManager` Allows controlling the BrowserStack Local binary.
+    -   `getBrowserStackCredentials` Fetches the credentials to BrowserStack from env variables.
+
 -   `@fpjs-incubator/broyster/browser`:
     -   `retryFailedTests` That allows overriding the different behavior of Jasmine specs. The new behavior will retry a failed test up until the maximum specified in the first parameter, with a delay between each such attempt, indicated by the second parameter (in miliseconds). Call this function in the root of any executable file, involved in your testing code, for example, in a Jasmine helper file. Once called, it affects all tests Jasmine runs, even in the other files. For Karma, you can add a file that contains the invocation and point it in your `files`, that way you will not have it tied to one specific test file.
 
