@@ -1,6 +1,6 @@
-import { SessionCapabilities } from './session_capabilities'
+import { BrowserStackSessionCapabilities } from './browserstack_session_capabilities'
 
-export class CapabilitiesFactory {
+export class BrowserStackCapabilitiesFactory {
   _username: string
   _accessKey: string
 
@@ -20,7 +20,7 @@ export class CapabilitiesFactory {
     osVersion?: string | undefined,
     browserVersion?: string | null | undefined,
     localIdentifier?: string | undefined,
-  ): SessionCapabilities {
+  ): BrowserStackSessionCapabilities {
     return {
       'bstack:options': {
         os: os,

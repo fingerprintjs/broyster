@@ -1,5 +1,5 @@
 import { ConfigOptions } from 'karma'
-import { CapabilitiesFactory } from './capabilities_factory'
+import { BrowserStackCapabilitiesFactory } from './browserstack_capabilities_factory'
 import { CustomLauncher } from 'karma'
 import { Logger } from './karma_logger'
 import { OptionsBuilder } from './options_builder'
@@ -13,7 +13,7 @@ export class BrowserStackSessionFactory {
   private _accessKey: string
   private _project: string
   private _build: string
-  private _capsFactory: CapabilitiesFactory
+  private _capsFactory: BrowserStackCapabilitiesFactory
   private _idleTimeout: number
   private _localIdentifier: string | undefined
 
@@ -27,7 +27,7 @@ export class BrowserStackSessionFactory {
     this._project = config.browserStack.project
     this._build = config.browserStack.build.toString()
     this._idleTimeout = config.browserStack.idleTimeout ?? 60_000
-    this._capsFactory = new CapabilitiesFactory(this._username, this._accessKey)
+    this._capsFactory = new BrowserStackCapabilitiesFactory(this._username, this._accessKey)
   }
 
   tryCreateBrowser(
