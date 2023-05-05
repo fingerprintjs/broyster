@@ -1,33 +1,34 @@
 import { ConfigOptions } from 'karma'
-import { CapabilitiesFactory } from './capabilities_factory'
+import { BrowserStackCapabilitiesFactory } from './browserstack_capabilities_factory'
 import { CustomLauncher } from 'karma'
 import { Logger } from './karma_logger'
 import { OptionsBuilder } from './options_builder'
 import { WebDriverFactory } from './webdriver_factory'
-import { getBrowserStackUserName, getBrowserStackAccessKey } from './browserstack_helpers'
+import { BrowserStackCredentials } from './browserstack_helpers'
 import { ThenableWebDriver } from 'selenium-webdriver'
 import { LocalIdentifier } from './browserstack_local_manager'
 
+export interface BrowserStackSessionFactoryConfig {
+  project: string
+  build: string
+  idleTimeout?: number
+  capabilitiesFactory: BrowserStackCapabilitiesFactory
+  localIdentifier?: LocalIdentifier
+}
+
 export class BrowserStackSessionFactory {
-  private _username: string
-  private _accessKey: string
   private _project: string
   private _build: string
-  private _capsFactory: CapabilitiesFactory
+  private _capsFactory: BrowserStackCapabilitiesFactory
   private _idleTimeout: number
-  private _localIdentifier: string | undefined
+  private _localIdentifier: LocalIdentifier | undefined
 
-  constructor(config: ConfigOptions, localIdentifier: LocalIdentifier) {
-    if (!config.browserStack) {
-      throw new Error('BrowserStack options are not set')
-    }
-    this._username = getBrowserStackUserName()
-    this._accessKey = getBrowserStackAccessKey()
-    this._localIdentifier = localIdentifier
-    this._project = config.browserStack.project
-    this._build = config.browserStack.build.toString()
-    this._idleTimeout = config.browserStack.idleTimeout ?? 60_000
-    this._capsFactory = new CapabilitiesFactory(this._username, this._accessKey)
+  constructor(config: BrowserStackSessionFactoryConfig) {
+    this._project = config.project
+    this._build = config.build
+    this._idleTimeout = config.idleTimeout ?? 60_000
+    this._capsFactory = config.capabilitiesFactory
+    this._localIdentifier = config.localIdentifier
   }
 
   tryCreateBrowser(
@@ -86,7 +87,18 @@ export class BrowserStackSessionFactory {
 
 export function makeBrowserStackSessionFactory(
   config: ConfigOptions,
-  localIdentifier: LocalIdentifier,
+  browserStackCredentials: BrowserStackCredentials,
+  localIdentifier?: LocalIdentifier,
 ): BrowserStackSessionFactory {
-  return new BrowserStackSessionFactory(config, localIdentifier)
+  if (!config.browserStack) {
+    throw new Error('BrowserStack options are not set')
+  }
+
+  return new BrowserStackSessionFactory({
+    capabilitiesFactory: new BrowserStackCapabilitiesFactory(browserStackCredentials, true),
+    project: config.browserStack.project,
+    build: config.browserStack.build.toString(),
+    idleTimeout: config.browserStack.idleTimeout,
+    localIdentifier,
+  })
 }

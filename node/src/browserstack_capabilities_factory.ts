@@ -1,13 +1,8 @@
-import { SessionCapabilities } from './session_capabilities'
+import { BrowserStackSessionCapabilities } from './browserstack_session_capabilities'
+import { BrowserStackCredentials } from './browserstack_helpers'
 
-export class CapabilitiesFactory {
-  _username: string
-  _accessKey: string
-
-  constructor(username: string, accessKey: string) {
-    this._username = username
-    this._accessKey = accessKey
-  }
+export class BrowserStackCapabilitiesFactory {
+  constructor(private _credentials: BrowserStackCredentials, private _local = true) {}
 
   create(
     browserName: string | undefined,
@@ -20,7 +15,7 @@ export class CapabilitiesFactory {
     osVersion?: string | undefined,
     browserVersion?: string | null | undefined,
     localIdentifier?: string | undefined,
-  ): SessionCapabilities {
+  ): BrowserStackSessionCapabilities {
     return {
       'bstack:options': {
         os: os,
@@ -29,9 +24,9 @@ export class CapabilitiesFactory {
         projectName: projectName,
         sessionName: sessionName,
         buildName: buildName,
-        local: true,
-        userName: this._username,
-        accessKey: this._accessKey,
+        local: this._local,
+        userName: this._credentials.username,
+        accessKey: this._credentials.accessKey,
         idleTimeout: idleTimeout,
         localIdentifier: localIdentifier,
       },
