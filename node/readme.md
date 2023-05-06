@@ -26,6 +26,8 @@ This package exports the following:
     -   `setHttpsAndServerForKarma` That configures karma for HTTP and HTTPS testing without any additional work.
     -   `BrowserFlags` Is a collection of currently supported browser arguments that are uniformed for convenience (for
         example: Incognito will add launching the browser in incognito mode for Chrome and Edge, but private mode for Firefox).
+    -   `getBrowserStackCredentials` Fetches the credentials to BrowserStack from env variables.
+    -   `BrowserStackLocalManager` Allows controlling the BrowserStack Local binary.
     -   `BrowserStackCapabilitiesFactory` Creates an object defining what the driver session that is going to be requested.
     -   `BrowserStackSessionFactory` Creates a Selenium webdriver that connects to BrowserStack.
 -   `@fpjs-incubator/broyster/browser`:

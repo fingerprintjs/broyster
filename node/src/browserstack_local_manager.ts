@@ -5,9 +5,9 @@ import { BrowserStackCredentials } from './browserstack_helpers'
 import { Logger } from './karma_logger'
 
 export class BrowserStackLocalManager {
-  isRunning = false
-  bsLocal: browserStack.Local = new browserStack.Local()
-  switchPromise = Promise.resolve()
+  private isRunning = false
+  private bsLocal: browserStack.Local = new browserStack.Local()
+  private switchPromise = Promise.resolve()
 
   constructor(private credentials: BrowserStackCredentials, private localIdentifier?: LocalIdentifier) {}
 
