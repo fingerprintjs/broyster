@@ -6,10 +6,4 @@ describe('Running', () => {
       expect(number).toBe(2)
     })
   })
-
-  describe('a pending test', () => {
-    it('will not be retried', () => {
-      return
-    })
-  })
 })

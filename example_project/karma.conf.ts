@@ -180,11 +180,8 @@ function makeBuildNumber() {
 }
 
 function setupLocal(config: Config) {
-  const files = ['src/**/*.ts']
-
-  if (process.env.CI) {
-    files.push('karma_global_setup_retries.ts')
-  }
+  const ciSpecificFiles: string[] = ['karma_global_setup_retries.ts']
+  const files = [...(process.env.CI ? ciSpecificFiles : []), 'src/**/*.ts']
 
   config.set({
     frameworks: ['jasmine', 'karma-typescript'],
