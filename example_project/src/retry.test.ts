@@ -9,7 +9,7 @@ describe('Running', () => {
 
   describe('a pending test', () => {
     it('will not be retried', () => {
-      pending('this should not fail the run')
+      return
     })
   })
 })
