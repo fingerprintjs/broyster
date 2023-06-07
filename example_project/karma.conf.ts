@@ -180,7 +180,8 @@ function makeBuildNumber() {
 }
 
 function setupLocal(config: Config) {
-  const files = ['test_utils.ts', 'src/**/*.ts']
+  const files = ['karma_global_setup.ts', 'src/**/*.ts']
+
   config.set({
     frameworks: ['jasmine', 'karma-typescript'],
     files,
@@ -204,10 +205,6 @@ function setupLocal(config: Config) {
       suppressErrorSummary: true,
       suppressPassed: true,
       suppressSkipped: true,
-    },
-
-    summaryReporter: {
-      show: 'skipped',
     },
   })
 }
