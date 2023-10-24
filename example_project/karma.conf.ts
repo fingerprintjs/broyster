@@ -162,7 +162,7 @@ const browsers = {
     platform: 'iOS',
     osVersion: '17',
     browserName: 'Safari',
-    useHttps: false,
+    useHttps: true,
     flags: [BrowserFlags.MobileUserAgent],
   },
 }
