@@ -28,9 +28,8 @@ describe('DOM', () => {
         const result = new UAParser().getResult()
         const isSafari = /^(Mobile )?Safari$/.test(result.browser.name ?? '')
         const isMacOS = result.os.name === 'Mac OS'
-        const isIOS = result.os.name === 'iOS'
         const browserVersion = parseInt(result.browser.version ?? '0')
-        return isSafari && ((isMacOS && browserVersion >= 15) || (isIOS && browserVersion >= 17))
+        return isSafari && isMacOS && browserVersion >= 15
       }
     })
   })
