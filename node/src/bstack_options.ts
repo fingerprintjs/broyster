@@ -10,4 +10,11 @@ export interface BstackOptions {
   accessKey: string
   idleTimeout: number
   localIdentifier?: string | undefined
+  networkLogs?: boolean
+  networkLogsOptions?: NetworkLogsOptions
+  consoleLogs?: string
+}
+
+export interface NetworkLogsOptions {
+  captureContent: string
 }
