@@ -37,8 +37,8 @@
   "dependencies": {
     "tslib": "^2.4.1",
     "selenium-webdriver": "^4.7.0",
-    "browserstack-local": "^1.5.1",
-    "browserstack": "~1.5.1",
+    "browserstack-local": "^1.5.5",
+    "browserstack": "~1.6.1",
     "async-lock": "^1.4.0"
   }
 }

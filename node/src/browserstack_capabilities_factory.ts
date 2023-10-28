@@ -29,6 +29,11 @@ export class BrowserStackCapabilitiesFactory {
         accessKey: this._credentials.accessKey,
         idleTimeout: idleTimeout,
         localIdentifier: localIdentifier,
+        networkLogs: true,
+        networkLogsOptions: {
+          captureContent: 'true',
+        },
+        consoleLogs: 'verbose',
       },
       browserName: browserName?.toLowerCase(),
       browserVersion: browserVersion || 'latest',
