@@ -13,13 +13,15 @@ declare module 'karma' {
 }
 
 const browsers = {
-  Windows10_Chrome57: {
+  Windows10_Chrome65: {
     platform: 'Windows',
     osVersion: '10',
     browserName: 'Chrome',
-    browserVersion: '57',
+    browserVersion: '65',
     useHttps: true,
   },
+  // Windows10_Chrome65_Incognito: { platform: 'Windows', osVersion: '10', browserName: 'Chrome',
+  //browserVersion: '65', ...chromeIncognitoCapabilities },
   Windows11_ChromeLatest: {
     platform: 'Windows',
     osVersion: '11',
@@ -29,15 +31,15 @@ const browsers = {
   },
   // Windows11_ChromeLatest_Incognito: { platform: 'Windows', osVersion: '11', browserName: 'Chrome',
   //browserVersion: 'latest-beta, ...chromeIncognitoCapabilities },
-  Windows10_Firefox67: {
+  Windows10_Firefox75: {
     platform: 'Windows',
     osVersion: '10',
     browserName: 'Firefox',
-    browserVersion: '67',
+    browserVersion: '75',
     useHttps: true,
   },
-  // Windows10_Firefox67_Incognito: { platform: 'Windows', osVersion: '10', browserName: 'Firefox',
-  //browserVersion: '67', ...firefoxIncognitoCapabilities },
+  // Windows10_Firefox75_Incognito: { platform: 'Windows', osVersion: '10', browserName: 'Firefox',
+  //browserVersion: '75', ...firefoxIncognitoCapabilities },
   Windows11_FirefoxLatest: {
     platform: 'Windows',
     osVersion: '11',
@@ -108,14 +110,6 @@ const browsers = {
     browserName: 'Chrome',
     browserVersion: 'latest-beta',
     useHttps: true,
-  },
-  iOS11_Safari: {
-    deviceName: ['iPhone X', 'iPhone 8', 'iPhone 8 Plus'],
-    platform: 'iOS',
-    osVersion: '11',
-    browserName: 'Safari',
-    useHttps: true,
-    flags: [BrowserFlags.MobileUserAgent],
   },
   iOS12_Safari: {
     deviceName: ['iPhone XS', 'iPhone 8', 'iPhone 8 Plus', 'iPhone XR'],
