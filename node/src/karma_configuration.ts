@@ -32,6 +32,15 @@ interface KarmaConfiguratorOptions {
 
 /**
  * Makes a function that applies an opinionated configuration, used by Fingerprint's projects, to Karma.
+ *
+ * When a Karma configuration file is created, add `--preset local`, `--preset browserstack` or
+ * `--preset browserstack-beta` to the Karma command to choose where to run the tests.
+ *
+ * @example karma.conf.ts in the project's root directory
+ * module.exports = makeKarmaConfigurator({ ... })
+ *
+ * @example Run tests in the local browsers
+ * karma start --preset local --single-run
  */
 export function makeKarmaConfigurator(options: KarmaConfiguratorOptions): (karmaConfig: Config) => void {
   return async (karmaConfig) => {
