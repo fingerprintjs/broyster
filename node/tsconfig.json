@@ -5,6 +5,7 @@
     "declaration": true,
     "importHelpers": true,
     "outDir": "./dist",
+    "skipLibCheck": true // This fixes tsc failing on `import type { KarmaTypescriptConfig } from 'karma-typescript'`
   },
   "include": [
     "src/index_browser.ts",

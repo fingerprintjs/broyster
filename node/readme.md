@@ -30,6 +30,7 @@ This package exports the following:
     -   `BrowserStackLocalManager` Allows controlling the BrowserStack Local binary.
     -   `BrowserStackCapabilitiesFactory` Creates an object defining what the driver session that is going to be requested.
     -   `BrowserStackSessionFactory` Creates a Selenium webdriver that connects to BrowserStack.
+    -   `makeKarmaConfigurator` Makes a function that applies an opinionated full configuration, used by Fingerprint's projects, to Karma.
 -   `@fpjs-incubator/broyster/browser`:
     -   `retryFailedTests` That allows overriding the different behavior of Jasmine specs. The new behavior will retry a failed test up until the maximum specified in the first parameter, with a delay between each such attempt, indicated by the second parameter (in miliseconds). Call this function in the root of any executable file, involved in your testing code, for example, in a Jasmine helper file. Once called, it affects all tests Jasmine runs, even in the other files. For Karma, you can add a file that contains the invocation and point it in your `files`, that way you will not have it tied to one specific test file.
 
@@ -173,3 +174,33 @@ await driver.navigate().to('https://google.com')
 
 await driver.quit()
 ```
+
+## Full Karma configuration
+
+`makeKarmaConfigurator` is an alternative to creating a Karma configuration from scratch.
+The function creates an opinionated configuration used by Fingerprint's projects, but has few options and easy to use.
+The configuration is aimed to run **TypeScript** tests with **Jasmine**.
+
+Example:
+
+- `karma.conf.ts`
+    ```ts
+    import { makeKarmaConfigurator } from '@fpjs-incubator/broyster/node'
+
+    module.exports = makeKarmaConfigurator({
+        projectName: 'My project',
+        includeFiles: ['src/**/*.ts'],
+    })
+    ```
+- Run tests in browsers on the current machine:
+    ```bash
+    karma start --preset local --single-run
+    ```
+- Run tests in browsers, supported by Fingerprint, on BrowserStack:
+    ```bash
+    karma start --preset browserstack --single-run
+    ```
+    Or only beta versions of these browsers:
+    ```bash
+    karma start --preset browserstack-beta --single-run
+    ```

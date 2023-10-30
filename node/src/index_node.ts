@@ -7,3 +7,4 @@ export { BrowserStackSessionFactory, BrowserStackSessionFactoryConfig } from './
 export { BrowserStackCapabilitiesFactory } from './browserstack_capabilities_factory'
 export { getBrowserStackCredentials } from './browserstack_helpers'
 export { BrowserStackLocalManager } from './browserstack_local_manager'
+export { makeKarmaConfigurator } from './karma_configuration'
