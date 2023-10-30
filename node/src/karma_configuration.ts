@@ -20,7 +20,7 @@ declare module 'karma' {
 interface KarmaConfiguratorOptions {
   /** Will be shown in the BrowserStack Automation UI */
   projectName: string
-  /** List of files/patterns to load in the browser */
+  /** List of files/patterns to load in the browser. Don't forget the necessary .d.ts files. */
   includeFiles: ConfigOptions['files']
   /** Path to the tsconfig.json file that will be used to compile the TS files given in `includeFiles` */
   tsconfigPath?: string
@@ -89,7 +89,13 @@ async function setupLocal(
         module: 'commonjs',
         sourceMap: true,
       },
-      include: files.filter((file): file is string => typeof file === 'string' && /(\*|\.ts)$/.test(file)),
+      // The `include` and `exclude` options of tsconfig.json are not inherited, because every given `includeFiles` file
+      // must be compiled, and it makes no sense to compile anything else.
+      include: {
+        mode: 'replace',
+        values: files.filter((file): file is string => typeof file === 'string' && /(\*|\.ts)$/.test(file)),
+      },
+      exclude: { mode: 'replace', values: [] },
     },
 
     specReporter: {
@@ -158,7 +164,7 @@ async function createFilesToInject() {
   const createdFiles = {} as Record<keyof typeof filesToCreate, string>
   await Promise.all(
     (Object.keys(filesToCreate) as Array<keyof typeof filesToCreate>).map(async (id) => {
-      createdFiles[id] = path.join(temporaryDirectory, path.basename(filesToCreate[id].name))
+      createdFiles[id] = path.join(temporaryDirectory, filesToCreate[id].name)
       await fs.writeFile(createdFiles[id], filesToCreate[id].content)
     }),
   )
