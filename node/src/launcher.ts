@@ -1,12 +1,14 @@
+import type * as browserstack from 'browserstack'
 import { WebDriver } from 'selenium-webdriver'
 import { BrowserMap } from './browser_map'
 import { BrowserStackLocalManager } from './browserstack_local_manager'
 import { BrowserStackSessionFactory } from './browserstack_session_factory'
-import { LoggerFactory } from './karma_logger'
+import { Logger, LoggerFactory } from './karma_logger'
 import { calculateHttpsPort } from './custom_servers'
 import { BrowserStackSessionsManager } from './browserstack_sessions_manager'
 import { CustomLauncher, ConfigOptions } from 'karma'
 import { CaptureTimeout } from './capture_timeout_handler'
+import { BrowserStackBrowsers } from './browserstack_browsers'
 
 export function BrowserStackLauncher(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -20,20 +22,17 @@ export function BrowserStackLauncher(
   browserStackSessionFactory: BrowserStackSessionFactory,
   browserStackLocalManager: BrowserStackLocalManager,
   browserStackSessionsManager: BrowserStackSessionsManager,
+  browserStackBrowsers: BrowserStackBrowsers,
 ) {
   baseLauncherDecorator(this)
   retryLauncherDecorator(this)
   const log = logger.create('Browserstack ' + this.id)
-  const run = browserStackLocalManager.run(log)
+  const bsLocalManagerPromise = browserStackLocalManager.run(log)
+  const deviceNamesPromise = getDeviceNames(browserStackBrowsers, args, log)
   const captureTimeout = new CaptureTimeout(this, config, log)
+  let startAttempt = 0
 
-  const makeName = (device: string | undefined) => {
-    this.name = args.browserName + ' ' + device + ' for ' + args.platform + ' ' + args.osVersion + ' on BrowserStack'
-  }
-  const device =
-    args.browserVersion ??
-    (args.deviceName instanceof Array ? 'on any of ' + args.deviceName.join(', ') : args.deviceName)
-  makeName(device)
+  this.name = makeName(args)
 
   let browser: WebDriver
   let pendingHeartBeat: NodeJS.Timeout | undefined
@@ -57,29 +56,27 @@ export function BrowserStackLauncher(
     }, (config.browserStack?.idleTimeout ?? 10_000) * 0.9)
   }
 
-  this.attempt = 0
-
   this.on('start', async (pageUrl: string) => {
     try {
-      await run
+      await bsLocalManagerPromise
+      const [deviceName] = await Promise.all([chooseDeviceName(), browserStackSessionsManager.ensureQueue(this, log)])
 
-      await browserStackSessionsManager.ensureQueue(this, log)
+      log.debug(`creating browser with attributes: ${JSON.stringify(args)}`)
+      log.debug(`attempt: ${startAttempt}`)
+      log.debug(`device name: ${deviceName}`)
 
-      log.debug('creating browser with attributes: ' + JSON.stringify(args))
-      const [browserPromise, name] = browserStackSessionFactory.tryCreateBrowser(args, this.id, this.attempt++, log)
-      if (name) {
-        makeName(name)
-      }
-      browser = await browserPromise
+      startAttempt += 1
+      browser = await browserStackSessionFactory.createBrowser(args, deviceName, this.id, log)
       captureTimeout.onStart()
-      const session = (await browser.getSession()).getId()
-      log.debug(this.id + ' has webdriver SessionId: ' + session)
-      browserMap.set(this.id, { browser, session })
+      const sessionId = (await browser.getSession()).getId()
+      log.debug(`WebDriver SessionId: ${sessionId}`)
+      browserMap.set(this.id, { browser, sessionId })
       pageUrl = makeUrl(pageUrl, args.useHttps)
       await browser.get(pageUrl)
       heartbeat()
     } catch (err) {
-      log.error((err as Error) ?? String(err))
+      log.error(`Failed to start ${this.name}:`)
+      log.error(err as Error | string)
       this._done('failure') // this may end up hanging the process
       // however it is very unlikely as it requires all attempts to fail and never create a driver
     }
@@ -117,6 +114,67 @@ export function BrowserStackLauncher(
     await browserStackLocalManager.kill(log)
     done()
   })
+
+  const chooseDeviceName = async () => {
+    const deviceNames = await deviceNamesPromise
+    if (!deviceNames) {
+      return null
+    }
+
+    if (deviceNames.length === 0) {
+      throw new Error('No device available for the given configuration')
+    }
+
+    const deviceName = deviceNames[startAttempt % deviceNames.length]
+    log.info(`Using ${deviceName} for the browser ${this.name}`)
+    return deviceName
+  }
+}
+
+/**
+ * Returns the list of devices for the given launcher configuration.
+ * Returns `null` when the given configuration doesn't need a device name.
+ */
+async function getDeviceNames(browserStackBrowsers: BrowserStackBrowsers, args: CustomLauncher, log: Logger) {
+  let devices: browserstack.Browser[] | null = null
+
+  switch (args.platform) {
+    case 'iOS':
+      devices = await browserStackBrowsers.getIOSDevices(
+        args.osVersion ?? null,
+        args.deviceType === 'iPad' ? 'ipad' : 'iphone',
+        args.browserName === 'Chromium' ? 'chromium' : 'safari',
+        true,
+        log,
+      )
+      break
+    // todo: Add Android
+  }
+
+  const deviceNames = devices
+    ? devices.map((device) => device.device).filter((name): name is string => name !== null)
+    : null
+  log.debug(`device names for attributes ${JSON.stringify(args)}: ${JSON.stringify(deviceNames)}`)
+
+  return deviceNames
+}
+
+function makeName(args: CustomLauncher) {
+  const components = [args.browserName]
+  if (args.browserVersion) {
+    components.push(args.browserVersion)
+  }
+  if (args.deviceType) {
+    components.push(`on ${args.deviceType}`)
+  }
+  if (args.platform) {
+    components.push(`on ${args.platform}`)
+    if (args.osVersion) {
+      components.push(args.osVersion)
+    }
+  }
+  components.push('on BrowserStack')
+  return components.join(' ')
 }
 
 function makeUrl(karmaUrl: string, isHttps?: boolean | undefined): string {

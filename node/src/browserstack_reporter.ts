@@ -63,7 +63,7 @@ export function BrowserStackReporter(
       pendingUpdates++
       const apiStatus = !(result.failed || result.error || result.disconnected) ? 'passed' : 'error'
       browserstackClient.updateSession(
-        browserMap.get(browserId)?.session ?? '',
+        browserMap.get(browserId)?.sessionId ?? '',
         {
           status: apiStatus,
         },
