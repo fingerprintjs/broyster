@@ -143,12 +143,19 @@ async function getDeviceNames(browserStackBrowsers: BrowserStackBrowsers, args: 
       devices = await browserStackBrowsers.getIOSDevices(
         args.osVersion ?? null,
         args.deviceType === 'iPad' ? 'ipad' : 'iphone',
-        args.browserName === 'Chromium' ? 'chromium' : 'safari',
+        args.browserName?.toLowerCase() === 'chromium' ? 'chromium' : 'safari',
         true,
         log,
       )
       break
-    // todo: Add Android
+    case 'Android':
+      devices = await browserStackBrowsers.getAndroidDevices(
+        args.osVersion ?? null,
+        args.browserName?.toLowerCase() === 'samsung' ? 'samsung' : 'chrome',
+        true,
+        log,
+      )
+      break
   }
 
   const deviceNames = devices

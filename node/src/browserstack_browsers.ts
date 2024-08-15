@@ -40,9 +40,32 @@ export class BrowserStackBrowsers {
     })
   }
 
-  /*public async getAndroidDeviceNames() {
-
-  }*/
+  public async getAndroidDevices(
+    osVersion: string | null,
+    browserType: 'chrome' | 'samsung' | null,
+    realDevices: boolean | null,
+    log: Logger,
+  ): Promise<Browser[]> {
+    const allBrowsers = await this.getAllBrowsers(log)
+    return allBrowsers.filter((browser) => {
+      if (browser.os !== 'android') {
+        return false
+      }
+      if (osVersion !== null && browser.os_version !== osVersion) {
+        return false
+      }
+      if (browserType === 'chrome' && browser.browser !== 'android') {
+        return false
+      }
+      if (browserType === 'samsung' && browser.browser !== 'samsung') {
+        return false
+      }
+      if (realDevices !== null && !!browser.real_mobile !== realDevices) {
+        return false
+      }
+      return true
+    })
+  }
 
   private async getAllBrowsers(log: Logger) {
     this._allBrowsersPromise ??= getBrowsers(this._credentials, log)

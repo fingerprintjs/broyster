@@ -216,7 +216,7 @@ const browserstackBrowsers = {
   OSX14_FirefoxLatest: { platform: 'OS X', osVersion: 'Sonoma', browserName: 'Firefox', browserVersion: 'latest-beta', useHttps: true },
   // OSX14_FirefoxLatest_Incognito: { platform: 'OS X', osVersion: 'Sonoma', browserName: 'Firefox', browserVersion: 'latest-beta, ...firefoxIncognitoCapabilities },
   OSX14_EdgeLatest: { platform: 'OS X', osVersion: 'Sonoma', browserName: 'Edge', browserVersion: 'latest-beta', useHttps: true },
-  Android13_ChromeLatest: { deviceName: ['Google Pixel 7', 'Google Pixel 7 Pro', 'Google Pixel 6 Pro'], platform: 'Android', osVersion: '13.0', browserName: 'Chrome', browserVersion: 'latest-beta', useHttps: true, flags: [BrowserFlags.MobileUserAgent] },
+  Android13_ChromeLatest: { platform: 'Android', osVersion: '13.0', browserName: 'Chrome', browserVersion: 'latest-beta', useHttps: true, flags: [BrowserFlags.MobileUserAgent] },
   iOS12_Safari: { platform: 'iOS', osVersion: '12', browserName: 'Safari', useHttps: true, flags: [BrowserFlags.MobileUserAgent] },
   iOS13_Safari: { platform: 'iOS', osVersion: '13', browserName: 'Safari', useHttps: true, flags: [BrowserFlags.MobileUserAgent] },
   iOS14_Safari: { platform: 'iOS', osVersion: '14', browserName: 'Safari', useHttps: true, flags: [BrowserFlags.MobileUserAgent] },
