@@ -19,17 +19,9 @@ This package exports the following:
 
 -   `@fpjs-incubator/broyster/node`:
     -   `karmaPlugin` That can be used for launching and reporting tests.
-    -   `sslConfiguration` That provides a self-signed certificate for HTTPS testing on localhost.
-    -   `httpHttpsServer` That gives you a set of two servers - one with HTTP and one with HTTP capabilities.
-        Newer versions of Safari do not work nor have workarounds for self-signed certificates, however their behavior is the same for both HTTP and HTTPS. Depending on your entry's _useHttps_, the launcher will redirect respectively.
-        The HTTP server runs on the port provided by Karma, while the HTTPS port will run on +1 from that.
     -   `setHttpsAndServerForKarma` That configures karma for HTTP and HTTPS testing without any additional work.
     -   `BrowserFlags` Is a collection of currently supported browser arguments that are uniformed for convenience (for
         example: Incognito will add launching the browser in incognito mode for Chrome and Edge, but private mode for Firefox).
-    -   `getBrowserStackCredentials` Fetches the credentials to BrowserStack from env variables.
-    -   `BrowserStackLocalManager` Allows controlling the BrowserStack Local binary.
-    -   `BrowserStackCapabilitiesFactory` Creates an object defining what the driver session that is going to be requested.
-    -   `BrowserStackSessionFactory` Creates a Selenium webdriver that connects to BrowserStack.
     -   `makeKarmaConfigurator` Makes a function that applies an opinionated full configuration, used by Fingerprint's projects, to Karma.
 -   `@fpjs-incubator/broyster/browser`:
     -   `retryFailedTests` That allows overriding the different behavior of Jasmine specs. The new behavior will retry a failed test up until the maximum specified in the first parameter, with a delay between each such attempt, indicated by the second parameter (in miliseconds). Call this function in the root of any executable file, involved in your testing code, for example, in a Jasmine helper file. Once called, it affects all tests Jasmine runs, even in the other files. For Karma, you can add a file that contains the invocation and point it in your `files`, that way you will not have it tied to one specific test file.
@@ -37,35 +29,7 @@ This package exports the following:
 Use `node` exports when using Node.js contexts, like configuring Karma.
 Use `browser` exports when using browser contexts, like Jasmine.
 
-To use mixed HTTP/HTTPS testing, in your Karma config file you need to:
-Set the protocol to https
-
-```js
-protocol: 'https'
-```
-
-define _httpServerOptions_ and use the provided keys
-
-```js
-import { sslConfiguration } from '@fpjs-incubator/broyster/node'
-
-httpsServerOptions: {
-  key: sslConfiguration.key,
-  cert: sslConfiguration.cert,
-  requestCert: false,
-  rejectUnauthorized: false,
-}
-```
-
-and use the provided server:
-
-```js
-import { karmaPlugin, sslConfiguration, httpHttpsServer } from '@fpjs-incubator/broyster/node'
-
-httpModule: httpHttpsServer as any
-```
-
-or use
+To use mixed HTTP/HTTPS testing, in your Karma config file you need to use:
 
 ```js
 import { setHttpsAndServerForKarma } from '@fpjs-incubator/broyster'
@@ -141,27 +105,6 @@ The following config options are available inside the browserStack section of th
     useHttps: true,
     flags: [BrowserFlags.Incognito],
   },
-```
-
-### Using Selenium directly
-
-```js
-import { BrowserStackCapabilitiesFactory, BrowserStackSessionFactory } from '@fpjs-incubator/broyster/node'
-
-const local = false // Execute webdriver commands on BrowserStack remotely
-const capabilitiesFactory = new BrowserStackCapabilitiesFactory({ username, accessKey }, local)
-
-const sessionFc = new BrowserStackSessionFactory({
-    project: 'PROJECT',
-    build: 'BUILD',
-    capabilitiesFactory,
-})
-
-const [driver, name] = sessionFc.tryCreateBrowser(launchOptions, runId, attempt, logger)
-
-await driver.navigate().to('https://google.com')
-
-await driver.quit()
 ```
 
 ## Full Karma configuration
