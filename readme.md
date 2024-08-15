@@ -3,12 +3,8 @@
 <sup>(browser + oyster)</sup>
 
 <p align="center">
-  <a href="https://github.com/fingerprintjs/broyster/actions/workflows/test.yml">
-    <img src="https://github.com/fingerprintjs/broyster/actions/workflows/test.yml/badge.svg" alt="Build status">
-  </a>
-  <a href="https://www.npmjs.com/package/@fpjs-incubator/broyster">
-    <img src="https://img.shields.io/npm/v/@fpjs-incubator/broyster.svg" alt="Current NPM version">
-  </a>
+  <a href="https://github.com/fingerprintjs/broyster/actions/workflows/test.yml"><img src="https://github.com/fingerprintjs/broyster/actions/workflows/test.yml/badge.svg" alt="Build status"></a>
+  <a href="https://www.npmjs.com/package/@fpjs-incubator/broyster"><img src="https://img.shields.io/npm/v/@fpjs-incubator/broyster.svg" alt="Current NPM version"></a>
 </p>
 
 Broyster gives you the ability to run your Karma tests in Browserstack using Selenium WebDriver as the means to execute the tests, as opposed to the regular tunnel for JS testing, giving you more flexibility in creating your test setup.

@@ -1,4 +1,3 @@
-// import * as path from 'path'
 import * as path from 'path'
 import { promises as fs } from 'fs'
 import type { Config, ConfigOptions, CustomLauncher } from 'karma'
