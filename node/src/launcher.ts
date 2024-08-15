@@ -32,7 +32,7 @@ export function BrowserStackLauncher(
   const captureTimeout = new CaptureTimeout(this, config, log)
   let startAttempt = 0
 
-  this.name = makeName(args)
+  this.name = makeLauncherName(args)
 
   let browser: WebDriver
   let pendingHeartBeat: NodeJS.Timeout | undefined
@@ -143,7 +143,7 @@ async function getDeviceNames(browserStackBrowsers: BrowserStackBrowsers, args: 
       devices = await browserStackBrowsers.getIOSDevices(
         args.osVersion ?? null,
         args.deviceType === 'iPad' ? 'ipad' : 'iphone',
-        args.browserName?.toLowerCase() === 'chromium' ? 'chromium' : 'safari',
+        args.browserName?.toLowerCase() === 'chrome' ? 'chrome' : 'safari',
         true,
         log,
       )
@@ -166,7 +166,7 @@ async function getDeviceNames(browserStackBrowsers: BrowserStackBrowsers, args: 
   return deviceNames
 }
 
-function makeName(args: CustomLauncher) {
+function makeLauncherName(args: CustomLauncher) {
   const components = [args.browserName]
   if (args.browserVersion) {
     components.push(args.browserVersion)
