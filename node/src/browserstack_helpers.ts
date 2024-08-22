@@ -1,4 +1,4 @@
-import { AutomateClient, createAutomateClient } from 'browserstack'
+import { AutomateClient, Browser, createAutomateClient } from 'browserstack'
 import { promisify } from 'util'
 import { Logger } from './karma_logger'
 
@@ -50,4 +50,13 @@ export async function canNewBrowserBeQueued(
   const canRun = max - running >= slots
   log.debug('Max queue: ' + max + '. Running: ' + running + '. Required ' + slots + '. Returning: ' + canRun)
   return canRun
+}
+
+export async function getBrowsers(credentials: BrowserStackCredentials, log: Logger): Promise<Browser[]> {
+  const browserstackClient = createBrowserStackClient(credentials)
+  log.debug('calling getBrowsers')
+  const browsers = await promisify(browserstackClient.getBrowsers).call(browserstackClient)
+  log.debug('getBrowsers returned:')
+  log.debug(JSON.stringify(browsers))
+  return browsers
 }

@@ -10,7 +10,7 @@ export type FirefoxProfile = ReadonlyArray<readonly [string, string | number | b
 export class WebDriverFactory {
   private static browserStackUrl = 'https://hub-cloud.browserstack.com/wd/hub'
 
-  static createFromOptions(
+  static async createFromOptions(
     options: chrome.Options | firefox.Options | safari.Options | edge.Options,
     sessionCapabilities: BrowserStackSessionCapabilities,
     firefoxProfile?: FirefoxProfile,
@@ -44,7 +44,7 @@ export class WebDriverFactory {
         break
       }
     }
-    const driver = builder.withCapabilities(sessionCapabilities).build()
+    const driver = await builder.withCapabilities(sessionCapabilities).build()
     return driver
   }
 }
