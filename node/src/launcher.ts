@@ -66,7 +66,7 @@ export function BrowserStackLauncher(
 
       log.debug(`creating browser with attributes: ${JSON.stringify(args)}`)
       log.debug(`attempt: ${startAttempt}`)
-      log.debug(`device name override: ${deviceName}`)
+      log.debug(`device name: ${deviceName}`)
       log.debug(`OS version override: ${osVersion}`)
 
       startAttempt += 1
@@ -171,8 +171,7 @@ async function getSuitableDevices(
   const devices: SuitableDevice[] = rawDevices
     ? rawDevices.map((device) => ({ name: device.device ?? undefined, osVersion: device.os_version }))
     : [{ name: undefined, osVersion: args.osVersion }]
-  // todo: Debug level
-  log.info(`devices suitable for attributes ${JSON.stringify(args)}: ${JSON.stringify(devices)}`)
+  log.debug(`devices suitable for attributes ${JSON.stringify(args)}: ${JSON.stringify(devices)}`)
 
   return devices
 }
