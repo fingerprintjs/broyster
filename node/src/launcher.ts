@@ -28,7 +28,7 @@ export function BrowserStackLauncher(
   retryLauncherDecorator(this)
   const log = logger.create('Browserstack ' + this.id)
   const bsLocalManagerPromise = browserStackLocalManager.run(log)
-  const deviceNamesPromise = getDeviceNames(browserStackBrowsers, args, log)
+  const suitableDevicesPromise = getSuitableDevices(browserStackBrowsers, args, log)
   const captureTimeout = new CaptureTimeout(this, config, log)
   let startAttempt = 0
 
@@ -58,15 +58,19 @@ export function BrowserStackLauncher(
 
   this.on('start', async (pageUrl: string) => {
     try {
-      await bsLocalManagerPromise
-      const [deviceName] = await Promise.all([chooseDeviceName(), browserStackSessionsManager.ensureQueue(this, log)])
+      const [{ name: deviceName, osVersion }] = await Promise.all([chooseDevice(), bsLocalManagerPromise])
+
+      // The queue should be checked right before creating a BrowserStack session to reduce the probability of a race
+      // condition where another Karma session also checks the queue in these events.
+      await browserStackSessionsManager.ensureQueue(this, log)
 
       log.debug(`creating browser with attributes: ${JSON.stringify(args)}`)
       log.debug(`attempt: ${startAttempt}`)
-      log.debug(`device name: ${deviceName}`)
+      log.debug(`device name override: ${deviceName}`)
+      log.debug(`OS version override: ${osVersion}`)
 
       startAttempt += 1
-      browser = await browserStackSessionFactory.createBrowser(args, deviceName, this.id, log)
+      browser = await browserStackSessionFactory.createBrowser({ ...args, osVersion }, deviceName, this.id, log)
       captureTimeout.onStart()
       const sessionId = (await browser.getSession()).getId()
       log.debug(`WebDriver SessionId: ${sessionId}`)
@@ -115,32 +119,38 @@ export function BrowserStackLauncher(
     done()
   })
 
-  const chooseDeviceName = async () => {
-    const deviceNames = await deviceNamesPromise
-    if (!deviceNames) {
-      return null
-    }
-
-    if (deviceNames.length === 0) {
+  const chooseDevice = async () => {
+    const devices = await suitableDevicesPromise
+    if (devices.length === 0) {
       throw new Error('No device available for the given configuration')
     }
 
-    const deviceName = deviceNames[startAttempt % deviceNames.length]
-    log.info(`Using ${deviceName} for the browser ${this.name}`)
-    return deviceName
+    const device = devices[startAttempt % devices.length]
+    if (device.name) {
+      log.info(`Using ${device.name} for the browser ${this.name}`)
+    }
+    return device
   }
 }
 
+interface SuitableDevice {
+  name: string | undefined
+  osVersion: string | undefined
+}
+
 /**
- * Returns the list of devices for the given launcher configuration.
- * Returns `null` when the given configuration doesn't need a device name.
+ * Returns the list of devices suitable for the given launcher configuration.
  */
-async function getDeviceNames(browserStackBrowsers: BrowserStackBrowsers, args: CustomLauncher, log: Logger) {
-  let devices: browserstack.Browser[] | null = null
+async function getSuitableDevices(
+  browserStackBrowsers: BrowserStackBrowsers,
+  args: CustomLauncher,
+  log: Logger,
+): Promise<SuitableDevice[]> {
+  let rawDevices: browserstack.Browser[] | null = null
 
   switch (args.platform) {
     case 'iOS':
-      devices = await browserStackBrowsers.getIOSDevices(
+      rawDevices = await browserStackBrowsers.getIOSDevices(
         args.osVersion ?? null,
         args.deviceType === 'iPad' ? 'ipad' : 'iphone',
         args.browserName?.toLowerCase() === 'chrome' ? 'chrome' : 'safari',
@@ -149,7 +159,7 @@ async function getDeviceNames(browserStackBrowsers: BrowserStackBrowsers, args: 
       )
       break
     case 'Android':
-      devices = await browserStackBrowsers.getAndroidDevices(
+      rawDevices = await browserStackBrowsers.getAndroidDevices(
         args.osVersion ?? null,
         args.browserName?.toLowerCase() === 'samsung' ? 'samsung' : 'chrome',
         true,
@@ -158,12 +168,13 @@ async function getDeviceNames(browserStackBrowsers: BrowserStackBrowsers, args: 
       break
   }
 
-  const deviceNames = devices
-    ? devices.map((device) => device.device).filter((name): name is string => name !== null)
-    : null
-  log.debug(`device names for attributes ${JSON.stringify(args)}: ${JSON.stringify(deviceNames)}`)
+  const devices: SuitableDevice[] = rawDevices
+    ? rawDevices.map((device) => ({ name: device.device ?? undefined, osVersion: device.os_version }))
+    : [{ name: undefined, osVersion: args.osVersion }]
+  // todo: Debug level
+  log.info(`devices suitable for attributes ${JSON.stringify(args)}: ${JSON.stringify(devices)}`)
 
-  return deviceNames
+  return devices
 }
 
 function makeLauncherName(args: CustomLauncher) {

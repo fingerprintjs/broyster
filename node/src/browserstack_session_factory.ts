@@ -33,7 +33,7 @@ export class BrowserStackSessionFactory {
 
   public async createBrowser(
     browser: CustomLauncher,
-    deviceName: string | null,
+    deviceName: string | undefined,
     id: string,
     log: Logger,
   ): Promise<WebDriver> {
@@ -44,7 +44,7 @@ export class BrowserStackSessionFactory {
         this._build,
         id,
         this._project,
-        deviceName ?? undefined,
+        deviceName,
         browser.platform,
         this._idleTimeout,
         browser.osVersion,

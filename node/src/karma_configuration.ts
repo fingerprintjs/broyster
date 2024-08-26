@@ -222,7 +222,7 @@ const browserstackBrowsers = {
   iOS15_Safari: { platform: 'iOS', osVersion: '15', browserName: 'Safari', useHttps: true, flags: [BrowserFlags.MobileUserAgent] },
   iOS16_Safari: { platform: 'iOS', osVersion: '16', browserName: 'Safari', useHttps: true, flags: [BrowserFlags.MobileUserAgent] },
   iOS17_Safari: { platform: 'iOS', osVersion: '17', browserName: 'Safari', useHttps: true, flags: [BrowserFlags.MobileUserAgent] },
-  iOS18_Safari: { platform: 'iOS', osVersion: '18 Beta', browserName: 'Safari', useHttps: true, flags: [BrowserFlags.MobileUserAgent] },
+  iOS18_Safari: { platform: 'iOS', osVersion: '18', browserName: 'Safari', useHttps: true, flags: [BrowserFlags.MobileUserAgent] },
 }
 /* eslint-enable max-len */
 
