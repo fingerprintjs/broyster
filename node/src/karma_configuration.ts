@@ -209,12 +209,12 @@ const browserstackBrowsers = {
   Windows11_EdgeLatest: { platform: 'Windows', osVersion: '11', browserName: 'Edge', browserVersion: 'latest-beta', useHttps: true },
   'OSX10.14_Safari12': { platform: 'OS X', osVersion: 'Mojave', browserName: 'Safari', browserVersion: '12', useHttps: true },
   OSX12_Safari15: { platform: 'OS X', osVersion: 'Monterey', browserName: 'Safari', browserVersion: '15', useHttps: false },
-  OSX14_Safari17: { platform: 'OS X', osVersion: 'Sonoma', browserName: 'Safari', browserVersion: '17', useHttps: false },
-  OSX14_ChromeLatest: { platform: 'OS X', osVersion: 'Sonoma', browserName: 'Chrome', browserVersion: 'latest-beta', useHttps: true },
-  // OSX14_ChromeLatest_Incognito: { platform: 'OS X', osVersion: 'Sonoma', browserName: 'Chrome', browserVersion: 'latest-beta, ...chromeIncognitoCapabilities },
-  OSX14_FirefoxLatest: { platform: 'OS X', osVersion: 'Sonoma', browserName: 'Firefox', browserVersion: 'latest-beta', useHttps: true },
-  // OSX14_FirefoxLatest_Incognito: { platform: 'OS X', osVersion: 'Sonoma', browserName: 'Firefox', browserVersion: 'latest-beta, ...firefoxIncognitoCapabilities },
-  OSX14_EdgeLatest: { platform: 'OS X', osVersion: 'Sonoma', browserName: 'Edge', browserVersion: 'latest-beta', useHttps: true },
+  OSX15_Safari18: { platform: 'OS X', osVersion: 'Sequoia', browserName: 'Safari', browserVersion: '18', useHttps: false },
+  OSX15_ChromeLatest: { platform: 'OS X', osVersion: 'Sequoia', browserName: 'Chrome', browserVersion: 'latest-beta', useHttps: true },
+  // OSX15_ChromeLatest_Incognito: { platform: 'OS X', osVersion: 'Sequoia', browserName: 'Chrome', browserVersion: 'latest-beta, ...chromeIncognitoCapabilities },
+  OSX15_FirefoxLatest: { platform: 'OS X', osVersion: 'Sequoia', browserName: 'Firefox', browserVersion: 'latest-beta', useHttps: true },
+  // OSX15_FirefoxLatest_Incognito: { platform: 'OS X', osVersion: 'Sequoia', browserName: 'Firefox', browserVersion: 'latest-beta, ...firefoxIncognitoCapabilities },
+  OSX15_EdgeLatest: { platform: 'OS X', osVersion: 'Sequoia', browserName: 'Edge', browserVersion: 'latest-beta', useHttps: true },
   Android13_ChromeLatest: { platform: 'Android', osVersion: '13.0', browserName: 'Chrome', browserVersion: 'latest-beta', useHttps: true, flags: [BrowserFlags.MobileUserAgent] },
   iOS12_Safari: { platform: 'iOS', osVersion: '12', browserName: 'Safari', useHttps: true, flags: [BrowserFlags.MobileUserAgent] },
   iOS13_Safari: { platform: 'iOS', osVersion: '13', browserName: 'Safari', useHttps: true, flags: [BrowserFlags.MobileUserAgent] },
@@ -222,6 +222,7 @@ const browserstackBrowsers = {
   iOS15_Safari: { platform: 'iOS', osVersion: '15', browserName: 'Safari', useHttps: true, flags: [BrowserFlags.MobileUserAgent] },
   iOS16_Safari: { platform: 'iOS', osVersion: '16', browserName: 'Safari', useHttps: true, flags: [BrowserFlags.MobileUserAgent] },
   iOS17_Safari: { platform: 'iOS', osVersion: '17', browserName: 'Safari', useHttps: true, flags: [BrowserFlags.MobileUserAgent] },
+  iOS18_Safari: { platform: 'iOS', osVersion: '18 Beta', browserName: 'Safari', useHttps: true, flags: [BrowserFlags.MobileUserAgent] },
 }
 /* eslint-enable max-len */
 
