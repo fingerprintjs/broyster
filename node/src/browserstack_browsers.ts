@@ -54,7 +54,13 @@ export function makeBrowserStackBrowsers(browserStackCredentials: BrowserStackCr
 }
 
 function doesOSVersionMatch(browser: Browser, expectedOSVersion: string) {
-  return browser.os_version === expectedOSVersion
+  return (
+    // Direct match
+    browser.os_version === expectedOSVersion ||
+    // Beta version match
+    (browser.os_version.startsWith(expectedOSVersion) &&
+      /^[ \-_]beta$/i.test(browser.os_version.slice(expectedOSVersion.length)))
+  )
 }
 
 function doesDeviceTypeMatch(browser: Browser, expectedDeviceType: string) {

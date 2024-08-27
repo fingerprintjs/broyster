@@ -34,6 +34,7 @@ declare module 'karma' {
 
   interface CustomLauncher {
     name?: string | undefined
+    /** Actually required, but left optional to avoid clashes with launcher types provided by other Karma plugins */
     osVersion?: string | undefined
     deviceType?: 'iPhone' | 'iPad' | undefined
     browserVersion?: string | null | undefined

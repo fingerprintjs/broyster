@@ -47,6 +47,7 @@ useHttps: true
 ```
 
 _deviceType_ is used only on iOS and allows to choose from `iPhone` (default) and `iPad`.
+You don't need to set a specific device name, the launcher chooses a device automatically. Same on Android.
 
 ```js
   Android11_ChromeLatest: {
@@ -58,8 +59,6 @@ _deviceType_ is used only on iOS and allows to choose from `iPhone` (default) an
   },
 ```
 
-You don't need to set a specific device name, the launcher chooses a device automatically. Same on Android.
-
 _firefoxCapabilities_ an array of extra capabilities specifically for Firefox.
 
 ```js
@@ -70,13 +69,16 @@ firefoxCapabilities: [
 ],
 ```
 
+_osVersion_ selects the given OS version and also it's beta counterpart. For example, setting the OS version to `17` will choose either `17` or `17 Beta`.
+
 ### Reporters
 
 There is a dedicated reporter that will mark successful tests as passed in BrowserStack.
 
 ```js
-  config.set({
-    reporters: [...config.reporters, 'BrowserStack'],
+config.set({
+  reporters: [...config.reporters, 'BrowserStack'],
+})
 ```
 
 ### BrowserStack specific settings
