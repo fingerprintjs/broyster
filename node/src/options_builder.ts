@@ -1,121 +1,80 @@
+import * as webdriver from 'selenium-webdriver'
 import * as edge from 'selenium-webdriver/edge'
-import { Arguments } from './arguments'
 import * as chrome from 'selenium-webdriver/chrome'
 import * as safari from 'selenium-webdriver/safari'
 import * as firefox from 'selenium-webdriver/firefox'
+import { Arguments } from './arguments'
 
 export class OptionsBuilder {
-  static create(browserName: string | undefined, rawArgs: string[] | undefined) {
-    if (browserName) {
-      const args = this.mapArguments(browserName, rawArgs ?? new Array<string>())
-      switch (browserName.toLowerCase()) {
-        case 'chrome': {
-          const opts = new chrome.Options()
-          opts.setAcceptInsecureCerts(true)
-          for (const arg of args) {
-            if (arg === Arguments.Headless) {
-              opts.headless()
-            } else {
-              opts.addArguments(arg)
-            }
-          }
-          return opts
-        }
-        case 'firefox': {
-          const opts = new firefox.Options()
-          opts.setAcceptInsecureCerts(true)
-          for (const arg of args) {
-            if (arg === Arguments.Headless) {
-              opts.headless()
-            } else {
-              opts.addArguments(arg)
-            }
-          }
-          return opts
-        }
-        case 'safari': {
-          const opts = new safari.Options()
-          opts.setAcceptInsecureCerts(true)
-          // no args allowed?
-          return opts
-        }
-        case 'edge': {
-          const opts = new edge.Options()
-          opts.setAcceptInsecureCerts(true)
-          for (const arg of args) {
-            if (arg === Arguments.Headless) {
-              opts.headless()
-            } else {
-              opts.addArguments(arg)
-            }
-          }
-          return opts
-        }
+  static create(browserName: string | undefined, rawArgs: string[] = []) {
+    const args = this.mapArguments(browserName, rawArgs)
+    let opts: webdriver.Capabilities
+
+    switch ((browserName || '').toLowerCase()) {
+      case 'chrome':
+      case 'samsung':
+        opts = new chrome.Options().addArguments(...args)
+        break
+      case 'firefox':
+        opts = new firefox.Options().addArguments(...args)
+        break
+      case 'safari': {
+        // no args allowed?
+        opts = new safari.Options()
+        break
       }
+      case 'edge': {
+        opts = new edge.Options().addArguments(...args)
+        break
+      }
+      default:
+        throw new Error(`Unknown or unsupported browser: ${JSON.stringify(browserName)}`)
     }
-    throw new Error(`Unknown or unsupported browser: ${browserName}`)
+
+    return opts.setAcceptInsecureCerts(true)
   }
 
   static createSafariArguments(args: string[]): string[] {
     return this.mapArguments('safari', args)
   }
 
-  private static mapArguments(browserName: string, args: string[]) {
-    const newArgs = new Array<string>()
-    for (let arg of args) {
-      arg = arg.split('-').join('').trim()
-      switch (browserName.toLowerCase()) {
-        case 'chrome': {
-          const newArg = this.chromeArgs.get(arg)
-          if (newArg) {
-            newArgs.push(newArg)
-          }
-          continue
-        }
-        case 'firefox': {
-          const newArg = this.firefoxArgs.get(arg)
-          if (newArg) {
-            newArgs.push(newArg)
-          }
-          continue
-        }
-        case 'safari':
-          {
-            const newArg = this.safariArgs.get(arg)
-            if (newArg) {
-              newArgs.push(newArg)
-            }
-          }
-          continue
-        case 'edge': {
-          const newArg = this.edgeArgs.get(arg)
-          if (newArg) {
-            newArgs.push(newArg)
-          }
-          continue
-        }
-      }
+  private static mapArguments(browserName: string | undefined, args: string[]) {
+    let argMap: Record<string, string> = {}
+
+    switch ((browserName || '').toLowerCase()) {
+      case 'chrome':
+      case 'edge':
+      case 'samsung':
+        argMap = chromiumArgs
+        break
+      case 'firefox':
+        argMap = firefoxArgs
+        break
+      case 'safari':
+        argMap = safariArgs
     }
-    return newArgs
+
+    return args.map((arg) => {
+      const canonicalArg = arg.split('-').join('').trim()
+      return argMap[canonicalArg] ?? arg
+    })
   }
+}
 
-  private static chromeArgs = new Map<string, string>([
-    [Arguments.MobileUserAgent, '-use-mobile-user-agent'],
-    [Arguments.Incognito, '--incognito'],
-    [Arguments.Headless, 'headless'],
-  ])
+type ArgumentMap = Partial<Record<Arguments, string>>
 
-  private static firefoxArgs = new Map<string, string>([
-    [Arguments.MobileUserAgent, '-use-mobile-user-agent'],
-    [Arguments.Incognito, '-private'],
-    [Arguments.Headless, 'headless'],
-  ])
+const chromiumArgs: ArgumentMap = {
+  [Arguments.MobileUserAgent]: '-use-mobile-user-agent',
+  [Arguments.Incognito]: '--incognito',
+  [Arguments.Headless]: 'headless',
+}
 
-  private static edgeArgs = new Map<string, string>([
-    [Arguments.MobileUserAgent, '-use-mobile-user-agent'],
-    [Arguments.Incognito, '--incognito'],
-    [Arguments.Headless, 'headless'],
-  ])
+const firefoxArgs: ArgumentMap = {
+  [Arguments.MobileUserAgent]: '-use-mobile-user-agent',
+  [Arguments.Incognito]: '-private',
+  [Arguments.Headless]: '-headless',
+}
 
-  private static safariArgs = new Map<string, string>([[Arguments.MobileUserAgent, '-use-mobile-user-agent']])
+const safariArgs: ArgumentMap = {
+  [Arguments.MobileUserAgent]: '-use-mobile-user-agent',
 }

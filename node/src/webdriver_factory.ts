@@ -11,7 +11,7 @@ export class WebDriverFactory {
   private static browserStackUrl = 'https://hub-cloud.browserstack.com/wd/hub'
 
   static async createFromOptions(
-    options: chrome.Options | firefox.Options | safari.Options | edge.Options,
+    options: webdriver.Capabilities,
     sessionCapabilities: BrowserStackSessionCapabilities,
     firefoxProfile?: FirefoxProfile,
   ) {
@@ -35,7 +35,8 @@ export class WebDriverFactory {
         builder.setEdgeOptions(options as edge.Options)
         break
       }
-      case 'chrome': {
+      case 'chrome':
+      case 'samsung': {
         builder.setChromeOptions(options as chrome.Options)
         break
       }

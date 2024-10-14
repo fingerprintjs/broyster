@@ -138,3 +138,5 @@ Example:
     ```bash
     karma start --preset browserstack-beta --single-run
     ```
+
+You can also view [its source code](src/karma_configuration.ts) to see what capabilities the Karma plugin provides.
