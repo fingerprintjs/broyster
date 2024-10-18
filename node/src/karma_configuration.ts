@@ -198,16 +198,16 @@ const firefoxIncognitoCapabilities = {
 /* eslint-disable max-len */
 // prettier-ignore
 const browserstackBrowsers = {
-  Windows10_Chrome65: { platform: 'Windows', osVersion: '10', browserName: 'Chrome', browserVersion: '65', useHttps: true },
-  // Windows10_Chrome65_Incognito: { platform: 'Windows', osVersion: '10', browserName: 'Chrome', browserVersion: '65', ...chromeIncognitoCapabilities },
+  Windows10_Chrome73: { platform: 'Windows', osVersion: '10', browserName: 'Chrome', browserVersion: '73', useHttps: true },
+  // Windows10_Chrome73_Incognito: { platform: 'Windows', osVersion: '10', browserName: 'Chrome', browserVersion: '73', ...chromeIncognitoCapabilities },
   Windows11_ChromeLatest: { platform: 'Windows', osVersion: '11', browserName: 'Chrome', browserVersion: 'latest-beta', useHttps: true },
   // Windows11_ChromeLatest_Incognito: { platform: 'Windows', osVersion: '11', browserName: 'Chrome', browserVersion: 'latest-beta, ...chromeIncognitoCapabilities },
-  Windows10_Firefox75: { platform: 'Windows', osVersion: '10', browserName: 'Firefox', browserVersion: '75', useHttps: true, firefoxCapabilities: [['security.csp.enable', true] as [string, boolean]] }, // CSP is off by default in Firefox ≤98
-  // Windows10_Firefox75_Incognito: { platform: 'Windows', osVersion: '10', browserName: 'Firefox', browserVersion: '75', ...firefoxIncognitoCapabilities },
+  Windows10_Firefox89: { platform: 'Windows', osVersion: '10', browserName: 'Firefox', browserVersion: '89', useHttps: true, firefoxCapabilities: [['security.csp.enable', true] as [string, boolean]] }, // CSP is off by default in Firefox ≤98
+  // Windows10_Firefox89_Incognito: { platform: 'Windows', osVersion: '10', browserName: 'Firefox', browserVersion: '89', ...firefoxIncognitoCapabilities },
   Windows11_FirefoxLatest: { platform: 'Windows', osVersion: '11', browserName: 'Firefox', browserVersion: 'latest-beta', useHttps: true },
   // Windows11_FirefoxLatest_Incognito: { platform: 'Windows', osVersion: '11', browserName: 'Firefox', browserVersion: 'latest-beta, ...firefoxIncognitoCapabilities },
   Windows11_EdgeLatest: { platform: 'Windows', osVersion: '11', browserName: 'Edge', browserVersion: 'latest-beta', useHttps: true },
-  'OSX10.14_Safari12': { platform: 'OS X', osVersion: 'Mojave', browserName: 'Safari', browserVersion: '12', useHttps: true },
+  'OSX10.15_Safari13': { platform: 'OS X', osVersion: 'Catalina', browserName: 'Safari', browserVersion: '13', useHttps: true },
   OSX12_Safari15: { platform: 'OS X', osVersion: 'Monterey', browserName: 'Safari', browserVersion: '15', useHttps: false },
   OSX15_Safari18: { platform: 'OS X', osVersion: 'Sequoia', browserName: 'Safari', browserVersion: '18', useHttps: false },
   OSX15_ChromeLatest: { platform: 'OS X', osVersion: 'Sequoia', browserName: 'Chrome', browserVersion: 'latest-beta', useHttps: true },
@@ -217,7 +217,6 @@ const browserstackBrowsers = {
   OSX15_EdgeLatest: { platform: 'OS X', osVersion: 'Sequoia', browserName: 'Edge', browserVersion: 'latest-beta', useHttps: true },
   Android14_ChromeLatest: { platform: 'Android', osVersion: '14.0', browserName: 'Chrome', browserVersion: 'latest-beta', useHttps: true, flags: [BrowserFlags.MobileUserAgent] },
   Android14_SamsungLatest: { platform: 'Android', osVersion: '14.0', browserName: 'Samsung', browserVersion: 'latest-beta', useHttps: true, flags: [BrowserFlags.MobileUserAgent] },
-  iOS12_Safari: { platform: 'iOS', osVersion: '12', browserName: 'Safari', useHttps: true, flags: [BrowserFlags.MobileUserAgent] },
   iOS13_Safari: { platform: 'iOS', osVersion: '13', browserName: 'Safari', useHttps: true, flags: [BrowserFlags.MobileUserAgent] },
   iOS14_Safari: { platform: 'iOS', osVersion: '14', browserName: 'Safari', useHttps: true, flags: [BrowserFlags.MobileUserAgent] },
   iOS15_Safari: { platform: 'iOS', osVersion: '15', browserName: 'Safari', useHttps: true, flags: [BrowserFlags.MobileUserAgent] },
