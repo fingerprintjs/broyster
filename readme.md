@@ -35,3 +35,8 @@ yarn --cwd example_project test:local
 # For Linux, macOS and WSL (Linux on Windows)
 BROWSERSTACK_USERNAME=your-username BROWSERSTACK_ACCESS_KEY=your-key yarn --cwd example_project test:browserstack
 ```
+
+## Contributing
+
+See the [Contribution guidelines](contributing.md) to learn how to contribute to the project or run the project locally.
+Please read it carefully before making a pull request.
