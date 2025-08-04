@@ -18,7 +18,7 @@ config.mochaOpts = {
 
 config.services = [['browserstack', { browserstackLocal: false }]]
 
-config.capabilities = config.capabilities!.map((c: WdioConfig.Config) => ({
+config.capabilities = (config.capabilities ?? []).map((c: any) => ({
   ...c,
   'bstack:options': {
     buildName: `broyster-e2e-${new Date().toISOString().slice(0, 10)}`,

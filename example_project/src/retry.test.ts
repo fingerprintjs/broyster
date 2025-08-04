@@ -4,14 +4,10 @@ let number = 0
 
 describe('Running', () => {
   describe('a failing test', () => {
-    it(
-      'will retry up to 3 times',
-      () => {
-        number++
-        expect(number).toBe(3)
-      },
-      { retry: 3 },
-    )
+    it('will retry up to 3 times', { retry: 3 }, () => {
+      number++
+      expect(number).toBe(3)
+    })
   })
 
   // Vitest: use skip/todo instead of Jasmine `pending`
