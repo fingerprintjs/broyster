@@ -3,18 +3,23 @@
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
+    "@eslint/js": "^9.32.0",
+    "@eslint/json": "^0.13.1",
+    "@eslint/markdown": "^7.1.0",
     "@types/node": "^24.2.0",
     "@typescript-eslint/eslint-plugin": "^8.38.0",
     "@typescript-eslint/parser": "^8.38.0",
     "eslint": "^9.32.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.3",
+    "globals": "^16.3.0",
     "prettier": "^3.6.2",
     "rimraf": "^6.0.1",
     "syncpack": "^14.0.0-alpha.19",
     "ts-node": "^10.9.2",
     "tslib": "^2.8.1",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.38.0"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,json,md,css}": [
@@ -30,7 +35,8 @@
     "build:example": "cd example_project && bun run build",
     "build:pkg": "cd node && bun run build",
     "e2e": "cd example_project && bun run test:browserstack",
-    "prepare": "husky",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "test": "cd example_project && bun run test:local"
   },
   "trustedDependencies": [
