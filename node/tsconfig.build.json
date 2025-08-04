@@ -3,13 +3,13 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist",
-    "declaration": true,
     "module": "ES2022",
     "target": "ES2022",
     "moduleResolution": "Bundler",
-    "resolveJsonModule": true,
+    "declaration": true,
+    "emitDeclarationOnly": false,
     "skipLibCheck": true,
-    "types": ["node", "webdriverio"]
+    "resolveJsonModule": true
   },
-  "include": ["src/vitest/**/*.ts", "src/wdio/**/*.ts"]
+  "include": ["src/**/*.ts"]
 }

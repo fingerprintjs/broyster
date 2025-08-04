@@ -3,7 +3,7 @@
   "description": "Unified test tools (Vitest + WebdriverIO + BrowserStack)",
   "version": "1.0.0",
   "bin": {
-    "broyster": "./dist/wdio/cli.js"
+    "broyster": "./bin/broyster.js"
   },
   "bugs": "https://github.com/fingerprintjs/broyster/issues",
   "dependencies": {
@@ -28,8 +28,18 @@
     "node": ">=18"
   },
   "exports": {
-    "./vitest": "./dist/vitest/preset.js",
-    "./wdio": "./dist/wdio/config.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./wdio": {
+      "types": "./dist/wdio/config.d.ts",
+      "import": "./dist/wdio/config.js"
+    },
+    "./vitest": {
+      "types": "./dist/vitest/preset.d.ts",
+      "import": "./dist/vitest/preset.js"
+    }
   },
   "files": [
     "dist",
@@ -46,6 +56,7 @@
     "webdriverio"
   ],
   "license": "MIT",
+  "main": "./dist/index.js",
   "peerDependencies": {
     "vitest": "^3.2.4"
   },
@@ -61,5 +72,6 @@
     "prepack": "cp ../LICENSE LICENSE"
   },
   "sideEffects": false,
-  "type": "module"
+  "type": "module",
+  "types": "./dist/index.d.ts"
 }
