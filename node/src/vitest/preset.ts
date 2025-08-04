@@ -3,6 +3,7 @@ import type { UserConfigExport } from 'vitest/config'
 export type VitestPresetOptions = {
   projectName: string
   includeFiles?: string[]
+  exclude?: string[]
   environment?: 'node' | 'jsdom'
   retries?: number
   globals?: boolean
@@ -14,7 +15,8 @@ export function vitestPreset(opts: VitestPresetOptions): UserConfigExport {
   return {
     test: {
       name: opts.projectName,
-      include: opts.includeFiles ?? ['src/**/*.ts', 'tests/**/*.ts'],
+      include: opts.includeFiles ?? ['**/*.{test,spec}.ts?(x)'],
+      exclude: ['e2e/**', 'node_modules/**'],
       environment: opts.environment ?? 'jsdom',
       retry: opts.retries ?? 2,
       globals: opts.globals ?? true,
