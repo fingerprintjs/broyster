@@ -1,15 +1,25 @@
+import { describe, expect, it } from 'vitest'
+
 let number = 0
+
 describe('Running', () => {
   describe('a failing test', () => {
-    it('will retry up to 3 times', () => {
-      number++
-      expect(number).toBe(3)
-    })
+    it(
+      'will retry up to 3 times',
+      () => {
+        number++
+        expect(number).toBe(3)
+      },
+      { retry: 3 },
+    )
   })
 
+  // Vitest: use skip/todo instead of Jasmine `pending`
   describe('a pending test', () => {
-    it('will not be retried', () => {
-      pending('this should not fail the run')
+    it.skip('will not be retried', () => {
+      // intentionally skipped
     })
+    // or:
+    // it.todo('will not be retried');
   })
 })

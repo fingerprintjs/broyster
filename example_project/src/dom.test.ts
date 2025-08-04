@@ -1,5 +1,6 @@
+import { describe, expect, it, vi } from 'vitest'
 import { createButton } from './dom'
-import * as UAParser from 'ua-parser-js'
+import { UAParser } from 'ua-parser-js'
 
 describe('DOM', () => {
   describe('createButton', () => {
@@ -9,18 +10,18 @@ describe('DOM', () => {
       expect(button.textContent).toBe('Click me!')
     })
 
-    it('attaches ad onClick handler', () => {
-      const onClick = jasmine.createSpy()
+    it('attaches an onClick handler', () => {
+      const onClick = vi.fn()
       const button = createButton('Click me!', onClick)
       button.click()
       expect(onClick).toHaveBeenCalledTimes(1)
     })
 
-    it('has a secure context', () => {
+    it('has a secure context (when supported)', () => {
       if (!isSecureContextUnsupported()) {
-        const isSecureContext = window.isSecureContext
+        const isSecureContext = (window as any).isSecureContext
         if (isSecureContext !== undefined) {
-          expect(isSecureContext).toBeTrue()
+          expect(isSecureContext).toBe(true)
         }
       }
 
@@ -28,7 +29,7 @@ describe('DOM', () => {
         const result = new UAParser().getResult()
         const isSafari = /^(Mobile )?Safari$/.test(result.browser.name ?? '')
         const isMacOS = result.os.name === 'Mac OS'
-        const browserVersion = parseInt(result.browser.version ?? '0')
+        const browserVersion = parseInt(result.browser.version ?? '0', 10)
         return isSafari && isMacOS && browserVersion >= 15
       }
     })

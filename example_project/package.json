@@ -1,18 +1,26 @@
 {
-  "private": true,
   "name": "example_project",
-  "version": "0.0.1",
-  "scripts": {
-    "test:local": "karma start --preset local --single-run",
-    "test:browserstack": "karma start --preset browserstack --single-run"
-  },
+  "version": "0.0.0",
   "devDependencies": {
-    "@fpjs-incubator/broyster": "*",
-    "@types/jasmine": "^3.10.7",
-    "@types/ua-parser-js": "^0.7.36",
-    "karma": "^6.4.1"
+    "@fpjs-incubator/broyster": "workspace:*",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^24.2.0",
+    "@wdio/globals": "^9.17.0",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.3",
+    "typescript": "^5.9.2",
+    "ua-parser-js": "^2.0.4",
+    "vite": "^7.0.6",
+    "vitest": "^3.2.4",
+    "webdriverio": "^9.18.4"
   },
-  "dependencies": {
-    "ua-parser-js": "^1.0.33"
-  }
+  "private": true,
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "build:e2e": "tsc -p tsconfig.e2e.json",
+    "test:browserstack": "broyster --config wdio.conf.ts",
+    "test:local": "vitest run",
+    "test:watch": "vitest"
+  },
+  "type": "module"
 }
