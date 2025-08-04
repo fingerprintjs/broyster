@@ -1,0 +1,15 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "declaration": true,
+    "module": "ES2022",
+    "target": "ES2022",
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "types": ["node", "webdriverio"]
+  },
+  "include": ["src/vitest/**/*.ts", "src/wdio/**/*.ts"]
+}
