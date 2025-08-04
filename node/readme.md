@@ -1,142 +1,170 @@
-# Broyster Node.js tools
+# Broyster Node.js tools (vNext)
+
+Unified test utilities for **Vitest** (unit) and **WebdriverIO + BrowserStack** (E2E).
+
+## Install
 
 ```bash
-npm install --save-dev @fpjs-incubator/broyster
-# or
-yarn add --dev @fpjs-incubator/broyster
+# npm	npm i -D @fpjs-incubator/broyster
+# pnpm	pnpm add -D @fpjs-incubator/broyster
+# yarn	yarn add -D @fpjs-incubator/broyster
+# bun	bun add -d @fpjs-incubator/broyster
 ```
 
-```js
-import * as broysterForBrowser from '@fpjs-incubator/broyster/browser'
-import * as broysterForNode from '@fpjs-incubator/broyster/node'
+## What this package exports
 
-// ...
-```
+- `@fpjs-incubator/broyster/vitest`
+    - `vitestPreset(options)` → minimal Vitest config preset.
+
+- `@fpjs-incubator/broyster/wdio`
+    - `makeWdioConfig(options)` → return a WDIO **Testrunner** config tailored for BrowserStack.
+    - `makeBrowserMatrix(names, base?)` → convenience helper to build a capabilities matrix.
+    - `enableLocal(config, { id? })` → turn on BrowserStack Local with `forcedStop` and a unique id.
+
+- CLI
+    - `broyster` → a tiny wrapper around `@wdio/cli` that auto-registers a TS runtime (`tsx` or `ts-node`) so you can
+      run `.ts` specs directly.
+
+> **Note:** The old Karma/Jasmine helpers (`makeKarmaConfigurator`, `karmaPlugin`, `retryFailedTests`, etc.) were
+> removed in vNext. Use Vitest for unit tests and WDIO for E2E.
+
+---
 
 ## Usage
 
-This package exports the following:
+### 1) Vitest preset
 
--   `@fpjs-incubator/broyster/node`:
-    -   `karmaPlugin` That can be used for launching and reporting tests.
-    -   `setHttpsAndServerForKarma` That configures karma for HTTP and HTTPS testing without any additional work.
-    -   `BrowserFlags` Is a collection of currently supported browser arguments that are uniformed for convenience (for
-        example: Incognito will add launching the browser in incognito mode for Chrome and Edge, but private mode for Firefox).
-    -   `makeKarmaConfigurator` Makes a function that applies an opinionated full configuration, used by Fingerprint's projects, to Karma.
--   `@fpjs-incubator/broyster/browser`:
-    -   `retryFailedTests` That allows overriding the different behavior of Jasmine specs. The new behavior will retry a failed test up until the maximum specified in the first parameter, with a delay between each such attempt, indicated by the second parameter (in miliseconds). Call this function in the root of any executable file, involved in your testing code, for example, in a Jasmine helper file. Once called, it affects all tests Jasmine runs, even in the other files. For Karma, you can add a file that contains the invocation and point it in your `files`, that way you will not have it tied to one specific test file.
+`vitest.config.ts`
 
-Use `node` exports when using Node.js contexts, like configuring Karma.
-Use `browser` exports when using browser contexts, like Jasmine.
+```ts
+import { defineConfig } from 'vitest/config'
+import { vitestPreset } from '@fpjs-incubator/broyster/vitest'
 
-To use mixed HTTP/HTTPS testing, in your Karma config file you need to use:
-
-```js
-import { setHttpsAndServerForKarma } from '@fpjs-incubator/broyster'
-
-setHttpsAndServerForKarma(config)
-```
-
-## Launchers
-
-The launcher provides additional properties:
-_useHttps_ to specify if this launcher is supposed to connect to the HTTPS server (_true_) or not.
-
-```js
-useHttps: true
-```
-
-_deviceType_ is used only on iOS and allows to choose from `iPhone` (default) and `iPad`.
-You don't need to set a specific device name, the launcher chooses a device automatically. Same on Android.
-
-```js
-  Android11_ChromeLatest: {
-    platform: 'iOS',
-    deviceType: 'iPhone',
-    osVersion: '17',
-    browserName: 'Safari',
-    useHttps: true,
-  },
-```
-
-_firefoxCapabilities_ an array of extra capabilities specifically for Firefox.
-
-```js
-firefoxCapabilities: [
-  ['key', 1],
-  ['key2', true],
-  ['key3', 'value'],
-],
-```
-
-_osVersion_ selects the given OS version and also it's beta counterpart. For example, setting the OS version to `17` will choose either `17` or `17 Beta`.
-
-### Reporters
-
-There is a dedicated reporter that will mark successful tests as passed in BrowserStack.
-
-```js
-config.set({
-  reporters: [...config.reporters, 'BrowserStack'],
+export default defineConfig({
+    ...vitestPreset({
+        projectName: 'MyProject',
+        includeFiles: ['src/**/*.ts', 'tests/**/*.ts'],
+        environment: 'jsdom',
+        retries: 2,
+    }),
 })
 ```
 
-### BrowserStack specific settings
+### 2) WDIO + BrowserStack
 
-The following config options are available inside the browserStack section of the config:
+`wdio.conf.ts`
 
--   `idleTimeout`: expressed in miliseconds, specifies the amount of time that BrowserStack is supposed to keep the session alive without any activity before automatically killing it.
+```ts
+import type { Options } from '@wdio/types'
+import { makeWdioConfig, makeBrowserMatrix, enableLocal } from '@fpjs-incubator/broyster/wdio'
 
-### Launcher specific settings
+const config = makeWdioConfig({
+    projectName: 'MyProject',
+    specs: ['./e2e/**/*.spec.ts'],
+    maxInstances: 3,
+    matrix: makeBrowserMatrix(['chrome', 'firefox', 'safari']),
+    timeoutMs: 120_000,
+}) as Options.Testrunner
 
-The following config options are available inside the browserStack section of the config:
+// If you need BrowserStack Local (localhost testing)
+enableLocal(config)
 
--   `queueTimeout`: expressed in miliseconds, specifies the maximum amount of time to wait for a the BrowserStack queue to free up a slot.
--   `flags`: a unified set of extra arguments that will be passed to the browser. For example passing _incognito_ will apply the relevant seting to the browsers for which the flags were specified (incongnito in Chrome, private mode in Firefox or nothing in the case of Safari). Currently supported flags can be found under the BrowserFlags export. Example:
-
-```js
-  import { BrowserFlags } from '@fpjs-incubator/broyster/node'
-
-  ...
-
-  Incognito_Chrome: {
-    platform: 'Windows',
-    osVersion: '10',
-    browserName: 'Chrome',
-    browserVersion: '57',
-    useHttps: true,
-    flags: [BrowserFlags.Incognito],
-  },
+export const { config: exported } = { config }
+export default config
 ```
 
-## Full Karma configuration
+**Running**
 
-`makeKarmaConfigurator` is an alternative to creating a Karma configuration from scratch.
-The function creates an opinionated configuration used by Fingerprint's projects, but has few options and easy to use.
-The configuration is aimed to run **TypeScript** tests with **Jasmine**.
+```bash
+# Set your BrowserStack creds (or use your shell profile)
+export BROWSERSTACK_USERNAME=your-username
+export BROWSERSTACK_ACCESS_KEY=your-access-key
 
-Example:
+# Execute E2E matrix
+broyster --config wdio.conf.ts
+```
 
-- `karma.conf.ts`
-    ```ts
-    import { makeKarmaConfigurator } from '@fpjs-incubator/broyster/node'
+> The CLI auto-loads `tsx` or `ts-node` if present. If neither is installed, install one: `bun add -d tsx`.
 
-    module.exports = makeKarmaConfigurator({
-        projectName: 'My project',
-        includeFiles: ['src/**/*.ts'],
+### Example E2E spec
+
+`e2e/smoke.spec.ts`
+
+```ts
+describe('smoke', () => {
+    it('opens a page and finds a button', async () => {
+        await browser.url('https://example.com')
+        const el = await $('body')
+        await expect(el).toBeExisting()
     })
-    ```
-- Run tests in browsers on the current machine:
-    ```bash
-    karma start --preset local --single-run
-    ```
-- Run tests in browsers, supported by Fingerprint, on BrowserStack:
-    ```bash
-    karma start --preset browserstack --single-run
-    ```
-    Or only beta versions of these browsers:
-    ```bash
-    karma start --preset browserstack-beta --single-run
-    ```
+})
+```
 
-You can also view [its source code](src/karma_configuration.ts) to see what capabilities the Karma plugin provides.
+---
+
+## Helper reference
+
+### `vitestPreset(options)`
+
+- `projectName` **(string, required)** – used for the Vitest project name.
+- `includeFiles` **(string\[], default:** \`\['src/**/\*.ts','tests/**/\*.ts']**)** – test file globs.
+- `environment` **('node'|'jsdom', default: 'jsdom')**.
+- `retries` **(number, default: 2)** – Vitest retry count.
+
+### `makeWdioConfig(options)`
+
+- `projectName` **(string)** – surfaced in BrowserStack metadata.
+- `specs` **(string\[], default: `['./e2e/**/\*.spec.ts']`)\*\* – spec globs.
+- `maxInstances` **(number, default: 5)** – per capability.
+- `matrix` **(Capabilities\[], default: chrome, firefox, safari)** – browser matrix.
+- `timeoutMs` **(number, default: 120000)** – Mocha timeout.
+
+Internally sets:
+
+- `framework: 'mocha'`, `reporters: ['spec']`
+- BrowserStack service and credentials via `BROWSERSTACK_USERNAME`/`BROWSERSTACK_ACCESS_KEY`
+
+### `makeBrowserMatrix(names, base?)`
+
+Convenience to create a matrix from browser aliases. `base` merges into each entry (e.g., platformName, versions).
+
+```ts
+makeBrowserMatrix(['chrome', 'firefox'], { 'bstack:options': { os: 'Windows', osVersion: '11' } })
+```
+
+### `enableLocal(config, { id })`
+
+Adds BrowserStack Local with a unique `localIdentifier`, `browserstackLocal: true`, and `forcedStop: true` to avoid
+orphan tunnels.
+
+```ts
+enableLocal(config, { id: 'my-ci-job-123' })
+```
+
+---
+
+## Migrating from Karma/Jasmine
+
+- Replace Karma config + Jasmine helpers with:
+    - **Vitest** for unit tests (`vitest.config.ts` using `vitestPreset`).
+    - **WDIO** for cross-browser E2E (`wdio.conf.ts` using `makeWdioConfig`).
+
+- Specs migrate 1:1 in most cases, but Jasmine APIs like `pending()` map to `it.skip()` or `it.todo()` in Vitest.
+- Remove Karma-specific launchers, reporters, and BrowserStack tunnel logic. Use `enableLocal()` when you need localhost
+  with WDIO.
+
+---
+
+## Troubleshooting
+
+- **No specs found**: ensure your `specs` glob matches actual files. If compiling TS → JS first, point to the built
+  output.
+- **TS runtime not found**: install `tsx` (recommended) or `ts-node` in your project.
+- **Local tunnel conflict**: “Either another browserstack local client is running…” – stop other tunnels or run a single
+  job, or provide a different id via `enableLocal()`.
+
+---
+
+## License
+
+MIT
