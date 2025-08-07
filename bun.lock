@@ -47,11 +47,7 @@
     "node": {
       "name": "@fpjs-incubator/broyster",
       "version": "1.0.0",
-      "bin": {
-        "broyster": "./bin/broyster.js",
-      },
       "dependencies": {
-        "browserstack-local": "^1.5.8",
         "tslib": "^2.8.1",
       },
       "devDependencies": {
@@ -61,11 +57,16 @@
         "typescript": "^5.9.2",
         "vitest": "^3.2.4",
       },
+      "optionalDependencies": {
+        "browserstack-local": "^1.5.8",
+      },
       "peerDependencies": {
         "vitest": "^3.2.4",
+        "webdriverio": "^9.0.0",
       },
       "optionalPeers": [
         "vitest",
+        "webdriverio",
       ],
     },
   },
