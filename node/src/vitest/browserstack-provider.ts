@@ -49,7 +49,7 @@ export function browserStackProvider(opts: BSOpts) {
   return class BrowserStackProvider extends webdriverio {
     name = 'browserstack'
 
-    private _instance: AnyObj | null = null
+    _instance: AnyObj | null = null
 
     initialize = (ctx: WorkspaceProject, options: BrowserProviderInitializationOptions) => {
       super.initialize(ctx as unknown as any, options as unknown as any)
