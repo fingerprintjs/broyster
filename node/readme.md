@@ -1,40 +1,84 @@
-# Broyster Node.js tools (vNext)
+# Broyster 🕶️🦪
 
-Unified test utilities for **Vitest** (unit) and **WebdriverIO + BrowserStack** (E2E).
+<sup>(browser + oyster)</sup>
 
-## Install
+<p align="center">
+  <a href="https://github.com/fingerprintjs/broyster/actions/workflows/test.yml"><img src="https://github.com/fingerprintjs/broyster/actions/workflows/test.yml/badge.svg" alt="Build status"></a>
+  <a href="https://www.npmjs.com/package/@fpjs-incubator/broyster"><img src="https://img.shields.io/npm/v/@fpjs-incubator/broyster.svg" alt="Current NPM version"></a>
+</p>
 
-```bash
-# npm	npm i -D @fpjs-incubator/broyster
-# pnpm	pnpm add -D @fpjs-incubator/broyster
-# yarn	yarn add -D @fpjs-incubator/broyster
-# bun	bun add -d @fpjs-incubator/broyster
-```
+**Broyster** is a tiny toolkit that makes it easy to run **all tests in real browsers**.
 
-## What this package exports
+- **Vitest Browser Mode** for running tests in a real browser (not `jsdom`).
+- **Local** runs via Vitest’s **WebdriverIO** provider (Chromium headless by default).
+- **Remote** runs on **BrowserStack** via a small provider that plugs into Vitest.
+- Automatic BrowserStack session naming, annotations, and pass/fail status.
 
-- `@fpjs-incubator/broyster/vitest`
-    - `vitestPreset(options)` → minimal Vitest config preset.
-
-- `@fpjs-incubator/broyster/wdio`
-    - `makeWdioConfig(options)` → return a WDIO **Testrunner** config tailored for BrowserStack.
-    - `makeBrowserMatrix(names, base?)` → convenience helper to build a capabilities matrix.
-    - `enableLocal(config, { id? })` → turn on BrowserStack Local with `forcedStop` and a unique id.
-
-- CLI
-    - `broyster` → a tiny wrapper around `@wdio/cli` that auto-registers a TS runtime (`tsx` or `ts-node`) so you can
-      run `.ts` specs directly.
-
-> **Note:** The old Karma/Jasmine helpers (`makeKarmaConfigurator`, `karmaPlugin`, `retryFailedTests`, etc.) were
-> removed in vNext. Use Vitest for unit tests and WDIO for E2E.
+This repo is the **vNext** refactor away from Karma/Selenium and away from `jsdom`-based unit tests. The goal is a
+single way to run tests: **in a browser**, locally or on BrowserStack.
 
 ---
 
-## Usage
+## Packages
 
-### 1) Vitest preset
+- **[`node/`](./node)** — published as [`@fpjs-incubator/broyster`](https://npmjs.com/package/@fpjs-incubator/broyster)
+    - `@fpjs-incubator/broyster/vitest` → Vitest preset + BrowserStack provider
 
-`vitest.config.ts`
+- **[`example_project/`](./example_project)** — minimal example using Vitest Browser Mode locally and on BrowserStack
+
+---
+
+## Quick start (this monorepo)
+
+Requirements: **Node 18+** (Node 20+ recommended). Use **bun** or Yarn Berry — examples below use bun.
+
+```bash
+# at repo root
+bun install
+bun run build              # builds the package and the example
+```
+
+Run the example tests:
+
+```bash
+# Local browser (Chromium headless via WebdriverIO)
+bun run test               # runs example_project tests in a real browser
+
+# Remote on BrowserStack
+export BROWSERSTACK=1
+export BROWSERSTACK_USERNAME=your-username
+export BROWSERSTACK_ACCESS_KEY=your-access-key
+bun run test:bs
+```
+
+> If you prefer Yarn:
+>
+> ```bash
+> yarn install
+> yarn build
+> yarn --cwd example_project test:local
+> BROWSERSTACK=1 BROWSERSTACK_USERNAME=... BROWSERSTACK_ACCESS_KEY=... \
+>   yarn --cwd example_project test:browserstack
+> ```
+
+---
+
+## Use in your project
+
+Install:
+
+```bash
+# pick your tool
+npm i -D @fpjs-incubator/broyster
+# or
+yarn add -D @fpjs-incubator/broyster
+# or
+bun add -d @fpjs-incubator/broyster
+```
+
+### Vitest config (browser mode)
+
+`vitest.config.ts`:
 
 ```ts
 import { defineConfig } from 'vitest/config'
@@ -43,128 +87,112 @@ import { vitestPreset } from '@fpjs-incubator/broyster/vitest'
 export default defineConfig({
     ...vitestPreset({
         projectName: 'MyProject',
-        includeFiles: ['src/**/*.ts', 'tests/**/*.ts'],
-        environment: 'jsdom',
+        includeFiles: ['src/**/*.{test,spec}.ts?(x)'],
+        // When BROWSERSTACK is set, tests run remotely. Otherwise they run locally via WebdriverIO (Chromium headless).
+        // Optional: override default instances/capabilities
+        browser: {
+            enabled: true,
+            provider: 'webdriverio',
+            instances: [{ browser: 'chrome' }, { browser: 'firefox' }],
+        },
         retries: 2,
+        globals: true,
     }),
 })
 ```
 
-### 2) WDIO + BrowserStack
+Add scripts:
 
-`wdio.conf.ts`
-
-```ts
-import type { Options } from '@wdio/types'
-import { makeWdioConfig, makeBrowserMatrix, enableLocal } from '@fpjs-incubator/broyster/wdio'
-
-const config = makeWdioConfig({
-    projectName: 'MyProject',
-    specs: ['./e2e/**/*.spec.ts'],
-    maxInstances: 3,
-    matrix: makeBrowserMatrix(['chrome', 'firefox', 'safari']),
-    timeoutMs: 120_000,
-}) as Options.Testrunner
-
-// If you need BrowserStack Local (localhost testing)
-enableLocal(config)
-
-export const { config: exported } = { config }
-export default config
+```json
+{
+    "scripts": {
+        "test": "vitest --browser",
+        "test:run": "vitest run --browser",
+        "test:bs": "BROWSERSTACK=1 vitest run --browser"
+    }
+}
 ```
 
-**Running**
+### Running on BrowserStack
+
+Set credentials (in your shell or CI):
 
 ```bash
-# Set your BrowserStack creds (or use your shell profile)
+export BROWSERSTACK=1
 export BROWSERSTACK_USERNAME=your-username
 export BROWSERSTACK_ACCESS_KEY=your-access-key
-
-# Execute E2E matrix
-broyster --config wdio.conf.ts
 ```
 
-> The CLI auto-loads `tsx` or `ts-node` if present. If neither is installed, install one: `bun add -d tsx`.
+Optional environment toggles:
 
-### Example E2E spec
+- `BS_BROWSERS` — comma‑separated filter of browsers to run remotely (e.g. `chrome,firefox,safari,microsoftedge`).
+- `BS_DEBUG` — `true|false` (BrowserStack debug mode).
+- `BS_NETWORK_LOGS` — `true|false` (capture network logs).
+- `BS_CONSOLE_LOGS` — `disable|info|warn|error`.
 
-`e2e/smoke.spec.ts`
+Build metadata is inferred when running in GitHub Actions (branch, SHA, run id) and used to name the build/session.
+
+Broyster also auto‑adds a small setup file that:
+
+- Sets the session name to the current spec.
+- Annotates each test start/pass/fail in BrowserStack.
+- Marks the session **passed/failed** based on the test run.
+
+### Running locally
+
+If `BROWSERSTACK` is not set, the preset configures Vitest’s WebdriverIO provider to run **Chromium headless** locally.
+You can customize the local instances by passing `browser.instances` in the preset options.
+
+> Why not `jsdom`? This package intentionally avoids it — everything runs in a real browser to match production
+> behavior.
+
+---
+
+## Example test
 
 ```ts
-describe('smoke', () => {
-    it('opens a page and finds a button', async () => {
-        await browser.url('https://example.com')
-        const el = await $('body')
-        await expect(el).toBeExisting()
-    })
+import { test, expect } from 'vitest'
+
+// Runs inside the real browser context
+
+test('renders a button', () => {
+    document.body.innerHTML = `<button>Click me</button>`
+    expect(document.querySelector('button')?.textContent).toBe('Click me')
 })
 ```
 
----
-
-## Helper reference
-
-### `vitestPreset(options)`
-
-- `projectName` **(string, required)** – used for the Vitest project name.
-- `includeFiles` **(string\[], default:** \`\['src/**/\*.ts','tests/**/\*.ts']**)** – test file globs.
-- `environment` **('node'|'jsdom', default: 'jsdom')**.
-- `retries` **(number, default: 2)** – Vitest retry count.
-
-### `makeWdioConfig(options)`
-
-- `projectName` **(string)** – surfaced in BrowserStack metadata.
-- `specs` **(string\[], default: `['./e2e/**/\*.spec.ts']`)\*\* – spec globs.
-- `maxInstances` **(number, default: 5)** – per capability.
-- `matrix` **(Capabilities\[], default: chrome, firefox, safari)** – browser matrix.
-- `timeoutMs` **(number, default: 120000)** – Mocha timeout.
-
-Internally sets:
-
-- `framework: 'mocha'`, `reporters: ['spec']`
-- BrowserStack service and credentials via `BROWSERSTACK_USERNAME`/`BROWSERSTACK_ACCESS_KEY`
-
-### `makeBrowserMatrix(names, base?)`
-
-Convenience to create a matrix from browser aliases. `base` merges into each entry (e.g., platformName, versions).
+You can also use DOM Testing Library if you prefer (Vitest Browser Mode bundles the necessary bits):
 
 ```ts
-makeBrowserMatrix(['chrome', 'firefox'], { 'bstack:options': { os: 'Windows', osVersion: '11' } })
+import { screen } from '@testing-library/dom'
+import { test, expect } from 'vitest'
+
+test('find by role', () => {
+    document.body.innerHTML = `<button>Save</button>`
+    expect(screen.getByRole('button', { name: 'Save' })).toBeDefined()
+})
 ```
-
-### `enableLocal(config, { id })`
-
-Adds BrowserStack Local with a unique `localIdentifier`, `browserstackLocal: true`, and `forcedStop: true` to avoid
-orphan tunnels.
-
-```ts
-enableLocal(config, { id: 'my-ci-job-123' })
-```
-
----
-
-## Migrating from Karma/Jasmine
-
-- Replace Karma config + Jasmine helpers with:
-    - **Vitest** for unit tests (`vitest.config.ts` using `vitestPreset`).
-    - **WDIO** for cross-browser E2E (`wdio.conf.ts` using `makeWdioConfig`).
-
-- Specs migrate 1:1 in most cases, but Jasmine APIs like `pending()` map to `it.skip()` or `it.todo()` in Vitest.
-- Remove Karma-specific launchers, reporters, and BrowserStack tunnel logic. Use `enableLocal()` when you need localhost
-  with WDIO.
 
 ---
 
 ## Troubleshooting
 
-- **No specs found**: ensure your `specs` glob matches actual files. If compiling TS → JS first, point to the built
-  output.
-- **TS runtime not found**: install `tsx` (recommended) or `ts-node` in your project.
-- **Local tunnel conflict**: “Either another browserstack local client is running…” – stop other tunnels or run a single
-  job, or provide a different id via `enableLocal()`.
+- **No browser opened / tests hang** – ensure you’re running with `--browser` and not `jsdom`/`node` environment.
+- **Remote run didn’t trigger** – set `BROWSERSTACK=1` alongside credentials.
+- **Wrong set of browsers on BrowserStack** – set `BS_BROWSERS` (e.g. `BS_BROWSERS=chrome,firefox`).
+- **Console/Network logs missing** – set `BS_CONSOLE_LOGS` / `BS_NETWORK_LOGS`.
+- **Session stuck / Local tunnel errors** – we don’t start BrowserStack Local automatically; if your app needs
+  localhost access, configure it in your app under test (or CI) and re‑run.
+
+---
+
+## Contributing
+
+See [contributing.md](contributing.md) for how to develop and run the project locally. We welcome issues and PRs that
+improve the preset, the BrowserStack provider, or the example.
 
 ---
 
 ## License
 
-MIT
+MIT © FingerprintJS, Inc.
