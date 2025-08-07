@@ -14,6 +14,15 @@ function abbrevSha(input?: string) {
   return input ? input.slice(0, 7) : undefined
 }
 
+export function parseCsvEnv(name: string): string[] | null {
+  const raw = process.env[name]
+  if (!raw) return null
+  return raw
+    .split(',')
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean)
+}
+
 export function envMeta(projectName: string) {
   const branch =
     process.env.GITHUB_REF_NAME ||
