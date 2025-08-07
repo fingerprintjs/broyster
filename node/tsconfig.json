@@ -1,15 +1,7 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "module": "commonjs",
-    "declaration": true,
-    "importHelpers": true,
-    "outDir": "./dist",
-    "skipLibCheck": true // This fixes tsc failing on `import type { KarmaTypescriptConfig } from 'karma-typescript'`
+    "types": ["node"]
   },
-  "include": [
-    "src/index_browser.ts",
-    "src/index_node.ts",
-    "src/**/*.d.ts"
-  ]
+  "include": ["src"]
 }

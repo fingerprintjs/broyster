@@ -1,15 +1,18 @@
+import { describe, expect, it } from 'vitest'
+
 let number = 0
-describe('Running', () => {
-  describe('a failing test', () => {
-    it('will retry up to 3 times', () => {
-      number++
-      expect(number).toBe(3)
-    })
+
+describe('Retry behavior', () => {
+  it('will retry up to 3 times', { retry: 3 }, () => {
+    number++
+    expect(number).toBe(3)
   })
 
-  describe('a pending test', () => {
-    it('will not be retried', () => {
-      pending('this should not fail the run')
-    })
+  it('runs without retry and passes', () => {
+    expect(true).toBe(true)
+  })
+
+  it.skip('will not be retried', () => {
+    // This test is intentionally skipped
   })
 })

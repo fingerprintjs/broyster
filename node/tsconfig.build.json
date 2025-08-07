@@ -1,0 +1,16 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "module": "ES2022",
+    "target": "ES2022",
+    "moduleResolution": "Bundler",
+    "declaration": true,
+    "emitDeclarationOnly": false,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "sourceMap": true
+  },
+  "include": ["src/**/*.ts"]
+}
