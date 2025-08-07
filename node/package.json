@@ -2,20 +2,16 @@
   "name": "@fpjs-incubator/broyster",
   "description": "Unified test tools (Vitest + WebdriverIO + BrowserStack)",
   "version": "1.0.0",
-  "bin": {
-    "broyster": "./bin/broyster.js"
-  },
   "bugs": "https://github.com/fingerprintjs/broyster/issues",
   "dependencies": {
-    "browserstack-local": "^1.5.8",
     "tslib": "^2.8.1"
   },
   "devDependencies": {
-    "vitest": "^3.2.4",
     "@types/node": "^24.2.0",
     "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
   },
   "engines": {
     "node": ">=18"
@@ -25,10 +21,6 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./wdio": {
-      "types": "./dist/wdio/wdio.d.ts",
-      "import": "./dist/wdio/wdio.js"
-    },
     "./vitest": {
       "types": "./dist/vitest/preset.d.ts",
       "import": "./dist/vitest/preset.js"
@@ -36,33 +28,35 @@
   },
   "files": [
     "dist",
-    "bin",
     "README.md",
     "LICENSE"
   ],
   "homepage": "https://github.com/fingerprintjs/broyster",
-  "keywords": [
-    "browserstack",
-    "test",
-    "tools",
-    "vitest",
-    "webdriverio"
-  ],
   "license": "MIT",
   "main": "./dist/index.js",
+  "optionalDependencies": {
+    "browserstack-local": "^1.5.8"
+  },
   "peerDependencies": {
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "webdriverio": "^9.0.0"
   },
   "peerDependenciesMeta": {
     "vitest": {
       "optional": true
+    },
+    "webdriverio": {
+      "optional": true
     }
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "repository": "fingerprintjs/broyster.git",
   "scripts": {
     "build": "rimraf dist && tsc -p tsconfig.build.json",
     "dev": "tsc -p tsconfig.build.json --watch",
-    "prepack": "cp ../LICENSE LICENSE"
+    "prepublishOnly": "cp ../LICENSE LICENSE && npm run build"
   },
   "sideEffects": false,
   "type": "module",
