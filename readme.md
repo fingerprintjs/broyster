@@ -9,11 +9,12 @@
 
 **Broyster** is a small toolkit to standardize testing across projects:
 
-- **Unit tests** via **Vitest** (browser-like with `jsdom` or pure `node`)
-- **Cross-browser E2E** via **WebdriverIO** (WDIO) on **BrowserStack**
-- A minimal **CLI** (`broyster`) that runs WDIO and auto-registers a TS runtime (prefers `tsx`, falls back to `ts-node`)
+- **Unit & integration tests** via **Vitest** in **real browsers** (local or remote)
+- **Cross-browser E2E** using **WebdriverIO** (WDIO) with **BrowserStack**
+- A **Vitest provider** that merges WDIO's BrowserStack service into Vitest's `browser` mode — no jsdom here
+- Optional **BrowserStack Local** tunnel management with auto-start/stop for local testing
 
-This is the **vNext** refactor away from Karma/Selenium to **Vitest + WDIO**.
+This is the **vNext** refactor away from Karma/Selenium to **Vitest + WDIO (browser mode)**.
 
 ---
 
@@ -21,11 +22,11 @@ This is the **vNext** refactor away from Karma/Selenium to **Vitest + WDIO**.
 
 - **[`node/`](./node)** — published as [`@fpjs-incubator/broyster`](https://npmjs.com/package/@fpjs-incubator/broyster)
   Exposes:
-    - `@fpjs-incubator/broyster/vitest` → a tiny Vitest preset
-    - `@fpjs-incubator/broyster/wdio` → helpers for WDIO configs (`makeWdioConfig`, `makeBrowserMatrix`, `enableLocal`)
-    - CLI: `broyster`
+    - `@fpjs-incubator/broyster/vitest` → Vitest preset for local or BrowserStack runs
+    - Internal helpers for BrowserStack provider integration
+    - CLI: `broyster` (legacy WDIO runner, may be removed in future)
 
-- **[`example_project/`](./example_project)** — minimal usage of both Vitest and WDIO
+- **[`example_project/`](./example_project)** — minimal usage example for the Vitest + BrowserStack setup
 
 ---
 
@@ -36,19 +37,19 @@ Requirements: **Node 18+** (Node 20+ recommended). Use **bun** or Yarn Berry —
 ```bash
 # at repo root
 bun install
-bun run build              # builds the package and the example
+bun run build              # builds the package and the example project
 ```
 
 Run the example tests:
 
 ```bash
-# Unit tests (Vitest)
-bun run test               # runs example_project tests locally
+# Local browser run (Chrome by default)
+bun run test               # runs example_project tests in a real local browser
 
-# E2E on BrowserStack (needs credentials)
+# Remote on BrowserStack (needs credentials)
 export BROWSERSTACK_USERNAME=your-username
 export BROWSERSTACK_ACCESS_KEY=your-access-key
-bun run e2e
+bun run test:bs
 ```
 
 > If you prefer Yarn:
@@ -56,8 +57,8 @@ bun run e2e
 > ```bash
 > yarn install
 > yarn build
-> yarn --cwd example_project test:local
-> BROWSERSTACK_USERNAME=... BROWSERSTACK_ACCESS_KEY=... yarn --cwd example_project test:browserstack
+> yarn --cwd example_project test
+> BROWSERSTACK_USERNAME=... BROWSERSTACK_ACCESS_KEY=... yarn --cwd example_project test:bs
 > ```
 
 ---
@@ -67,7 +68,6 @@ bun run e2e
 Install:
 
 ```bash
-# pick your tool
 npm i -D @fpjs-incubator/broyster
 # or
 yarn add -D @fpjs-incubator/broyster
@@ -83,14 +83,35 @@ bun add -d @fpjs-incubator/broyster
 import { defineConfig } from 'vitest/config'
 import { vitestPreset } from '@fpjs-incubator/broyster/vitest'
 
-export default defineConfig({
-    ...vitestPreset({
+export default defineConfig(
+    vitestPreset({
         projectName: 'MyProject',
-        includeFiles: ['src/**/*.ts', 'tests/**/*.ts'],
-        environment: 'jsdom', // or 'node'
+        includeFiles: ['**/*.{test,spec}.ts?(x)'],
         retries: 2,
+        globals: true,
+        watch: false,
+        browser: {
+            enabled: true,
+            provider: 'webdriverio', // or auto-switched to our BrowserStack provider if env vars set
+            instances: [
+                {
+                    browser: 'chrome',
+                    capabilities: {
+                        browserVersion: 'latest',
+                        'bstack:options': { os: 'Windows', osVersion: '11' },
+                    },
+                },
+                {
+                    browser: 'firefox',
+                    capabilities: {
+                        browserVersion: 'latest',
+                        'bstack:options': { os: 'Windows', osVersion: '11' },
+                    },
+                },
+            ],
+        },
     }),
-})
+)
 ```
 
 Scripts:
@@ -99,104 +120,54 @@ Scripts:
 {
     "scripts": {
         "test": "vitest run",
-        "test:watch": "vitest"
+        "test:watch": "vitest",
+        "test:bs": "BROWSERSTACK=1 vitest run"
     }
 }
 ```
 
-### 2) WebdriverIO (BrowserStack) config
-
-`wdio.conf.ts` (TypeScript):
-
-```ts
-import { makeWdioConfig, makeBrowserMatrix } from '@fpjs-incubator/broyster/wdio'
-import { createRequire } from 'node:module'
-
-const req = createRequire(import.meta.url)
-
-export const config = makeWdioConfig({
-    projectName: 'MyProject',
-    specs: ['./e2e/**/*.spec.ts'],
-    maxInstances: 3,
-    matrix: makeBrowserMatrix(['chrome', 'firefox', 'safari']),
-    timeoutMs: 120_000,
-})
-
-// Register a TS runtime for WDIO/Mocha workers
-config.mochaOpts = {
-    ...(config.mochaOpts as any),
-    // Prefer tsx; falls back to ts-node if you want
-    require: [req.resolve('tsx/dist/register.mjs')],
-}
-
-// Optionally enable BrowserStack Local when testing localhost
-// import { enableLocal } from '@fpjs-incubator/broyster/wdio'
-// enableLocal(config) // adds forcedStop + unique localIdentifier
-```
-
-Scripts:
-
-```json
-{
-    "scripts": {
-        "e2e": "broyster --config wdio.conf.ts"
-    }
-}
-```
-
-Set credentials (CI or local shell):
+### 2) Environment variables for BrowserStack
 
 ```bash
 export BROWSERSTACK_USERNAME=your-username
 export BROWSERSTACK_ACCESS_KEY=your-access-key
+# Optional toggles
+export BS_DEBUG=1
+export BS_NETWORK_LOGS=1
+export BS_CONSOLE_LOGS=info
 ```
-
-> **Note:** The `broyster` CLI tries to register a TS runtime automatically.
->
-> - Prefer `tsx` (`bun add -d tsx`)
-> - Or use `ts-node` (`npm i -D ts-node`) and swap the `require` path in `mochaOpts`.
 
 ---
 
 ## Helpers
 
+We expose some utility functions internally (for the preset and provider), such as:
+
 ```ts
-import { makeBrowserMatrix, enableLocal } from '@fpjs-incubator/broyster/wdio'
+import { envMeta, boolEnv, strEnv } from '@fpjs-incubator/broyster/vitest/utils'
 
-// Build a browser matrix quickly
-const caps = makeBrowserMatrix(['chrome', 'firefox', 'safari'], {
-    'bstack:options': { projectName: 'MyProject' },
-})
-
-// Turn on BrowserStack Local with forced cleanup and a unique id
-enableLocal(config, { id: 'my-local-tunnel' })
+const { buildName, buildIdentifier, tags } = envMeta('MyProject')
 ```
 
 ---
 
 ## Troubleshooting
 
-- **“pattern ./dist-e2e/**/\*.spec.js did not match any file”\*\*
-  If you compile TS before running WDIO, point `specs` at your compiled output. In this repo we run TS directly (via
-  `tsx`), so `specs` targets `./e2e/**/*.spec.ts`.
+- **Tests run in jsdom instead of real browser**
+  Ensure your `vitest.config.ts` uses `browser` config, not `environment: 'jsdom'`.
 
-- **`Cannot find module '.../tsx/register'`**
-  Use `tsx/dist/register.mjs` (modern export), or switch to `ts-node/register/transpile-only`.
+- **BrowserStack Local tunnel issues**
+  We auto-stop tunnels on `SIGINT`/`SIGTERM`. If ports conflict, stop old processes or set a unique `localIdentifier`.
 
-- **BrowserStack Local port in use / “another local client is running”**
-  You likely have a stuck tunnel. Either disable Local in the config or run `enableLocal(config)` (sets `forcedStop`)
-  and avoid parallel runs with a conflicting port.
-
-- **WDIO type errors around capabilities**
-  WDIO v9’s d.ts may vary. Broyster’s helpers avoid tight coupling to internal types; if you still see noise, ensure
-  your consumer’s `typescript` is ≥ 5.4 and `@wdio/*` packages are aligned.
+- **WDIO type errors**
+  Align your `@wdio/*` versions with Vitest's expectations, or loosen consumer TS checks.
 
 ---
 
 ## Contributing
 
 See [contributing.md](contributing.md) for how to develop and run the project locally.
-We welcome issues and PRs that improve the preset, the WDIO helpers, or the example.
+We welcome issues and PRs that improve the preset, provider, or examples.
 
 ---
 
