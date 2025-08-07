@@ -1,7 +1,7 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "types": ["node", "webdriverio"]
+    "types": ["node", "@vitest/browser/providers/webdriverio"]
   },
   "include": ["src"]
 }
