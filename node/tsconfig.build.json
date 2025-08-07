@@ -9,7 +9,8 @@
     "declaration": true,
     "emitDeclarationOnly": false,
     "skipLibCheck": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "sourceMap": true
   },
   "include": ["src/**/*.ts"]
 }
