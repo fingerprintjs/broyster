@@ -7,7 +7,7 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "types": ["node", "vitest/globals", "webdriverio"],
+    "types": ["vitest", "@wdio/globals/types"],
     "noEmit": true
   },
   "include": ["src", "tests", "vitest.config.ts"]
