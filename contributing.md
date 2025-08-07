@@ -34,24 +34,21 @@ on [contributing to a project](https://docs.github.com/en/get-started/exploring-
 - Keep changes focused—avoid unrelated edits.
 - Minimize new dependencies unless necessary.
 - Prefer backward compatibility for the published package.
-
-If you’re unsure about an approach, please start a discussion first.
+- If unsure about an approach, please start a discussion first.
 
 ### Helping with existing issues
 
 Browse [help wanted](https://github.com/fingerprintjs/broyster/labels/help%20wanted). You can share context, reduce
-repros, or pick one up and open a PR. Ask questions in the issue if something is unclear.
+repro steps, or pick one up and open a PR. Ask questions in the issue if something is unclear.
 
 ---
 
 ## Working with code
 
-This section covers local setup and verifying changes.
-
 ### Requirements
 
 - **Node.js 18+** (Node 20+ recommended)
-- **bun** or **Yarn Berry** (examples below use bun)
+- **bun** or **Yarn Berry** (examples use bun)
 - **Git**
 
 ### Setup
@@ -70,13 +67,13 @@ We use **ESLint** + **Prettier**.
 # Lint
 bun run lint
 
-# Auto-fix (not everything is auto-fixable)
+# Auto-fix
 bun run lint:fix
 ```
 
 ### Building
 
-Build the published package (`node/`) and the example:
+Build the published package (`node/`) and the example project:
 
 ```bash
 bun run build          # builds node/ then example_project/
@@ -88,12 +85,13 @@ The distributables for the package are written to `node/dist`.
 
 ### Testing
 
-This repo contains an example that exercises both **Vitest** (unit) and **WDIO + BrowserStack** (E2E).
+This repo contains an example that exercises both **Vitest browser mode** (unit) and **WebdriverIO + BrowserStack** (
+E2E).
 
 **Unit tests (Vitest):**
 
 ```bash
-bun run test           # runs example_project tests locally
+bun run test           # runs example_project tests locally in browser mode
 ```
 
 **E2E tests on BrowserStack:**
@@ -102,31 +100,28 @@ bun run test           # runs example_project tests locally
 # set your credentials
 export BROWSERSTACK_USERNAME=your-username
 export BROWSERSTACK_ACCESS_KEY=your-access-key
+export BROWSERSTACK=1
 
-# run the E2E matrix via the broyster CLI
-bun run e2e
+# run the E2E matrix via the broyster preset
+bun run test
 ```
 
-> The CLI auto-registers a TS runtime for WDIO. It prefers `tsx`; if you use `ts-node` instead, adjust the example
-> accordingly.
+By default, `localIdentifier` is automatically generated per run to prevent port clashes across multiple E2E sessions.
 
 ---
 
 ## Pitfalls & tips
 
 - **BrowserStack Local tunnel**
-    - Running multiple E2E processes can clash on the Local port. If you need Local, use the helper
-      `enableLocal(config)` (adds `forcedStop` and a unique id). If you don’t need Local, disable it.
-    - If you see `Either another browserstack local client is running...`, stop other tunnels or choose a different
-      port.
+    - Automatically enabled in remote mode with unique `localIdentifier`.
+    - If you don’t need Local, disable it in your BrowserStack capabilities.
 
 - **Spec discovery**
-    - If you compile TS to JS and then run WDIO on the output, point `specs` to your built files. In the example, we run
-      `.ts` specs directly via `tsx`.
+    - Vitest browser mode runs `.ts` specs directly; no need for a separate TS runtime.
 
 - **TypeScript in WDIO**
-    - WDIO v9 types can be strict. The helpers exported by Broyster avoid coupling to internal types; align `@wdio/*`
-      versions and `typescript` ≥ 5.4.
+    - WDIO v9 types can be strict. Broyster avoids direct dependency on them; align `@wdio/*` versions and
+      `typescript` ≥ 5.4.
 
 - **Flaky sessions**
     - Remote grids can be flaky. Re-run jobs when failures aren’t attributable to your tests.
@@ -135,8 +130,7 @@ bun run e2e
 
 ## Continuous Integration
 
-If you add CI, remember to set `BROWSERSTACK_USERNAME` and `BROWSERSTACK_ACCESS_KEY` as secrets. A simple GitHub Actions
-step can:
+If you add CI, remember to set `BROWSERSTACK_USERNAME` and `BROWSERSTACK_ACCESS_KEY` as secrets. Example GitHub Actions:
 
 ```yaml
 - run: bun run build
@@ -144,7 +138,8 @@ step can:
 - env:
       BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
       BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-  run: bun run e2e
+      BROWSERSTACK: 1
+  run: bun run test
 ```
 
 ---
