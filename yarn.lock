@@ -819,10 +819,10 @@ browserslist@^4.21.9:
     node-releases "^2.0.13"
     update-browserslist-db "^1.0.13"
 
-browserstack-local@^1.5.5:
-  version "1.5.5"
-  resolved "https://registry.yarnpkg.com/browserstack-local/-/browserstack-local-1.5.5.tgz#f36b625f3b8bfd053f673d85fd1082f2d0759693"
-  integrity sha512-jKne7yosrMcptj3hqxp36TP9k0ZW2sCqhyurX24rUL4G3eT7OLgv+CSQN8iq5dtkv5IK+g+v8fWvsiC/S9KxMg==
+browserstack-local@^1.5.9:
+  version "1.5.9"
+  resolved "https://registry.yarnpkg.com/browserstack-local/-/browserstack-local-1.5.9.tgz#50696df69e82e351f27a566c8e9ab4c1d5144e4f"
+  integrity sha512-p8H3alMqUK9lq8JHhsDdZ4tpnSgbHyRyKnZu9U+9p7XzR/SpvTm/zkfsSJsnUZBoiYFe+B1VaGZ4cL5f2ya6mw==
   dependencies:
     agent-base "^6.0.2"
     https-proxy-agent "^5.0.1"
