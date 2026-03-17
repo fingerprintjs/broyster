@@ -34,12 +34,13 @@ jobs:
       - name: Install Node packages
         run: yarn install
       - name: Build
-        run: yarn build
+        run: cd node && yarn build
       - name: Publish to NPM
         # This command will automatically fail because of some common mistakes (this is a wanted behavior):
         # - The current version is already published
         # - The package uses a local directory as a dependency
         run: |
+          cd node
           version=$(node -p "require('./package.json').version")
           tag=$(echo "$version" | grep -oP '(?<=-)[^.]+' || echo "latest")
           echo "Publishing version $version with tag: $tag"
