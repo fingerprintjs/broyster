@@ -193,32 +193,32 @@ const firefoxIncognitoCapabilities = {
  * https://www.browserstack.com/docs/automate/javascript-testing/configure-test-run-options
  * The keys are arbitrary values.
  *
- * Only Chrome is supported on Android, only Safari is supported on iOS: https://www.browserstack.com/question/659
+ * Only Chrome and Samsung is supported on Android, only Safari is supported on iOS: https://www.browserstack.com/question/659
+ * Brave follows the Chromium support policy, but BrowserStack isn't configured with a dedicated Brave launcher here.
  */
 /* eslint-disable max-len */
 // prettier-ignore
 const browserstackBrowsers = {
-  Windows10_Chrome73: { platform: 'Windows', osVersion: '10', browserName: 'Chrome', browserVersion: '73', useHttps: true },
-  // Windows10_Chrome73_Incognito: { platform: 'Windows', osVersion: '10', browserName: 'Chrome', browserVersion: '73', ...chromeIncognitoCapabilities },
+  Windows10_Chrome100: { platform: 'Windows', osVersion: '10', browserName: 'Chrome', browserVersion: '100', useHttps: true },
+  // Windows10_Chrome100_Incognito: { platform: 'Windows', osVersion: '10', browserName: 'Chrome', browserVersion: '100', ...chromeIncognitoCapabilities },
   Windows11_ChromeLatest: { platform: 'Windows', osVersion: '11', browserName: 'Chrome', browserVersion: 'latest-beta', useHttps: true },
   // Windows11_ChromeLatest_Incognito: { platform: 'Windows', osVersion: '11', browserName: 'Chrome', browserVersion: 'latest-beta, ...chromeIncognitoCapabilities },
-  Windows10_Firefox89: { platform: 'Windows', osVersion: '10', browserName: 'Firefox', browserVersion: '89', useHttps: true, firefoxCapabilities: [['security.csp.enable', true] as [string, boolean]] }, // CSP is off by default in Firefox ≤98
-  // Windows10_Firefox89_Incognito: { platform: 'Windows', osVersion: '10', browserName: 'Firefox', browserVersion: '89', ...firefoxIncognitoCapabilities },
+  Windows10_Firefox115: { platform: 'Windows', osVersion: '10', browserName: 'Firefox', browserVersion: '115', useHttps: true },
+  // Windows10_Firefox115_Incognito: { platform: 'Windows', osVersion: '10', browserName: 'Firefox', browserVersion: '115', ...firefoxIncognitoCapabilities },
   Windows11_FirefoxLatest: { platform: 'Windows', osVersion: '11', browserName: 'Firefox', browserVersion: 'latest-beta', useHttps: true },
   // Windows11_FirefoxLatest_Incognito: { platform: 'Windows', osVersion: '11', browserName: 'Firefox', browserVersion: 'latest-beta, ...firefoxIncognitoCapabilities },
+  Windows10_Edge105: { platform: 'Windows', osVersion: '10', browserName: 'Edge', browserVersion: '105', useHttps: true },
   Windows11_EdgeLatest: { platform: 'Windows', osVersion: '11', browserName: 'Edge', browserVersion: 'latest-beta', useHttps: true },
-  'OSX10.15_Safari13': { platform: 'OS X', osVersion: 'Catalina', browserName: 'Safari', browserVersion: '13', useHttps: true },
   OSX12_Safari15: { platform: 'OS X', osVersion: 'Monterey', browserName: 'Safari', browserVersion: '15', useHttps: false },
   OSX15_Safari18: { platform: 'OS X', osVersion: 'Sequoia', browserName: 'Safari', browserVersion: '18', useHttps: false },
-  OSX15_ChromeLatest: { platform: 'OS X', osVersion: 'Sequoia', browserName: 'Chrome', browserVersion: 'latest-beta', useHttps: true },
-  // OSX15_ChromeLatest_Incognito: { platform: 'OS X', osVersion: 'Sequoia', browserName: 'Chrome', browserVersion: 'latest-beta, ...chromeIncognitoCapabilities },
-  OSX15_FirefoxLatest: { platform: 'OS X', osVersion: 'Sequoia', browserName: 'Firefox', browserVersion: 'latest-beta', useHttps: true },
-  // OSX15_FirefoxLatest_Incognito: { platform: 'OS X', osVersion: 'Sequoia', browserName: 'Firefox', browserVersion: 'latest-beta, ...firefoxIncognitoCapabilities },
-  OSX15_EdgeLatest: { platform: 'OS X', osVersion: 'Sequoia', browserName: 'Edge', browserVersion: 'latest-beta', useHttps: true },
-  Android14_ChromeLatest: { platform: 'Android', osVersion: '14.0', browserName: 'Chrome', browserVersion: 'latest-beta', useHttps: true, flags: [BrowserFlags.MobileUserAgent] },
-  Android14_SamsungLatest: { platform: 'Android', osVersion: '14.0', browserName: 'Samsung', browserVersion: 'latest-beta', useHttps: true, flags: [BrowserFlags.MobileUserAgent] },
-  iOS13_Safari: { platform: 'iOS', osVersion: '13', browserName: 'Safari', useHttps: true, flags: [BrowserFlags.MobileUserAgent] },
-  iOS14_Safari: { platform: 'iOS', osVersion: '14', browserName: 'Safari', useHttps: true, flags: [BrowserFlags.MobileUserAgent] },
+  OSX26_ChromeLatest: { platform: 'OS X', osVersion: 'Tahoe', browserName: 'Chrome', browserVersion: 'latest-beta', useHttps: true },
+  // OSX26_ChromeLatest_Incognito: { platform: 'OS X', osVersion: 'Tahoe', browserName: 'Chrome', browserVersion: 'latest-beta, ...chromeIncognitoCapabilities },
+  OSX26_FirefoxLatest: { platform: 'OS X', osVersion: 'Tahoe', browserName: 'Firefox', browserVersion: 'latest-beta', useHttps: true },
+  // OSX26_FirefoxLatest_Incognito: { platform: 'OS X', osVersion: 'Tahoe', browserName: 'Firefox', browserVersion: 'latest-beta, ...firefoxIncognitoCapabilities },
+  OSX26_EdgeLatest: { platform: 'OS X', osVersion: 'Tahoe', browserName: 'Edge', browserVersion: 'latest-beta', useHttps: true },
+  OSX26_SafariLatest: { platform: 'OS X', osVersion: 'Tahoe', browserName: 'Safari', browserVersion: '26', useHttps: true },
+  Android16_ChromeLatest: { platform: 'Android', osVersion: '16.0', browserName: 'Chrome', browserVersion: 'latest-beta', useHttps: true, flags: [BrowserFlags.MobileUserAgent] },
+  Android16_SamsungLatest: { platform: 'Android', osVersion: '16.0', browserName: 'Samsung', browserVersion: 'latest-beta', useHttps: true, flags: [BrowserFlags.MobileUserAgent] },
   iOS15_Safari: { platform: 'iOS', osVersion: '15', browserName: 'Safari', useHttps: true, flags: [BrowserFlags.MobileUserAgent] },
   iOS16_Safari: { platform: 'iOS', osVersion: '16', browserName: 'Safari', useHttps: true, flags: [BrowserFlags.MobileUserAgent] },
   iOS17_Safari: { platform: 'iOS', osVersion: '17', browserName: 'Safari', useHttps: true, flags: [BrowserFlags.MobileUserAgent] },
