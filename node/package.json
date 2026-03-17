@@ -1,14 +1,14 @@
 {
   "name": "@fpjs-incubator/broyster",
   "description": "Test tools",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "keywords": [
     "test",
     "tools",
     "karma",
     "browserstack"
   ],
-  "author": "FingerprintJS, Inc (https://fingerprint.com)",
+  "author": "Fingerprint, Inc (https://fingerprint.com)",
   "license": "MIT",
   "repository": {
     "type": "git",
