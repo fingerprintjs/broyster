@@ -1,51 +1,25 @@
-import * as edge from 'selenium-webdriver/edge'
-import * as firefox from 'selenium-webdriver/firefox'
-import * as safari from 'selenium-webdriver/safari'
-import * as chrome from 'selenium-webdriver/chrome'
-import * as webdriver from 'selenium-webdriver'
-import { BrowserStackSessionCapabilities } from './browserstack_session_capabilities'
+import { Builder, type WebDriver } from 'selenium-webdriver'
 
-export type FirefoxProfile = ReadonlyArray<readonly [string, string | number | boolean]>
+import type { BrowserStackCredentials } from './credentials'
+import { BROWSERSTACK_HUB } from './constants'
 
-export class WebDriverFactory {
-  private static browserStackUrl = 'https://hub-cloud.browserstack.com/wd/hub'
+export async function createWebDriver(
+  capabilities: Record<string, unknown>,
+  credentials: BrowserStackCredentials,
+): Promise<WebDriver> {
+  const bstackOptions = (capabilities['bstack:options'] as Record<string, unknown>) || {}
 
-  static async createFromOptions(
-    options: webdriver.Capabilities,
-    sessionCapabilities: BrowserStackSessionCapabilities,
-    firefoxProfile?: FirefoxProfile,
-  ) {
-    const url = this.browserStackUrl
-    const builder = new webdriver.Builder().usingServer(url)
-    switch (options.getBrowserName()?.toLowerCase()) {
-      case 'firefox': {
-        const firefoxOptions = options as firefox.Options
+  const driver = await new Builder()
+    .usingServer(BROWSERSTACK_HUB)
+    .withCapabilities({
+      ...capabilities,
+      'bstack:options': {
+        ...bstackOptions,
+        userName: credentials.username,
+        accessKey: credentials.accessKey,
+      },
+    })
+    .build()
 
-        if (firefoxProfile) {
-          for (let index = 0; index < firefoxProfile.length; index++) {
-            const preference = firefoxProfile[index]
-            firefoxOptions.setPreference(preference[0], preference[1])
-          }
-        }
-
-        builder.setFirefoxOptions(firefoxOptions)
-        break
-      }
-      case 'edge': {
-        builder.setEdgeOptions(options as edge.Options)
-        break
-      }
-      case 'chrome':
-      case 'samsung': {
-        builder.setChromeOptions(options as chrome.Options)
-        break
-      }
-      case 'safari': {
-        builder.setSafariOptions(options as safari.Options)
-        break
-      }
-    }
-    const driver = await builder.withCapabilities(sessionCapabilities).build()
-    return driver
-  }
+  return driver
 }

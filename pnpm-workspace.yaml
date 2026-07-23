@@ -1,0 +1,11 @@
+packages:
+  - 'node'
+  - 'example_project'
+
+# pnpm 11: project settings live here (not package.json "pnpm" field)
+autoInstallPeers: true
+strictPeerDependencies: false
+onlyBuiltDependencies:
+  - esbuild
+allowBuilds:
+  esbuild: true

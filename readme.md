@@ -7,34 +7,58 @@
   <a href="https://www.npmjs.com/package/@fpjs-incubator/broyster"><img src="https://img.shields.io/npm/v/@fpjs-incubator/broyster.svg" alt="Current NPM version"></a>
 </p>
 
-Broyster gives you the ability to run your Karma tests in Browserstack using Selenium WebDriver as the means to execute the tests, as opposed to the regular tunnel for JS testing, giving you more flexibility in creating your test setup.
-It also comes with a Jasmine retry mechanism to help you combat flaky tests so that you can rely on your tests more.
+Broyster helps you run **Vitest browser tests** on **local browsers** and **BrowserStack**, with queue management, session status reporting, and multi-browser orchestration.
 
 Project structure:
 
-- [node](node) — test tools for Node.js projects.
-    Published as an [@fpjs-incubator/broyster](https://npmjs.com/package/@fpjs-incubator/broyster) Node package.
-- [example_project](example_project) — an example project that uses the testing tools.
+- [node](node) — published as [@fpjs-incubator/broyster](https://npmjs.com/package/@fpjs-incubator/broyster)
+- [example_project](example_project) — usage example
 
 ## Quick start
 
-Make sure you have Node.js 16 or newer and Yarn installed.
+Requires [Node.js](https://nodejs.org) 18+ and [pnpm](https://pnpm.io) 9+.
 
 ```bash
-yarn install
-yarn --cwd node build:watch
+pnpm install
+pnpm build
 ```
-
-Open a new terminal tab and run:
 
 ```bash
-# Run example tests in local browsers
-yarn --cwd example_project test:local
+# Local browsers (Playwright)
+pnpm playwright:install
+pnpm test:local
 
-# Or run example tests on BrowserStack
-# For Linux, macOS and WSL (Linux on Windows)
-BROWSERSTACK_USERNAME=your-username BROWSERSTACK_ACCESS_KEY=your-key yarn --cwd example_project test:browserstack
+# BrowserStack (requires credentials + browserstack-local)
+BROWSERSTACK_USERNAME=your-username BROWSERSTACK_ACCESS_KEY=your-key \
+  pnpm test:browserstack
 ```
+
+### Consumer setup
+
+```ts
+// vitest.config.ts
+import { makeVitestConfigurator } from '@fpjs-incubator/broyster'
+
+export default makeVitestConfigurator({
+  projectName: 'My project',
+  include: ['src/**/*.test.ts'],
+})
+```
+
+```bash
+# Local
+vitest run --config vitest.config.ts
+
+# All BrowserStack browsers (parallel processes + BrowserStack Local)
+BROWSERSTACK_USERNAME=… BROWSERSTACK_ACCESS_KEY=… \
+  broyster-vitest --config vitest.config.ts --concurrency 5
+```
+
+Peer dependencies: `vitest`, `@vitest/browser`.  
+Local preset: `@vitest/browser-playwright`, `playwright`.  
+HTTPS BrowserStack browsers: `@vitejs/plugin-basic-ssl`.
+
+See [node/readme.md](node/readme.md) for the full API.
 
 ## Contributing
 

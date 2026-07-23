@@ -53,13 +53,13 @@ Feel free to ask questions in the issues if you need more details.
 
 This section describes how to deploy the repository locally, make changes to the code, and verify your work.
 
-First, make sure you have [Git](https://git-scm.com), [Node.js](https://nodejs.org) and [Yarn](https://yarnpkg.com) installed.
+First, make sure you have [Git](https://git-scm.com), [Node.js](https://nodejs.org) 18+ and [pnpm](https://pnpm.io) 9+ installed.
 Then clone the repository and install the dependencies:
 
 ```bash
 git clone https://github.com/fingerprintjs/broyster.git
 cd broyster
-yarn install
+pnpm install
 ```
 
 ### Code style
@@ -69,14 +69,14 @@ The code style is controlled by [ESLint](https://eslint.org) and [Prettier](http
 Run to check that the code style is ok:
 
 ```bash
-yarn lint
+pnpm lint
 ```
 
 You aren't required to run the check manually, the CI will do it.
 Run this to fix code style mistakes (not all mistakes can be fixed automatically):
 
 ```bash
-yarn lint:fix
+pnpm lint:fix
 ```
 
 ### How to build
@@ -85,18 +85,19 @@ To build the distribution files of the Node package, run:
 
 ```bash
 # Build once:
-yarn --cwd node build
+pnpm build
 
 # Or build once and then rebuild when the code changes:
-yarn --cwd node build:watch
+pnpm --filter @fpjs-incubator/broyster build:watch
 ```
 
 The files will be saved to the `node/dist` directory.
 
 ### Pitfalls
 
-The project uses Karma and Jasmine, which means not everything is in our control.
-For some problems you will need to dig into Karma or Jasmine to figure out if and how you can work around it.
+The project uses Vitest browser mode and BrowserStack Local.
+Safari/iOS sessions use HTTP on Local (self-signed HTTPS breaks Vitest’s browser WebSocket handshake).
+For some problems you may need to dig into Vitest browser mode or BrowserStack documentation.
 
 ### How to test
 
@@ -104,20 +105,22 @@ The repository contains an [example project](example_project) that contains test
 To run the tests in a browser on your machine, build the project:
 
 ```bash
-yarn --cwd node build:watch
+pnpm build
+# Install Playwright browsers once:
+pnpm playwright:install
 ```
 
-and run in a separate terminal tab or window:
+and run:
 
 ```bash
-yarn --cwd example_project test:local
+pnpm test:local
 ```
 
 To run the tests in browsers on [BrowserStack](https://www.browserstack.com), get a BrowserStack access key and run:
 
 ```bash
 # For Linux, macOS and WSL (Linux on Windows)
-BROWSERSTACK_USERNAME=your-username BROWSERSTACK_ACCESS_KEY=your-key yarn --cwd example_project test:browserstack
+BROWSERSTACK_USERNAME=your-username BROWSERSTACK_ACCESS_KEY=your-key pnpm test:browserstack
 ```
 
 If you face `Error: spawn Unknown system error -86` on macOS, try installing Rosetta:

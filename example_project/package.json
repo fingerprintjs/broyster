@@ -3,14 +3,18 @@
   "name": "example_project",
   "version": "0.0.1",
   "scripts": {
-    "test:local": "karma start --preset local --single-run",
-    "test:browserstack": "karma start --preset browserstack --single-run"
+    "test:local": "vitest run --config vitest.config.ts",
+    "test:browserstack": "broyster-vitest --config vitest.config.ts",
+    "test:browserstack:filter": "broyster-vitest --config vitest.config.ts --filter Chrome"
   },
   "devDependencies": {
-    "@fpjs-incubator/broyster": "*",
-    "@types/jasmine": "^3.10.7",
+    "@fpjs-incubator/broyster": "workspace:*",
     "@types/ua-parser-js": "^0.7.36",
-    "karma": "^6.4.1"
+    "@vitejs/plugin-basic-ssl": "^2.1.0",
+    "@vitest/browser": "^4.1.5",
+    "@vitest/browser-playwright": "^4.1.5",
+    "playwright": "^1.52.0",
+    "vitest": "^4.1.5"
   },
   "dependencies": {
     "ua-parser-js": "^1.0.33"
