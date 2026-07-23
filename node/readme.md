@@ -1,142 +1,229 @@
 # Broyster Node.js tools
 
+Runs [Vitest browser mode](https://vitest.dev/guide/browser/) tests on real browsers in
+[BrowserStack](https://www.browserstack.com).
+
 ```bash
-npm install --save-dev @fpjs-incubator/broyster
+npm install --save-dev @fpjs-incubator/broyster vitest @vitest/browser
 # or
-yarn add --dev @fpjs-incubator/broyster
+pnpm add --save-dev @fpjs-incubator/broyster vitest @vitest/browser
 ```
 
-```js
-import * as broysterForBrowser from '@fpjs-incubator/broyster/browser'
-import * as broysterForNode from '@fpjs-incubator/broyster/node'
+Requires Node.js ≥ 20. `vitest` and `@vitest/browser` are peer dependencies.
 
-// ...
-```
+## Quick start
 
-## Usage
+1. Create a Vitest config for BrowserStack runs, e.g. `vitest.browserstack.config.ts`:
 
-This package exports the following:
-
--   `@fpjs-incubator/broyster/node`:
-    -   `karmaPlugin` That can be used for launching and reporting tests.
-    -   `setHttpsAndServerForKarma` That configures karma for HTTP and HTTPS testing without any additional work.
-    -   `BrowserFlags` Is a collection of currently supported browser arguments that are uniformed for convenience (for
-        example: Incognito will add launching the browser in incognito mode for Chrome and Edge, but private mode for Firefox).
-    -   `makeKarmaConfigurator` Makes a function that applies an opinionated full configuration, used by Fingerprint's projects, to Karma.
--   `@fpjs-incubator/broyster/browser`:
-    -   `retryFailedTests` That allows overriding the different behavior of Jasmine specs. The new behavior will retry a failed test up until the maximum specified in the first parameter, with a delay between each such attempt, indicated by the second parameter (in miliseconds). Call this function in the root of any executable file, involved in your testing code, for example, in a Jasmine helper file. Once called, it affects all tests Jasmine runs, even in the other files. For Karma, you can add a file that contains the invocation and point it in your `files`, that way you will not have it tied to one specific test file.
-
-Use `node` exports when using Node.js contexts, like configuring Karma.
-Use `browser` exports when using browser contexts, like Jasmine.
-
-To use mixed HTTP/HTTPS testing, in your Karma config file you need to use:
-
-```js
-import { setHttpsAndServerForKarma } from '@fpjs-incubator/broyster'
-
-setHttpsAndServerForKarma(config)
-```
-
-## Launchers
-
-The launcher provides additional properties:
-_useHttps_ to specify if this launcher is supposed to connect to the HTTPS server (_true_) or not.
-
-```js
-useHttps: true
-```
-
-_deviceType_ is used only on iOS and allows to choose from `iPhone` (default) and `iPad`.
-You don't need to set a specific device name, the launcher chooses a device automatically. Same on Android.
-
-```js
-  Android11_ChromeLatest: {
-    platform: 'iOS',
-    deviceType: 'iPhone',
-    osVersion: '17',
-    browserName: 'Safari',
-    useHttps: true,
-  },
-```
-
-_firefoxCapabilities_ an array of extra capabilities specifically for Firefox.
-
-```js
-firefoxCapabilities: [
-  ['key', 1],
-  ['key2', true],
-  ['key3', 'value'],
-],
-```
-
-_osVersion_ selects the given OS version and also it's beta counterpart. For example, setting the OS version to `17` will choose either `17` or `17 Beta`.
-
-### Reporters
-
-There is a dedicated reporter that will mark successful tests as passed in BrowserStack.
-
-```js
-config.set({
-  reporters: [...config.reporters, 'BrowserStack'],
-})
-```
-
-### BrowserStack specific settings
-
-The following config options are available inside the browserStack section of the config:
-
--   `idleTimeout`: expressed in miliseconds, specifies the amount of time that BrowserStack is supposed to keep the session alive without any activity before automatically killing it.
-
-### Launcher specific settings
-
-The following config options are available inside the browserStack section of the config:
-
--   `queueTimeout`: expressed in miliseconds, specifies the maximum amount of time to wait for a the BrowserStack queue to free up a slot.
--   `flags`: a unified set of extra arguments that will be passed to the browser. For example passing _incognito_ will apply the relevant seting to the browsers for which the flags were specified (incongnito in Chrome, private mode in Firefox or nothing in the case of Safari). Currently supported flags can be found under the BrowserFlags export. Example:
-
-```js
-  import { BrowserFlags } from '@fpjs-incubator/broyster/node'
-
-  ...
-
-  Incognito_Chrome: {
-    platform: 'Windows',
-    osVersion: '10',
-    browserName: 'Chrome',
-    browserVersion: '57',
-    useHttps: true,
-    flags: [BrowserFlags.Incognito],
-  },
-```
-
-## Full Karma configuration
-
-`makeKarmaConfigurator` is an alternative to creating a Karma configuration from scratch.
-The function creates an opinionated configuration used by Fingerprint's projects, but has few options and easy to use.
-The configuration is aimed to run **TypeScript** tests with **Jasmine**.
-
-Example:
-
-- `karma.conf.ts`
     ```ts
-    import { makeKarmaConfigurator } from '@fpjs-incubator/broyster/node'
+    import { createBrowserStackConfig } from '@fpjs-incubator/broyster/vitest'
 
-    module.exports = makeKarmaConfigurator({
-        projectName: 'My project',
-        includeFiles: ['src/**/*.ts'],
+    export default createBrowserStackConfig({
+      projectName: 'MyProject', // shown in the BrowserStack Automate UI
+      test: {
+        include: ['src/**/*.test.ts'],
+      },
     })
     ```
-- Run tests in browsers on the current machine:
+
+2. Set your BrowserStack credentials and run all browsers of the default catalog:
+
     ```bash
-    karma start --preset local --single-run
-    ```
-- Run tests in browsers, supported by Fingerprint, on BrowserStack:
-    ```bash
-    karma start --preset browserstack --single-run
-    ```
-    Or only beta versions of these browsers:
-    ```bash
-    karma start --preset browserstack-beta --single-run
+    export BROWSERSTACK_USERNAME=your-username
+    export BROWSERSTACK_ACCESS_KEY=your-key
+    npx broyster run --config vitest.browserstack.config.ts
     ```
 
-You can also view [its source code](src/karma_configuration.ts) to see what capabilities the Karma plugin provides.
+The orchestrator spawns one Vitest process per browser, routes each remote browser back to the local
+Vitest server through a transport tunnel, retries failed test files once, classifies every browser as
+`PASS` / `FLAKY` / `FAIL`, and reports the session status back to BrowserStack.
+
+## How it works
+
+```
+broyster run (orchestrator, parent process)
+ ├─ opens the transport (BrowserStack Local tunnel or Cloudflare Tunnel)
+ ├─ polls the BrowserStack plan for free parallel-session slots
+ └─ per browser: spawns `vitest run --config <your config>`
+     ├─ createBrowserStackConfig() reads the assigned browser + slot from the environment
+     ├─ the browserstack() provider opens a Selenium WebDriver session on BrowserStack
+     ├─ the remote browser navigates to the public tunnel origin → your local Vitest server
+     └─ reporters collect failed files (for retries) and mark the session passed/failed
+```
+
+The parent process and the Vitest child processes communicate through a single JSON environment
+variable (`BROYSTER_CHILD_CONTEXT`); you never have to set it yourself.
+
+## CLI
+
+```
+broyster run --config <vitest config> [options]
+broyster browsers                # list the default catalog keys
+
+Options for "run":
+  --transport <name>       "browserstack-local" (default) or "cloudflare"
+  --browsers <k1,k2,...>   Catalog keys to run (default: all)
+  --filter <regex>         Case-insensitive regex over catalog keys
+  --concurrency <n>        Max browsers running at once (default: 5)
+  --build <name>           BrowserStack build name
+  --no-retry               Disable the automatic retry of failed files
+  --debug                  Verbose provider logging (DEBUG=vitest:broyster)
+```
+
+## Transports
+
+Remote BrowserStack browsers need to reach the Vitest server running on your machine. Broyster ships
+two transports and lets you plug in your own.
+
+### BrowserStack Local (default)
+
+Uses the [BrowserStack Local](https://www.browserstack.com/docs/local-testing) tunnel bundled with
+this package. Remote browsers reach your machine via `bs-local.com:<port>`; HTTPS works through the
+self-signed certificate generated by `@vitejs/plugin-basic-ssl` (`acceptInsecureCerts` is enabled).
+No infrastructure beyond BrowserStack credentials is needed — this is the right choice for CI.
+
+**WebKit limitation**: Safari and everything on iOS reject WebSocket connections to origins with
+self-signed certificates (`acceptInsecureCerts` covers page loads, not WebSockets), so the Vitest
+client can never connect to an HTTPS server through this transport on those browsers. By default
+the transport therefore serves WebKit browsers over HTTP (logged per browser; disable via
+`browserStackLocalTransport({ downgradeWebKitHttps: false })`). If your tests need a secure context
+on Safari/iOS, use the Cloudflare transport, which serves trusted certificates.
+
+### Cloudflare Tunnel
+
+Routes traffic through a pre-provisioned [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/)
+with public hostnames mapped to fixed local ports (one hostname+port pair per concurrently running
+browser). Requires the `cloudflared` binary on the machine and these environment variables:
+
+| Variable | Meaning |
+| --- | --- |
+| `CLOUDFLARE_TUNNEL_TOKEN` | Token for `cloudflared tunnel run` |
+| `BROYSTER_CLOUDFLARE_HTTPS_HOSTS` | CSV of public hostnames served over HTTPS |
+| `BROYSTER_CLOUDFLARE_HTTPS_PORTS` | CSV of matching local ports (same length) |
+| `BROYSTER_CLOUDFLARE_HTTP_HOSTS` | CSV of public hostnames served over HTTP (optional) |
+| `BROYSTER_CLOUDFLARE_HTTP_PORTS` | CSV of matching local ports (optional) |
+
+```bash
+broyster run --config vitest.browserstack.config.ts --transport cloudflare
+```
+
+**Known issue**: Safari on iOS 18 reproducibly drops the Vitest WebSocket mid-run when connecting
+through Cloudflare (iOS 16, 17 and 26 are fine) — most likely WebKit's HTTP/3 WebSocket handling on
+that version. If you hit this, disable HTTP/3 on the Cloudflare zone serving the tunnel hostnames,
+or run iOS 18 through the BrowserStack Local transport (which serves it over HTTP).
+
+### Custom transports
+
+Implement the `Transport` interface (`open`, `close`, `supports`, `acquireSlot`, `releaseSlot`) and
+pass it to `runBrowserStackTests()` — see "Programmatic API" below.
+
+## Configuration reference
+
+### `createBrowserStackConfig(options)`
+
+From `@fpjs-incubator/broyster/vitest`. Returns a Vitest config; only usable under the orchestrator.
+
+| Option | Default | Meaning |
+| --- | --- | --- |
+| `projectName` | required | Project name in the BrowserStack Automate UI |
+| `browsers` | `browserstackBrowsers` | Browser catalog (see below) |
+| `capabilities` | — | Extra BrowserStack capabilities for every session |
+| `heartbeatIntervalMs` | `18000` | WebDriver keep-alive interval |
+| `queue` | — | Poll interval/timeout for the plan queue |
+| `retry` | `1` | Vitest per-test retries |
+| `serverHeaders` | permissive CSP/CORS | Extra headers, or `false` to disable the defaults |
+| `sslDomains` | `['bs-local.com']` | Domains of the self-signed HTTPS certificate |
+| `test` | — | Your Vitest test options (include globs, setupFiles, …) |
+| `vite` | — | Extra Vite config (plugins, …), merged last |
+
+### Browser catalog
+
+The default catalog (`browserstackBrowsers` from `@fpjs-incubator/broyster`) covers Windows, macOS,
+Android and iOS. To use your own targets, define one catalog module and pass it to **both** sides so
+the keys match:
+
+```ts
+// browsers.ts
+import type { BrowserDef } from '@fpjs-incubator/broyster'
+
+export const myBrowsers: Record<string, BrowserDef> = {
+  Windows11_ChromeLatest: {
+    platform: 'Windows',
+    osVersion: '11',
+    browserName: 'Chrome',
+    browserVersion: 'latest',
+    useHttps: true,
+  },
+  iOS18_Safari: {
+    platform: 'iOS',
+    osVersion: '18',
+    browserName: 'Safari',
+    deviceName: 'iPhone 15', // required for mobile targets
+    useHttps: true,
+  },
+}
+```
+
+```ts
+// vitest.browserstack.config.ts
+export default createBrowserStackConfig({ projectName: 'MyProject', browsers: myBrowsers, ... })
+```
+
+```ts
+// run.ts — custom catalogs need the programmatic API
+await runBrowserStackTests({ configPath: 'vitest.browserstack.config.ts', catalog: myBrowsers, ... })
+```
+
+Browsers with `useHttps: false` are served over plain HTTP (some browser/OS combinations don't accept
+the self-signed certificate); the orchestrator automatically pairs every browser with a slot of the
+matching protocol.
+
+## Programmatic API
+
+From `@fpjs-incubator/broyster` (no Vitest needed to import it):
+
+```ts
+import { browserStackLocalTransport, formatSummary, runBrowserStackTests } from '@fpjs-incubator/broyster'
+
+const summary = await runBrowserStackTests({
+  configPath: 'vitest.browserstack.config.ts',
+  transport: browserStackLocalTransport(),
+  // browsers: ['Windows11_ChromeLatest'], filter: 'Safari', catalog, concurrency,
+  // buildName, credentials, retryFailed, cwd, env, debug, onLog
+})
+
+console.log(formatSummary(summary))
+process.exit(summary.ok ? 0 : 1)
+```
+
+Also exported: `cloudflareTransport` / `cloudflareTransportFromEnv`, `browserstackBrowsers`,
+`BrowserStackQueue`, `BrowserStackApiClient`, `getBrowserStackCredentials`, and the `Transport` /
+`BrowserDef` / `RunSummary` types. The Vitest-side pieces (`browserstack` provider, reporters,
+`createBrowserStackConfig`) live in `@fpjs-incubator/broyster/vitest`.
+
+## Environment variables
+
+| Variable | Meaning |
+| --- | --- |
+| `BROWSERSTACK_USERNAME`, `BROWSERSTACK_ACCESS_KEY` | BrowserStack credentials (always required) |
+| `CLOUDFLARE_TUNNEL_TOKEN`, `BROYSTER_CLOUDFLARE_*` | Cloudflare transport configuration (see above) |
+| `GITHUB_RUN_ID` | Used for the default build name in CI |
+| `DEBUG=vitest:broyster` | Verbose provider/reporter logging |
+| `BROYSTER_CHILD_CONTEXT` | Internal orchestrator→child contract; never set manually |
+
+## Migrating from the Karma version (≤ 0.3.x)
+
+Version 1.0 removes the Karma integration entirely:
+
+| Karma-era API | Replacement |
+| --- | --- |
+| `makeKarmaConfigurator({ projectName, includeFiles })` | `createBrowserStackConfig({ projectName, test: { include } })` |
+| `karma start --preset browserstack` | `broyster run --config vitest.browserstack.config.ts` |
+| `karma start --preset local` | Vitest browser mode with a local provider (e.g. `@vitest/browser-playwright`) |
+| `retryFailedTests()` (`/browser` entry) | Vitest's built-in `retry` (the `retry` option, default 1) |
+| `setHttpsAndServerForKarma` / dual HTTP+HTTPS server | Per-browser protocol via `useHttps` + `@vitejs/plugin-basic-ssl` |
+| `BrowserFlags` (Incognito, …) | Not available yet; open an issue if you need it |
+| Jasmine (`jasmine.createSpy`, `pending`) | Vitest (`vi.fn()`, `it.skip`) |
+
+The package is now ESM-only and requires Node.js ≥ 20. See
+[example_project](../example_project) for a complete working setup.
