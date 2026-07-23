@@ -1,5 +1,6 @@
-import { createButton } from './dom'
-import * as UAParser from 'ua-parser-js'
+import { describe, expect, it, vi } from 'vitest'
+
+import { createButton } from './dom.js'
 
 describe('DOM', () => {
   describe('createButton', () => {
@@ -10,7 +11,7 @@ describe('DOM', () => {
     })
 
     it('attaches ad onClick handler', () => {
-      const onClick = jasmine.createSpy()
+      const onClick = vi.fn()
       const button = createButton('Click me!', onClick)
       button.click()
       expect(onClick).toHaveBeenCalledTimes(1)
@@ -20,16 +21,14 @@ describe('DOM', () => {
       if (!isSecureContextUnsupported()) {
         const isSecureContext = window.isSecureContext
         if (isSecureContext !== undefined) {
-          expect(isSecureContext).toBeTrue()
+          expect(isSecureContext).toBe(true)
         }
       }
 
       function isSecureContextUnsupported(): boolean {
-        const result = new UAParser().getResult()
-        const isSafari = /^(Mobile )?Safari$/.test(result.browser.name ?? '')
-        const isMacOS = result.os.name === 'Mac OS'
-        const browserVersion = parseInt(result.browser.version ?? '0')
-        return isSafari && isMacOS && browserVersion >= 15
+        const userAgent = navigator.userAgent
+        const isSafari = /Safari\//.test(userAgent) && !/(?:Chrome|Chromium|CriOS|Android)\//.test(userAgent)
+        return isSafari && /Macintosh/.test(userAgent)
       }
     })
   })

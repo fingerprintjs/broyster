@@ -1,14 +1,19 @@
 {
   "compilerOptions": {
-    "target": "es6", // The TypeScript library is both for Node.js and browsers
-    "moduleResolution": "node",
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "removeComments": false,
     "resolveJsonModule": true,
-    "importHelpers": true,
     "noErrorTruncation": true,
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noImplicitReturns": true
+    "noImplicitReturns": true,
+    "exactOptionalPropertyTypes": true,
+    "verbatimModuleSyntax": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
   }
 }

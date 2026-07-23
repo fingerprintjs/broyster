@@ -2,17 +2,19 @@
   "private": true,
   "name": "example_project",
   "version": "0.0.1",
+  "type": "module",
   "scripts": {
-    "test:local": "karma start --preset local --single-run",
-    "test:browserstack": "karma start --preset browserstack --single-run"
+    "test:local": "vitest run --config vitest.local.config.ts",
+    "test:browserstack": "node ../node/dist/cli.js run --config broyster.config.ts",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@fpjs-incubator/broyster": "*",
-    "@types/jasmine": "^3.10.7",
-    "@types/ua-parser-js": "^0.7.36",
-    "karma": "^6.4.1"
-  },
-  "dependencies": {
-    "ua-parser-js": "^1.0.33"
+    "@fpjs-incubator/broyster": "workspace:*",
+    "@vitejs/plugin-basic-ssl": "2.3.0",
+    "@vitest/browser": "4.1.8",
+    "@vitest/browser-webdriverio": "4.1.8",
+    "vite": "8.0.13",
+    "vitest": "4.1.8",
+    "webdriverio": "9.20.0"
   }
 }

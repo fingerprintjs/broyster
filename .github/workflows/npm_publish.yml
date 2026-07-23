@@ -1,47 +1,32 @@
-# Reference on this file: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
-# In order to work properly, this workflow requires the repository to have an environment called "npm". The environment
-# The environment should be protected to allow running only on the `master`, `alpha` and `beta` branches.
-
 name: Publish to NPM
+
 on: workflow_dispatch
 
 permissions:
-  id-token: write # Required for OIDC
+  id-token: write
   contents: read
 
 jobs:
   publish:
-    name: Build and publish
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     environment: npm
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
         with:
-          submodules: true
-      - name: Setup Node.js
-        uses: actions/setup-node@v6 # Required for OIDC
+          version: 11.3.0
+      - uses: actions/setup-node@v6
         with:
-          node-version: '24'
-          registry-url: 'https://registry.npmjs.org' # Required for OIDC
-      - name: Cache
-        uses: actions/cache@v5
-        with:
-          path: node_modules
-          key: nodemodules-${{ hashFiles('yarn.lock') }}
-          restore-keys: nodemodules-
-      - name: Install Node packages
-        run: yarn install
-      - name: Build
-        run: cd node && yarn build
-      - name: Publish to NPM
-        # This command will automatically fail because of some common mistakes (this is a wanted behavior):
-        # - The current version is already published
-        # - The package uses a local directory as a dependency
+          node-version: '24.x'
+          registry-url: https://registry.npmjs.org
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
+      - name: Publish package
+        working-directory: node
         run: |
-          cd node
-          version=$(node -p "require('./package.json').version")
-          tag=$(echo "$version" | grep -oP '(?<=-)[^.]+' || echo "latest")
-          echo "Publishing version $version with tag: $tag"
+          tag=$(node -p "require('./package.json').version.split('-')[1]?.split('.')[0] || 'latest'")
           npm publish --access public --tag "$tag"

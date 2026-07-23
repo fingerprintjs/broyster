@@ -1,42 +1,42 @@
 # Broyster 🕶️🦪
 
-<sup>(browser + oyster)</sup>
+<sup>browser + oyster</sup>
 
 <p align="center">
   <a href="https://github.com/fingerprintjs/broyster/actions/workflows/test.yml"><img src="https://github.com/fingerprintjs/broyster/actions/workflows/test.yml/badge.svg" alt="Build status"></a>
   <a href="https://www.npmjs.com/package/@fpjs-incubator/broyster"><img src="https://img.shields.io/npm/v/@fpjs-incubator/broyster.svg" alt="Current NPM version"></a>
 </p>
 
-Broyster gives you the ability to run your Karma tests in Browserstack using Selenium WebDriver as the means to execute the tests, as opposed to the regular tunnel for JS testing, giving you more flexibility in creating your test setup.
-It also comes with a Jasmine retry mechanism to help you combat flaky tests so that you can rely on your tests more.
+Broyster runs Vitest browser suites on BrowserStack. It coordinates account concurrency, one isolated Vitest process per browser, externally provisioned Cloudflare Tunnel routes, retries, BrowserStack session status, and a versioned JSON result artifact.
 
-Project structure:
+The v1 package is ESM-only and requires Node.js `^20.19.0 || >=22.12.0`. It replaces the former Karma and Jasmine integrations.
 
-- [node](node) — test tools for Node.js projects.
-    Published as an [@fpjs-incubator/broyster](https://npmjs.com/package/@fpjs-incubator/broyster) Node package.
-- [example_project](example_project) — an example project that uses the testing tools.
+## Repository
 
-## Quick start
+- [node](node) contains the published [`@fpjs-incubator/broyster`](https://npmjs.com/package/@fpjs-incubator/broyster) package.
+- [example_project](example_project) demonstrates local WebdriverIO and remote BrowserStack runs.
 
-Make sure you have Node.js 16 or newer and Yarn installed.
+## Development
 
-```bash
-yarn install
-yarn --cwd node build:watch
-```
-
-Open a new terminal tab and run:
+Install pnpm 11.3 and the workspace dependencies:
 
 ```bash
-# Run example tests in local browsers
-yarn --cwd example_project test:local
-
-# Or run example tests on BrowserStack
-# For Linux, macOS and WSL (Linux on Windows)
-BROWSERSTACK_USERNAME=your-username BROWSERSTACK_ACCESS_KEY=your-key yarn --cwd example_project test:browserstack
+corepack enable
+pnpm install
 ```
+
+Run the checks:
+
+```bash
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
+pnpm --dir example_project test:local
+```
+
+See the [package guide](node/readme.md) for configuration, CLI options, Cloudflare prerequisites, results, and migration notes.
 
 ## Contributing
 
-See the [Contribution guidelines](contributing.md) to learn how to contribute to the project or run the project locally.
-Please read it carefully before making a pull request.
+See the [contribution guidelines](contributing.md) and [code of conduct](code_of_conduct.md).

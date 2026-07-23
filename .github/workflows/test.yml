@@ -1,43 +1,112 @@
-# Reference on this file: https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions
 name: Lint, build and test
+
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
+  schedule:
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+    inputs:
+      full_matrix:
+        description: Run the complete Fingerprint BrowserStack preset
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
 jobs:
-  build:
-    name: Lint, build and test
+  verify:
+    name: Verify on Node ${{ matrix.node }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['20.19.0', '22.12.0', '24.x']
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Cache
-        uses: actions/cache@v4
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
         with:
-          path: |
-            **/node_modules
-          key: nodemodules-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: nodemodules-
-      - name: Install Node packages
-        run: yarn install
-      - name: Lint
-        run: yarn lint
-      - name: Build the Node.js tools
-        run: yarn --cwd node build
-      - name: Test the example project on BrowserStack
-        run: yarn --cwd example_project test:browserstack --log-level debug
-        env:
-          BROWSERSTACK_USERNAME: ${{secrets.BROWSERSTACK_USERNAME}}
-          BROWSERSTACK_ACCESS_KEY: ${{secrets.BROWSERSTACK_ACCESS_KEY}}
-
-      # The following steps will be replaced with automatic publishing
-      - name: Pack the Node.js tools
-        run: yarn --cwd node pack
-      - name: Save the packages
+          version: 11.3.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.node }}
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
+      - if: matrix.node == '24.x'
+        run: pnpm lint
+      - if: matrix.node == '24.x'
+        run: pnpm --dir example_project test:local
+      - if: matrix.node == '24.x'
+        run: mkdir -p artifacts
+      - if: matrix.node == '24.x'
+        run: pnpm --dir node pack --pack-destination ../artifacts
+      - if: matrix.node == '24.x'
         uses: actions/upload-artifact@v4
         with:
-          name: Packages
-          path: node/*.tgz
+          name: package
+          path: artifacts/*.tgz
           if-no-files-found: error
+
+  browserstack-smoke:
+    name: BrowserStack smoke
+    if: github.event_name == 'push'
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.3.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24.x'
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm --dir example_project test:browserstack --browsers Windows11_ChromeLatest,OSX15_Safari18
+        env:
+          BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+          BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+          CLOUDFLARE_TUNNEL_TOKEN: ${{ secrets.CLOUDFLARE_TUNNEL_TOKEN }}
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browserstack-smoke-results
+          path: example_project/artifacts/browserstack-results.json
+          if-no-files-found: warn
+
+  browserstack-full:
+    name: Full BrowserStack preset
+    if: github.event_name == 'schedule' || inputs.full_matrix == true
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.3.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24.x'
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm --dir example_project test:browserstack
+        env:
+          BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+          BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+          CLOUDFLARE_TUNNEL_TOKEN: ${{ secrets.CLOUDFLARE_TUNNEL_TOKEN }}
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browserstack-full-results
+          path: example_project/artifacts/browserstack-results.json
+          if-no-files-found: warn

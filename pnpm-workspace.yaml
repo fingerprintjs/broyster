@@ -1,0 +1,11 @@
+packages:
+  - node
+  - example_project
+
+allowBuilds:
+  edgedriver: false
+  esbuild: true
+  geckodriver: false
+
+overrides:
+  vite: 8.0.13
