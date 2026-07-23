@@ -7,8 +7,8 @@
   <a href="https://www.npmjs.com/package/@fpjs-incubator/broyster"><img src="https://img.shields.io/npm/v/@fpjs-incubator/broyster.svg" alt="Current NPM version"></a>
 </p>
 
-Broyster gives you the ability to run your Karma tests in Browserstack using Selenium WebDriver as the means to execute the tests, as opposed to the regular tunnel for JS testing, giving you more flexibility in creating your test setup.
-It also comes with a Jasmine retry mechanism to help you combat flaky tests so that you can rely on your tests more.
+Broyster gives you the ability to run your Vitest browser tests on BrowserStack using Selenium WebDriver and Cloudflare Tunnels to execute the tests, giving you high flexibility and performance in cross-browser testing.
+It also includes automated retry mechanisms (at both file and browser levels) to combat flaky tests.
 
 Project structure:
 
@@ -18,22 +18,21 @@ Project structure:
 
 ## Quick start
 
-Make sure you have Node.js 16 or newer and Yarn installed.
+Make sure you have Node.js 18 or newer and pnpm installed.
 
 ```bash
-yarn install
-yarn --cwd node build:watch
+pnpm install
+pnpm --filter @fpjs-incubator/broyster build
 ```
 
-Open a new terminal tab and run:
+Open a terminal and run:
 
 ```bash
 # Run example tests in local browsers
-yarn --cwd example_project test:local
+pnpm --cwd example_project test:local
 
 # Or run example tests on BrowserStack
-# For Linux, macOS and WSL (Linux on Windows)
-BROWSERSTACK_USERNAME=your-username BROWSERSTACK_ACCESS_KEY=your-key yarn --cwd example_project test:browserstack
+BROWSERSTACK_USERNAME=your-username BROWSERSTACK_ACCESS_KEY=your-key CLOUDFLARE_TUNNEL_TOKEN=your-token pnpm --cwd example_project test:browserstack
 ```
 
 ## Contributing

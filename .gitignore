@@ -3,7 +3,7 @@ dist/
 node_modules/
 /node/LICENSE
 
-# Unwanted BrowserStack logs: https://github.com/karma-runner/karma-browserstack-launcher/issues/181
+# Unwanted BrowserStack logs
 browserstack.err
 local.log
 
@@ -12,3 +12,4 @@ local.log
 .idea/
 .vscode/
 yarn-error.log
+pnpm-debug.log

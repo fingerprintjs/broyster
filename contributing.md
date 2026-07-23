@@ -34,7 +34,7 @@ In order for us to review and accept your code contributions, please follow thes
 - Broyster comes with an [example project](example_project) including tests aimed at testing the essential features.
   If you add a new feature, please add it to the example project.
   It will allow to test your new feature and show its usage example to other developers.
-- The changes should be backward compatible, ensuring Broyster users continue to use the library without any modifications.
+- The changes should be backward compatible where applicable.
 - Don't add dependencies (such as Node packages) unless necessary.
 - Don't make changes unrelated to the stated purpose of your pull request. Please strive to introduce as few changes as possible.
 - Don't change Broyster code style, its TypeScript configuration, or other subjective things.
@@ -53,13 +53,13 @@ Feel free to ask questions in the issues if you need more details.
 
 This section describes how to deploy the repository locally, make changes to the code, and verify your work.
 
-First, make sure you have [Git](https://git-scm.com), [Node.js](https://nodejs.org) and [Yarn](https://yarnpkg.com) installed.
+First, make sure you have [Git](https://git-scm.com), [Node.js](https://nodejs.org) and [pnpm](https://pnpm.io) installed.
 Then clone the repository and install the dependencies:
 
 ```bash
 git clone https://github.com/fingerprintjs/broyster.git
 cd broyster
-yarn install
+pnpm install
 ```
 
 ### Code style
@@ -69,14 +69,14 @@ The code style is controlled by [ESLint](https://eslint.org) and [Prettier](http
 Run to check that the code style is ok:
 
 ```bash
-yarn lint
+pnpm lint
 ```
 
 You aren't required to run the check manually, the CI will do it.
 Run this to fix code style mistakes (not all mistakes can be fixed automatically):
 
 ```bash
-yarn lint:fix
+pnpm lint:fix
 ```
 
 ### How to build
@@ -85,50 +85,26 @@ To build the distribution files of the Node package, run:
 
 ```bash
 # Build once:
-yarn --cwd node build
+pnpm --cwd node build
 
 # Or build once and then rebuild when the code changes:
-yarn --cwd node build:watch
+pnpm --cwd node build:watch
 ```
 
 The files will be saved to the `node/dist` directory.
 
-### Pitfalls
-
-The project uses Karma and Jasmine, which means not everything is in our control.
-For some problems you will need to dig into Karma or Jasmine to figure out if and how you can work around it.
-
 ### How to test
 
 The repository contains an [example project](example_project) that contains tests.
-To run the tests in a browser on your machine, build the project:
+To run the tests locally:
 
 ```bash
-yarn --cwd node build:watch
+pnpm --cwd node build
+pnpm --cwd example_project test:local
 ```
 
-and run in a separate terminal tab or window:
+To run the tests in browsers on [BrowserStack](https://www.browserstack.com), get a BrowserStack access key, a Cloudflare tunnel token, and run:
 
 ```bash
-yarn --cwd example_project test:local
+BROWSERSTACK_USERNAME=your-username BROWSERSTACK_ACCESS_KEY=your-key CLOUDFLARE_TUNNEL_TOKEN=your-token pnpm --cwd example_project test:browserstack
 ```
-
-To run the tests in browsers on [BrowserStack](https://www.browserstack.com), get a BrowserStack access key and run:
-
-```bash
-# For Linux, macOS and WSL (Linux on Windows)
-BROWSERSTACK_USERNAME=your-username BROWSERSTACK_ACCESS_KEY=your-key yarn --cwd example_project test:browserstack
-```
-
-If you face `Error: spawn Unknown system error -86` on macOS, try installing Rosetta:
-```bash
-softwareupdate --install-rosetta
-```
-
-Alternatively, make a PR to this repository, the test will run on BrowserStack automatically.
-But the test won't run when the PR is made from a fork repository, in this case, a member will run the tests manually.
-
-BrowserStack sessions are unstable, so a session can fail for no reason;
-restart the testing when you see no clear errors related to the tests.
-If you run the test command multiple times in parallel, BrowserStack will lose access to the Karma server
-(for some reason), which will cause the tests to hang infinitely, so try to run a single test command at once.

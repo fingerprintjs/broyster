@@ -1,0 +1,5 @@
+packages:
+  - 'node'
+  - 'example_project'
+allowBuilds:
+  esbuild: set this to true or false
