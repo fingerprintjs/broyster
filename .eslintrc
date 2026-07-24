@@ -12,11 +12,19 @@
   "parser": "@typescript-eslint/parser",
   "rules": {
     "no-console": "warn",
-    "max-len": ["error", { "code": 120, "ignoreUrls": true }]
+    "max-len": [
+      "error",
+      {
+        "code": 120,
+        "ignoreUrls": true
+      }
+    ]
   },
   "overrides": [
     {
-      "files": ["**/*.ts"],
+      "files": [
+        "**/*.ts"
+      ],
       "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/eslint-recommended",
@@ -27,9 +35,24 @@
         "@typescript-eslint"
       ],
       "rules": {
-        "max-len": ["error", { "code": 120, "ignoreUrls": true }],
-        "@typescript-eslint/no-unused-vars": ["error", { "ignoreRestSiblings": true }]
+        "max-len": [
+          "error",
+          {
+            "code": 120,
+            "ignoreUrls": true
+          }
+        ],
+        "@typescript-eslint/no-unused-vars": [
+          "error",
+          {
+            "ignoreRestSiblings": true
+          }
+        ]
       }
     }
-  ]
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2022,
+    "sourceType": "module"
+  }
 }

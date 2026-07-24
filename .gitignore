@@ -3,9 +3,16 @@ dist/
 node_modules/
 /node/LICENSE
 
-# Unwanted BrowserStack logs: https://github.com/karma-runner/karma-browserstack-launcher/issues/181
+# BrowserStack Local tunnel logs
 browserstack.err
 local.log
+
+# Vitest browser-mode artifacts
+__screenshots__/
+.vitest-attachments/
+
+# Local credentials
+env.sh
 
 # Random excess stuff
 .DS_Store

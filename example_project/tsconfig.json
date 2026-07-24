@@ -1,3 +1,10 @@
 {
-  "extends": "../tsconfig.json"
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    // The example code is bundled by Vite, so extensionless relative imports
+    // are fine — use bundler resolution instead of the repo's NodeNext.
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "noEmit": true
+  }
 }
