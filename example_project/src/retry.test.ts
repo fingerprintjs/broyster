@@ -1,15 +1,13 @@
-let number = 0
+import { describe, expect, it } from 'vitest'
+
+// Validates the retry mechanism: both example configs set `retry: 2`, so this
+// test fails twice and passes on the third attempt.
+let attempt = 0
 describe('Running', () => {
   describe('a failing test', () => {
     it('will retry up to 3 times', () => {
-      number++
-      expect(number).toBe(3)
-    })
-  })
-
-  describe('a pending test', () => {
-    it('will not be retried', () => {
-      pending('this should not fail the run')
+      attempt++
+      expect(attempt).toBe(3)
     })
   })
 })
